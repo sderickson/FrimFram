@@ -1,0 +1,50 @@
+extends /templates/common/base
+
+block content
+  
+  .page-header
+    h1 
+      span.spr Client Tests
+  
+  ol.breadcrumb
+    for path in parentFolders
+      li
+        a(href=path.url)= path.name
+    li
+      a.reload-link(href=pathname)= currentFolder
+
+  .list-group.pull-left#test-nav
+    
+    if hasSpecFocus
+      .list-group-item.list-group-item-success
+        span.glyphicon.glyphicon-refresh
+        a(href=pathname).reload-link
+          strong Clear spec focus
+    
+    if lastParent
+      .list-group-item.list-group-item-success
+        span.glyphicon.glyphicon-arrow-left.spr
+        a(href=lastParent.url)
+          strong Up one folder (#{lastParent.name})
+    
+    if hasSpecFocus || lastParent
+      hr
+  
+    for child in children
+      .list-group-item.list-group-item-info
+        a(href=child.url)
+          if child.type == 'folder'
+            span.glyphicon.glyphicon-folder-close
+          else
+            span.glyphicon.glyphicon-file
+          span= child.name
+          if child.type == 'folder'
+            strong (#{child.size})
+
+
+  .well#testing-area
+  
+  .clearfix
+
+  em.spr “Testing is an infinite process of comparing the invisible to the ambiguous in order to avoid the unthinkable happening to the anonymous.”
+  span - James Bach

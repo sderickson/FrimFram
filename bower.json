@@ -1,0 +1,39 @@
+{
+  "name": "frimfram",
+  "main": "index.js",
+  "version": "0.0.0",
+  "description": "A framework shell.",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor",
+    "test"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.0",
+    "lodash": "~2.4.1",
+    "backbone": "1.1.0",
+    "moment": "~2.5.0",
+    "underscore.string": "~2.3.3",
+    "jsondiffpatch": "0.1.8",
+    "treema": "https://github.com/codecombat/treema.git#master",
+    "bootstrap": "~3.2.0",
+    "validated-backbone-mediator": "~0.1.3"
+  },
+  "overrides": {
+    "backbone": { "main": "backbone.js" },
+    "lodash": { "main": "dist/lodash.js" },
+    "marked": { "main": "lib/marked.js" },
+    "underscore.string": { "main": "lib/underscore.string.js" },
+    "jsondiffpatch": {
+      "main": [
+        "build/bundle-full.js",
+        "build/formatters.js",
+        "src/formatters/html.css"
+      ]
+    }
+  }
+}
