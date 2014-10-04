@@ -124,7 +124,7 @@
   var htmlReporter = new jasmine.HtmlReporter({
     env: env,
     onRaiseExceptionsClick: function() { queryString.setParam("catch", !env.catchingExceptions()); },
-    getContainer: function() { return $('#testing-area')[0]; },
+    getContainer: function() { return $('#tests')[0]; },
     createElement: function() { return document.createElement.apply(document, arguments); },
     createTextNode: function() { return document.createTextNode.apply(document, arguments); },
     timer: new jasmine.Timer()

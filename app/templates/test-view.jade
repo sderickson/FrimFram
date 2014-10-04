@@ -13,36 +13,43 @@ block content
     li
       a.reload-link(href=pathname)= currentFolder
 
-  .list-group.pull-left#test-nav
+  .panel.panel-primary.pull-left#test-nav
+    .panel-heading
+      .panel-title Nav
     
-    if hasSpecFocus
-      .list-group-item.list-group-item-success
-        span.glyphicon.glyphicon-refresh
-        a(href=pathname).reload-link
-          strong Clear spec focus
+    .list-group
+      
+      if hasSpecFocus
+        .list-group-item.list-group-item-success
+          span.glyphicon.glyphicon-refresh
+          a(href=pathname).reload-link
+            strong Clear spec focus
+      
+      if lastParent
+        .list-group-item.list-group-item-success
+          span.glyphicon.glyphicon-arrow-left.spr
+          a(href=lastParent.url)
+            strong Up one folder (#{lastParent.name})
+      
+      for child in children
+        .list-group-item.list-group-item-info
+          a(href=child.url)
+            if child.type == 'folder'
+              span.glyphicon.glyphicon-folder-close
+            else
+              span.glyphicon.glyphicon-file
+            span= child.name
+            if child.type == 'folder'
+              strong (#{child.size})
+
+
+  .panel.panel-default#testing-area
+    .panel-heading
+      .panel-title Test Results
     
-    if lastParent
-      .list-group-item.list-group-item-success
-        span.glyphicon.glyphicon-arrow-left.spr
-        a(href=lastParent.url)
-          strong Up one folder (#{lastParent.name})
-    
-    if hasSpecFocus || lastParent
-      hr
+    .panel-body
+      #tests
   
-    for child in children
-      .list-group-item.list-group-item-info
-        a(href=child.url)
-          if child.type == 'folder'
-            span.glyphicon.glyphicon-folder-close
-          else
-            span.glyphicon.glyphicon-file
-          span= child.name
-          if child.type == 'folder'
-            strong (#{child.size})
-
-
-  .well#testing-area
   
   .clearfix
 
