@@ -1,12 +1,13 @@
-CocoModel = require 'models/CocoModel'
+BaseModel = require 'models/BaseModel'
 
-module.exports = class CocoCollection extends Backbone.Collection
+module.exports = class BaseCollection extends Backbone.Collection
   loaded: false
   model: null
 
   initialize: (models, options) ->
     options ?= {}
     @model ?= options.model
+    @loaded = options.loaded if options.loaded
     if not @model
       console.error @constructor.name, 'does not have a model defined. This will not do!'
     super(models, options)
@@ -14,10 +15,8 @@ module.exports = class CocoCollection extends Backbone.Collection
     if options.url then @url = options.url
     @once 'sync', =>
       @loaded = true
-      model.loaded = true for model in @models
-
-  getURL: ->
-    return if _.isString @url then @url else @url()
+    @once 'complete', =>
+      @fetching = false
 
   fetch: (options) ->
     options ?= {}
@@ -25,7 +24,7 @@ module.exports = class CocoCollection extends Backbone.Collection
       options.data ?= {}
       options.data.project = @project.join(',')
     @jqxhr = super(options)
-    @loading = true
+    @fetching = true
     @jqxhr
 
   setProjection: (@project) ->

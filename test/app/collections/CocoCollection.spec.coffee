@@ -1,8 +1,8 @@
-CocoCollection = require 'collections/CocoCollection'
+BaseCollection = require 'collections/BaseCollection'
 
-describe 'CocoCollection', ->
+describe 'BaseCollection', ->
 #  it 'can be given a project function to include a project query arg', ->
-#    collection = new CocoCollection([], {
+#    collection = new BaseCollection([], {
 #      url: '/db/level.component'
 #      project:['name', 'description']
 #      model: LevelComponent

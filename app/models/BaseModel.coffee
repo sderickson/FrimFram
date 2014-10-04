@@ -1,7 +1,7 @@
 storage = require 'lib/storage'
 deltasLib = require 'lib/deltas'
 
-module.exports = CocoModel = class CocoModel extends Backbone.Model
+module.exports = BaseModel = class BaseModel extends Backbone.Model
   idAttribute: '_id'
   
   #- state flags
