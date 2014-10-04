@@ -19,6 +19,8 @@ module.exports = class CocoRouter extends Backbone.Router
     window.location.reload(true)
 
   routeDirectly: (path, args) ->
+    return document.location.reload() if @currentView?.reloadOnClose
+    
     path = "views/#{path}"
 
     try
@@ -44,7 +46,4 @@ module.exports = class CocoRouter extends Backbone.Router
     @currentView = view
     view.afterInsert()
     
-  closeCurrentView: ->
-    return unless @currentView
-    return document.location.reload() if @currentView.reloadOnClose
-    @currentView.destroy()
+  closeCurrentView: -> @currentView?.destroy()
