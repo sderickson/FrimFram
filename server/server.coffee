@@ -1,5 +1,5 @@
 log = require 'winston'
-
+require './projRequire'
 
 # TOGO: Where should this go?
 do (setupGlobals = this) ->
@@ -21,7 +21,7 @@ module.exports.startServer = ->
   #- connect to db
   Grid = require 'gridfs-stream'
   mongoose = require 'mongoose'
-  config = require './server-config'
+  config = projRequire 'server/server-config'
 
   dbName = config.mongo.db
   address = config.mongo.host + ':' + config.mongo.port
