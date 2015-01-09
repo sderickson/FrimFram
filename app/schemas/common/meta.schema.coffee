@@ -1,7 +1,7 @@
 # The JSON Schema Core/Validation Meta-Schema, but with titles and descriptions added to make it easier to edit in Treema, and in CoffeeScript
 
 module.exports =
-  id: 'metaschema'
+  id: 'metaSchema'
   displayProperty: 'title'
   $schema: 'http://json-schema.org/draft-04/schema#'
   title: 'Schema'
@@ -12,13 +12,13 @@ module.exports =
       minItems: 1
       items: {$ref: '#'}
       title: 'Array of Schemas'
-      'default': [{}]
+      default: [{}]
     positiveInteger:
       type: 'integer'
       minimum: 0
       title: 'Positive Integer'
     positiveIntegerDefault0:
-      allOf: [{$ref: '#/definitions/positiveInteger'}, {'default': 0}]
+      allOf: [{$ref: '#/definitions/positiveInteger'}, {default: 0}]
     simpleTypes:
       title: 'Single Type'
       'enum': ['array', 'boolean', 'integer', 'null', 'number', 'object', 'string']
@@ -28,7 +28,7 @@ module.exports =
       minItems: 1
       uniqueItems: true
       title: 'String Array'
-      'default': ['']
+      default: ['']
   type: 'object'
   properties:
     id:
@@ -37,12 +37,12 @@ module.exports =
     $schema:
       type: 'string'
       format: 'uri'
-      'default': 'http://json-schema.org/draft-04/schema#'
+      default: 'http://json-schema.org/draft-04/schema#'
     title:
       type: 'string'
     description:
       type: 'string'
-    'default': {}
+    default: {}
     multipleOf:
       type: 'number'
       minimum: 0
@@ -51,12 +51,12 @@ module.exports =
       type: 'number'
     exclusiveMaximum:
       type: 'boolean'
-      'default': false
+      default: false
     minimum:
       type: 'number'
     exclusiveMinimum:
       type: 'boolean'
-      'default': false
+      default: false
     maxLength: {$ref: '#/definitions/positiveInteger'}
     minLength: {$ref: '#/definitions/positiveIntegerDefault0'}
     pattern:
@@ -64,7 +64,7 @@ module.exports =
       format: 'regex'
     additionalItems:
       anyOf: [
-        {type: 'boolean', 'default': false}
+        {type: 'boolean', default: false}
         {$ref: '#'}
       ]
     items:
@@ -72,33 +72,33 @@ module.exports =
         {$ref: '#'}
         {$ref: '#/definitions/schemaArray'}
       ]
-      'default': {}
+      default: {}
     maxItems: {$ref: '#/definitions/positiveInteger'}
     minItems: {$ref: '#/definitions/positiveIntegerDefault0'}
     uniqueItems:
       type: 'boolean'
-      'default': false
+      default: false
     maxProperties: {$ref: '#/definitions/positiveInteger'}
     minProperties: {$ref: '#/definitions/positiveIntegerDefault0'}
     required: {$ref: '#/definitions/stringArray'}
     additionalProperties:
       anyOf: [
-        {type: 'boolean', 'default': true}
+        {type: 'boolean', default: true}
         {$ref: '#'}
       ]
-      'default': {}
+      default: {}
     definitions:
       type: 'object'
       additionalProperties: {$ref: '#'}
-      'default': {}
+      default: {}
     properties:
       type: 'object'
       additionalProperties: {$ref: '#'}
-      'default': {}
+      default: {}
     patternProperties:
       type: 'object'
       additionalProperties: {$ref: '#'}
-      'default': {}
+      default: {}
     dependencies:
       type: 'object'
       additionalProperties:
@@ -106,11 +106,11 @@ module.exports =
           {$ref: '#'}
           {$ref: '#/definitions/stringArray'}
         ]
-    'enum':
+    enum:
       type: 'array'
       minItems: 1
       uniqueItems: true
-      'default': ['']
+      default: ['']
     type:
       anyOf: [
         {$ref: '#/definitions/simpleTypes'}
@@ -120,7 +120,7 @@ module.exports =
           minItems: 1
           uniqueItems: true
           title: 'Array of Types'
-          'default': ['string']
+          default: ['string']
         }]
     allOf: {$ref: '#/definitions/schemaArray'}
     anyOf: {$ref: '#/definitions/schemaArray'}
@@ -129,4 +129,4 @@ module.exports =
   dependencies:
     exclusiveMaximum: ['maximum']
     exclusiveMinimum: ['minimum']
-  'default': {}
+  default: {}

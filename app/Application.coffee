@@ -1,6 +1,7 @@
 BaseClass = require 'BaseClass'
 Router = require 'Router'
 runtimeErrorTemplate = require 'templates/common/runtime-error-alert'
+rootSchema = require 'schemas/root.schema'
 
 module.exports = Application = class Application extends BaseClass
   
@@ -8,6 +9,7 @@ module.exports = Application = class Application extends BaseClass
   
   initialize: ->
     @watchForErrors()
+    @installSchema()
     $(document).bind 'keydown', @preventBackspace
     @router = new Router()
     Backbone.history.start({ pushState: true })
@@ -26,7 +28,13 @@ module.exports = Application = class Application extends BaseClass
       alert.alert()
       close = -> alert.alert('close')
       setTimeout(close, 5000)
+      
+      
+  #- Install the one root schema, all schemas can be referenced from it
   
+  installSchema: ->
+    tv4.addSchema rootSchema
+    
   
   #- Backspace navigation stopping
   

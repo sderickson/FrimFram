@@ -1,17 +1,20 @@
 BaseModel = require 'models/BaseModel'
 
+tv4.addSchema({
+  id: 'http://my.site/schemas#bland'
+  type: 'object'
+  additionalProperties: false
+  default: { number: 1 }
+  properties:
+    number: {type: 'number'}
+    object: {type: 'object'}
+    string: {type: 'string'}
+    _id: {type: 'string'}
+})
+
 class BlandModel extends BaseModel
   @className: 'Bland'
-  @schema: {
-    type: 'object'
-    additionalProperties: false
-    default: { number: 1 }
-    properties:
-      number: {type: 'number'}
-      object: {type: 'object'}
-      string: {type: 'string'}
-      _id: {type: 'string'}
-  }
+  @schema: 'http://my.site/schemas#bland'
   urlRoot: '/db/bland'
 
 describe 'BaseModel', ->
@@ -100,7 +103,7 @@ describe 'BaseModel', ->
       b.unset('a')
       expect('a' in _.keys(b.attributes)).toBe(false)
 
-  describe 'save', ->
+  describe 'save()', ->
     it 'saves to db/<urlRoot>', ->
       b = new BlandModel({})
       res = b.save()
@@ -121,6 +124,11 @@ describe 'BaseModel', ->
       b.save()
       request = jasmine.Ajax.requests.mostRecent()
       expect(request.method).toBe('PUT')
+      
+  describe 'schema()', ->
+    it 'dereferences the class property "schema" if it\'s a string using tv4.getSchema', ->
+      b = new BlandModel()
+      expect(b.schema().id).toBe('http://my.site/schemas#bland')
 
   describe 'fetch()', ->
     it 'straight up fetches from the url root if no other guidance is given', ->

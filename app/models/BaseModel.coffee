@@ -1,7 +1,7 @@
 storage = require 'lib/storage'
 deltasLib = require 'lib/deltas'
 
-module.exports = BaseModel = class BaseModel extends Backbone.Model
+class BaseModel extends Backbone.Model
   idAttribute: '_id'
   
   #- state flags
@@ -41,7 +41,9 @@ module.exports = BaseModel = class BaseModel extends Backbone.Model
 
   type: -> @constructor.className
 
-  schema: -> return @constructor.schema
+  schema: ->
+    s = @constructor.schema
+    if _.isString s then tv4.getSchema(s) else s
     
   #- Callbacks
 
@@ -104,10 +106,7 @@ module.exports = BaseModel = class BaseModel extends Backbone.Model
   buildDefaultAttributes: ->
     clone = $.extend true, {}, @attributes
     # TODO: Have one big tv4 that has all schemas and that everything shares
-    thisTV4 = tv4.freshApi()
-    thisTV4.addSchema('#', @schema())
-    thisTV4.addSchema('metaschema', require('schemas/metaschema'))
-    TreemaNode.utils.populateDefaults(clone, @schema(), thisTV4)
+    TreemaNode.utils.populateDefaults(clone, @schema(), tv4)
     @_defaultAttributes = clone
 
     
@@ -257,3 +256,5 @@ module.exports = BaseModel = class BaseModel extends Backbone.Model
   getExpandedDeltaWith: (otherModel) ->
     delta = @getDeltaWith(otherModel)
     deltasLib.expandDelta(delta, @attributes, @schema())
+
+module.exports = BaseModel
