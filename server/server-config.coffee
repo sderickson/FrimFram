@@ -15,5 +15,6 @@ module.exports = config = {
 }
 
 config.isProduction = config.mongo.host isnt 'localhost'
+config.runningTests = false # changed by the server tests if true
 
 module.exports = config

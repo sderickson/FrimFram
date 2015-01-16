@@ -1,13 +1,17 @@
 winston = require 'winston'
 require './projRequire'
+rootSchema = projRequire 'app/schemas/root.schema'
+mongoose = require 'mongoose'
 
-module.exports.startServer = ->
+module.exports.start = (readyCallback) ->
+  return if @server
   
   #- setup globals
   GLOBAL._ = require 'lodash'
   _.str = require 'underscore.string'
   _.mixin _.str.exports()
   global.tv4 = require 'tv4' # required for TreemaUtils to work
+  tv4.addSchema rootSchema
   
   
   #- setup logging
@@ -20,8 +24,10 @@ module.exports.startServer = ->
   
   #- connect to db
   Grid = require 'gridfs-stream'
-  mongoose = require 'mongoose'
   config = projRequire 'server/server-config'
+  if config.runningTests
+    mockgoose = require('mockgoose')
+    mockgoose(mongoose)
 
   dbName = config.mongo.db
   address = "#{config.mongo.host}:#{config.mongo.port}"
@@ -77,12 +83,14 @@ module.exports.startServer = ->
 
 
   #- passport middlware
-#  authentication = require('passport')
-#  app.use(authentication.initialize())
-#  app.use(authentication.session())
+  authentication = require('passport')
+  app.use(authentication.initialize())
+  app.use(authentication.session())
 
 
-  # TODO: setup api routes
+  #- setup routes
+  routes = require './routes'
+  routes(app)
 
   
   #- Serve main.html
@@ -100,10 +108,12 @@ module.exports.startServer = ->
     res.header 'Expires', 0
     res.send 200, mainHTML
   
-  
   http = require 'http'
-  http.createServer(app).listen(app.get('port'))
-  winston.info('Express server listening on port ' + app.get('port'))
-  app
-
-  
+  @server = http.createServer(app).listen app.get('port'), ->
+    winston.info('Express server listening on port ' + app.get('port'))
+    readyCallback?()
+    
+    
+module.exports.close = ->
+  @server?.close()
+  @server = null

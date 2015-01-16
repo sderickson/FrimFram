@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# full script path
+_scriptDir="$(cd "$(dirname "$0")" && pwd -P)"
+
+cd $_scriptDir
+cd ../
+
+node_modules/.bin/nodemon ./test/run-server-tests.js --ext ".coffee|.js" --watch server --watch server_config.js --watch server_setup.coffee --watch app/schemas --watch test
