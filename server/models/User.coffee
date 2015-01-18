@@ -30,6 +30,6 @@ UserSchema.statics.hashPassword = (password) ->
   
 
 User = mongoose.model('User', UserSchema)
-User.schema = tv4.getSchema('http://my.site/schemas#user')
+User.jsonSchema = tv4.getSchema('http://my.site/schemas#user')
 
 module.exports = User

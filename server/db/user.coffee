@@ -66,7 +66,7 @@ module.exports.post = (req, res) ->
   input = _.pick(input, editableProperties...)
   clone = _.merge({}, user.toObject())
   merged = _.merge(clone, input)
-  result = tv4.validateMultiple(merged, User.schema)
+  result = tv4.validateMultiple(merged, User.jsonSchema)
   if not result.valid
     return respond.unprocessableEntity(res, { validationErrors: result.errors })
 
