@@ -8,8 +8,7 @@ module.exports.start = (readyCallback) ->
   
   #- setup globals
   GLOBAL._ = require 'lodash'
-  _.str = require 'underscore.string'
-  _.mixin _.str.exports()
+  _.string = require 'underscore.string'
   global.tv4 = require 'tv4' # required for TreemaUtils to work
   tv4.addSchema rootSchema
   

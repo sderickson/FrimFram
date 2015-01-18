@@ -6,3 +6,4 @@ module.exports = (app) ->
   app.post('/db/user', user.post)
   app.put('/db/user/:handle', user.put)
   app.delete('/db/user/:handle', user.delete)
+  # TODO: add patch

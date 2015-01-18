@@ -1,4 +1,11 @@
 
+# TODO: list/enforce the properties details objects may have
+#   - error: string version of the type of error
+#   - code: the numeral code of the http response
+#   - validationErrors: tv4 array of validation error objects
+#   - message: string detailing what exactly went wrong
+#   - property: string of the property that is erroneous, for the client to highlight, possibly
+
 #- 200 responses
 # http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_Success
 
