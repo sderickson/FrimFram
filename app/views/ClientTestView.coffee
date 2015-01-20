@@ -1,12 +1,12 @@
 RootView = require 'views/kinds/RootView'
-template = require 'templates/test-view'
+template = require 'templates/client-test-view'
 requireUtils = require 'lib/requireUtils'
 
 TEST_REQUIRE_PREFIX = 'test/app/'
-TEST_URL_PREFIX = '/test/'
+TEST_URL_PREFIX = '/test/client/'
 
-module.exports = TestView = class TestView extends RootView
-  id: 'test-view'
+module.exports = ClientTestView = class ClientTestView extends RootView
+  id: 'client-test-view'
   template: template
   reloadOnClose: true
   testingLibs: ['jasmine', 'jasmine-html', 'boot', 'mock-ajax', 'test-app']
@@ -32,7 +32,7 @@ module.exports = TestView = class TestView extends RootView
   scriptsLoaded: ->
     @initSpecFiles()
     @render()
-    TestView.runTests(@specFiles)
+    ClientTestView.runTests(@specFiles)
     window.runJasmine()
 
     
@@ -52,7 +52,7 @@ module.exports = TestView = class TestView extends RootView
   #- Running tests
 
   initSpecFiles: ->
-    @specFiles = TestView.getAllSpecFiles()
+    @specFiles = ClientTestView.getAllSpecFiles()
     if @subPath
       prefix = TEST_REQUIRE_PREFIX + @subPath
       @specFiles = (f for f in @specFiles when _(f).startsWith(prefix).value())

@@ -6,10 +6,15 @@ module.exports = class CocoRouter extends Backbone.Router
   #- Routing map
   
   routes:
-    '': go('HomeView')  # This will go somewhere deprecated when FrontView is done.
+    '': go('HomeView')
+    
     'db/*path': 'routeToServer'
+    
     'file/*path': 'routeToServer'
-    'test(/*subpath)': go('TestView')
+    
+    'test/client(/*subpath)': go('ClientTestView')
+    'test/server(/*subpath)': go('ServerTestView')
+    
     '*name': 'showNotFoundView'
     
     

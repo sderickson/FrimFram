@@ -3,5 +3,5 @@
 
 require('initialize');
 console.debug = function() {}; // Karma conf doesn't seem to work? Debug messages are still emitted when they shouldn't be.
-TestView = require('views/TestView');
-TestView.runTests();
+ClientTestView = require('views/ClientTestView');
+ClientTestView.runTests();

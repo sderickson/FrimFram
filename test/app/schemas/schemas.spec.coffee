@@ -12,7 +12,7 @@ describe '$rel linking between schemas', ->
   it 'works through links starting with "schemas#...", such as "schemas#objectId" in the User model schema', ->
     userSchema = require 'schemas/models/user.schema'
     
-    goodUser = { _id: '012345678901234567890123' }
+    goodUser = { _id: '012345678901234567890123', name: 'foo', email: 'bar@foo.com' }
     expect(tv4.validate(goodUser, userSchema)).toBe(true)
       
     badUser = { _id: 'Not formatted like an ID at all!' }
