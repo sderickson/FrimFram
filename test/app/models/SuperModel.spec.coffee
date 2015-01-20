@@ -57,7 +57,8 @@ describe 'SuperModel', ->
       expect(s.Bland.find({id:1})).toBeTruthy()
     
     it 'stores models that arrive in a registered collection once it loads', ->
-      c = new BaseCollection([], {url: '/db/bland', model: BlandModel})
+      Collection = BaseCollection.extend({url: '/db/bland', model: BlandModel})
+      c = new Collection()
       c.fetch()
       s.registerCollection(c)
       request = jasmine.Ajax.requests.mostRecent()
@@ -65,7 +66,8 @@ describe 'SuperModel', ->
       expect(s.Bland.find({id:1})).toBeTruthy()
       
     it 'stores models in collections that are already loaded', ->
-      c = new BaseCollection([{"_id":1}], {url: '/db/bland', model: BlandModel, loaded: true})
+      Collection = BaseCollection.extend({url: '/db/bland', model: BlandModel})
+      c = new BaseCollection([{"_id":1}], loaded: true})
       s.registerCollection(c)
       expect(s.Bland.find({id:1})).toBeTruthy()
       
