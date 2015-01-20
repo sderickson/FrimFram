@@ -24,4 +24,11 @@ describe 'POST /db/user', ->
         expect(user).toBeDefined()
         done()
       
+describe 'GET /db/user', ->
+  it 'is just a stab at seeing what happens to the reports when I do this', ->
   
+  describe 'nested tests', ->
+    it 'who knows?'
+  
+  it 'probably does something when I fail', ->
+    expect(true).toBe(false)
