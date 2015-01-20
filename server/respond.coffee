@@ -1,3 +1,4 @@
+# TODO: maybe move this into node_modules? I've heard of common modules going in there.
 
 # TODO: list/enforce the properties details objects may have
 #   - error: string version of the type of error
@@ -78,8 +79,6 @@ module.exports.gatewayTimeout = (res, details) ->
 # All responses should return a JSON object with at least a code value.
 send = (res, code, details) ->
   # TODO: JSON stringify any error objects passed in through err
-  # TODO: use a JSON schema to define the details object
-  # TODO: refactor to "responses" rather than "errors" and include 200s, 300s.
   code ?= 500
   if code >= 400
     details.code = code or 500

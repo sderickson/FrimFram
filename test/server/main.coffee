@@ -11,15 +11,21 @@ module.exports.onReady = (done) ->
     @callbacks.push done
   
   if not @serverStarted
-    @serverStarted = true
-    require('../../server/projRequire')
-    config = projRequire 'server/server-config'
-    config.runningTests = true
-    config.port = 3001
+    try
+      @startServer()
+    catch e
+      console.error 'COULD NOT START SERVER FOR TESTS', e, e.stack
+      throw e
 
-    spawn = require('child_process').spawn
-    server = projRequire('server/server')
-    server.start =>
-      @serverReady = true
-      for callback in @callbacks
-        callback()
+module.exports.startServer = ->
+  @serverStarted = true
+  require('../../server/projRequire')
+  config = projRequire 'server/server-config'
+  config.runningTests = true
+  config.port = 3001
+  
+  spawn = require('child_process').spawn
+  server = projRequire('server/server')
+  server.start =>
+    @serverReady = true
+    callback() for callback in @callbacks

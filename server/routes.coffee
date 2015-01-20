@@ -8,6 +8,8 @@ module.exports = (app) ->
   app.delete('/db/user/:handle', user.delete)
   # TODO: add patch
 
-  test = require './test'
+  test = require './server-test'
+
+  app.get('/server-test/list', test.listServerTests)
+  app.post('/server-test/run', test.runServerTests)
   
-  app.get('/test', test.get)
