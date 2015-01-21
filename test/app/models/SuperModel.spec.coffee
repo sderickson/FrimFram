@@ -67,9 +67,10 @@ describe 'SuperModel', ->
       
     it 'stores models in collections that are already loaded', ->
       Collection = BaseCollection.extend({url: '/db/bland', model: BlandModel})
-      c = new BaseCollection([{"_id":1}], {loaded: true})
+      c = new BaseCollection([new BlandModel({_id:'1'})], {loaded: true})
+      b = new BlandModel({_id:'1'})
       s.registerCollection(c)
-      expect(s.Bland.find({id:1})).toBeTruthy()
+      expect(s.Bland.find({id:'1'})).toBeTruthy()
       
   describe 'model conflicts', ->
     it 'merges properties from the latter model into the former model', ->

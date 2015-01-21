@@ -51,9 +51,6 @@ module.exports = class SuperModel extends BaseClass
     @[model.constructor.className] ?= new Backbone.Collection([], {model: model.constructor})
 
   registerCollection: (collection, options) ->
-    unless collection.fetching or collection.loaded
-      throw new Error('Model should be fetching or loaded.')
-
     options ?= {}
     _.defaults options, @defaultRegistrationOptions
 
