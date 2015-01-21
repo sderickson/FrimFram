@@ -104,7 +104,7 @@ module.exports = class SuperModel extends BaseClass
   onStateChanged: =>
     return if @destroyed
     progress = @progress()
-    @trigger 'change:progress', { progress: progress.value }
+    @trigger 'progress-changed', { progress: progress.value }
     if progress.value is 1 and progress.denom
       @trigger 'finished-loading', {}
     if progress.value is 1

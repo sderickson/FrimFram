@@ -16,7 +16,7 @@ module.exports.parseImmediateChildren = (allChildren, subPath, baseRequirePath='
   files = {}
 
   requirePrefix = baseRequirePath + subPath
-  if requirePrefix[requirePrefix.length-1] isnt '/'
+  if requirePrefix and requirePrefix[requirePrefix.length-1] isnt '/'
     requirePrefix += '/'
 
   for f in allChildren

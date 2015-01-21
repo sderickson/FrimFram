@@ -67,7 +67,7 @@ describe 'SuperModel', ->
       
     it 'stores models in collections that are already loaded', ->
       Collection = BaseCollection.extend({url: '/db/bland', model: BlandModel})
-      c = new BaseCollection([{"_id":1}], loaded: true})
+      c = new BaseCollection([{"_id":1}], {loaded: true})
       s.registerCollection(c)
       expect(s.Bland.find({id:1})).toBeTruthy()
       

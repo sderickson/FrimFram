@@ -46,8 +46,9 @@ module.exports = class BaseView extends Backbone.View
     @updateProgressBar = _.debounce @updateProgressBar, 100
     # Backbone.Mediator handles subscription setup/teardown automatically
 
-    @listenTo(@supermodel, 'loaded-all', @onLoaded)
-    @listenTo(@supermodel, 'update-progress', @updateProgress)
+    @listenTo(@supermodel, 'finished-loading', @onLoaded)
+    @listenTo(@supermodel, 'progress-changed', @updateProgress)
+    # TODO: Fix failed handler
     @listenTo(@supermodel, 'failed', @onResourceLoadFailed)
 
     super options
