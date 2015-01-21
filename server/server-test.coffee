@@ -59,14 +59,20 @@ module.exports.runServerTests = (req, res) ->
   path = 'test/server/' + givenPath
   jasmineNode = spawn('node_modules/jasmine-node/bin/jasmine-node', [path, '--coffee', '--captureExceptions', '--forceexit', '--junitreport'])
 
+  consoleError = []
+  jasmineNode.stderr.on('data', (data) -> consoleError.push(String(data)))
+
   # TODO: Try to put this into an async.waterfall or something like it. Avoid callback hell!
+  response = { rootDir: rootDir }
   jasmineNode.on 'exit', (exitCode) ->
+    if consoleError = consoleError.join('')
+      response.consoleError = consoleError
+      return respond.ok(res, response)
     files = fs.readdirSync(reportDir)
     files = (reportDir + f for f in files)
     async.map files, fs.readFile, (err, results) ->
       return respond.internalServerError(res, {message: 'Error reading reports.', error: err}) if err
-      async.map results, xml2js.parseString, (err, results) ->
+      async.map results, xml2js.parseString, (err, reports) ->
         return respond.internalServerError(res, {message: 'Error parsing reports.', error: err}) if err
-        suites = (obj.testsuites.testsuite for obj in results)
-        suites = _.flatten(suites)
-        respond.ok(res, suites)
+        response.reports = reports
+        respond.ok(res, response)

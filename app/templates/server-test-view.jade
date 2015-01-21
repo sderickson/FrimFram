@@ -37,13 +37,32 @@ block content
               strong (#{child.size})
 
 
-  .panel.panel-default#testing-area
-    .panel-heading
-      .panel-title Test Results
+  #testing-area
+    
+    for stack in stacks
+      .panel.panel-danger
+        .panel-heading
+          .panel-title= stack.summary
+        .panel-body
+          button.btn.btn-sm.btn-primary.show-stack-button Show Raw Stack
+          div!= stack.short
+          pre.hide!= stack.raw
 
-    .panel-body
-      #reports= JSON.stringify(reports)
-
+    .panel.panel-default
+      .panel-heading
+        .panel-title Suites and Tests
+      ul.list-group
+        for suite in suites
+          li.list-group-item.suite
+            for parent in suite.parents
+              div.spacer.spr
+            strong #{suite.name} (#{suite.time})
+      
+          for test in suite.tests
+            li.list-group-item.test(class=test.failures ? "list-group-item-warning" : "")
+              for parent in suite.parents
+                div.spacer.spr
+              | - #{test.name} (#{test.time))
 
   .clearfix
 

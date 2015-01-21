@@ -1,6 +1,6 @@
-main = require '../main'
+main = require '../../main'
 request = require 'request'
-utils = require '../utils'
+utils = require '../../utils'
 url = utils.makeURL('/db/user')
 
 describe 'POST /db/user', ->
@@ -23,12 +23,3 @@ describe 'POST /db/user', ->
         expect(err).toBeNull()
         expect(user).toBeDefined()
         done()
-      
-describe 'GET /db/user', ->
-  it 'is just a stab at seeing what happens to the reports when I do this', ->
-  
-  describe 'nested tests', ->
-    it 'who knows?'
-  
-  it 'probably does something when I fail', ->
-    expect(true).toBe(false)
