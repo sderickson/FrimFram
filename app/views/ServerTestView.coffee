@@ -8,7 +8,7 @@ TEST_URL_PREFIX = '/test/server/'
 # TODO: deconstruct these class declarations so WebStorm can find them.
 
 module.exports = ServerTestView = class ServerTestView extends RootView
-  id: 'client-test-view'
+  id: 'server-test-view'
   template: template
 
   constructor: (options, @subPath='') ->
