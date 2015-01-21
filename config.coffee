@@ -5,6 +5,7 @@ startsWith = (string, substring) ->
 exports.config =
   paths:
     'public': 'public'
+    'watched': ['app', 'test/app', 'vendor']
     
   conventions:
     ignored: (path) -> startsWith(sysPath.basename(path), '_')
@@ -54,7 +55,7 @@ exports.config =
       options:
         line_endings:
           value: 'unix'
-          level: 'error'
+          level: 'ignore'
         max_line_length:
           level: 'ignore'
         no_unnecessary_fat_arrows:
@@ -69,6 +70,7 @@ exports.config =
       allowCache: true
 
   onCompile: (files) ->
+    # TODO: update to the new setting
     exec = require('child_process').exec
     regexFrom = '\\/\\/# sourceMappingURL=([^\\/].*)\\.map'
     regexTo = '\\/\\/# sourceMappingURL=\\/javascripts\\/$1\\.map'
