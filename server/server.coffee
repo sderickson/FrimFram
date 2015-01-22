@@ -1,17 +1,20 @@
+require('./globals').setup()
+
 winston = require 'winston'
-require './rootRequire'
-rootSchema = rootRequire 'app/schemas/root.schema'
 mongoose = require 'mongoose'
+Grid = require 'gridfs-stream'
+express = require 'express'
+compressible = require 'compressible'
+path = require 'path'
+useragent = require 'express-useragent'
+fs = require 'graceful-fs'
+http = require 'http'
+
+config = require './server-config'
+routes = require './routes'
 
 module.exports.start = (readyCallback) ->
   return if @server
-  
-  #- setup globals
-  GLOBAL._ = require 'lodash'
-  _.string = require 'underscore.string'
-  global.tv4 = require 'tv4' # required for TreemaUtils to work
-  tv4.addSchema rootSchema
-  
   
   #- setup logging
   winston.remove(winston.transports.Console)
@@ -22,12 +25,6 @@ module.exports.start = (readyCallback) ->
   
   
   #- connect to db
-  Grid = require 'gridfs-stream'
-  config = rootRequire 'server/server-config'
-  if config.runningTests
-    mockgoose = require('mockgoose')
-    mockgoose(mongoose)
-
   dbName = config.mongo.db
   address = "#{config.mongo.host}:#{config.mongo.port}"
   if config.mongo.username and config.mongo.password
@@ -41,14 +38,12 @@ module.exports.start = (readyCallback) ->
   
   
   #- express creation, config
-  express = require 'express'
   app = express()
   app.set 'port', config.port
   app.set 'env', if config.isProduction then 'production' else 'development'
 
   
   #- express middleware
-  compressible = require 'compressible'
   if config.isProduction
 
     productionLogging = (tokens, req, res) ->
@@ -69,8 +64,6 @@ module.exports.start = (readyCallback) ->
   else
     app.use express.logger('dev')
 
-  path = require 'path'
-  useragent = require 'express-useragent'
   app.use(express.static(path.join(__dirname, '../public')))
   app.use(useragent.express())
 
@@ -88,12 +81,10 @@ module.exports.start = (readyCallback) ->
 
 
   #- setup routes
-  routes = require './routes'
   routes(app)
 
   
   #- Serve main.html
-  fs = require 'graceful-fs'
   try
     mainHTML = fs.readFileSync(path.join(__dirname, '../public', 'main.html'), 'utf8')
   catch e
@@ -106,8 +97,7 @@ module.exports.start = (readyCallback) ->
     res.header 'Pragma', 'no-cache'
     res.header 'Expires', 0
     res.send 200, mainHTML
-  
-  http = require 'http'
+
   @server = http.createServer(app).listen app.get('port'), ->
     winston.info('Express server listening on port ' + app.get('port'))
     readyCallback?()

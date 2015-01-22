@@ -1,5 +1,15 @@
-module.exports.callbacks = []
+# This file sets everything up for tests. It needs to be imported before anything
+# else (to set up globals) and no test should run until after onReady has called back.
 
+require('../../server/globals').setup()
+
+#- Setup mockgoose. If any Model is imported before this happens, bad things happen.
+mongoose = require 'mongoose'
+mockgoose = require 'mockgoose'
+mockgoose(mongoose)
+
+
+module.exports.callbacks = []
 module.exports.serverStarted = false
 module.exports.serverReady = false
 
@@ -19,7 +29,6 @@ module.exports.onReady = (done) ->
 
 module.exports.startServer = ->
   @serverStarted = true
-  require('../../server/rootRequire')
   config = rootRequire 'server/server-config'
   config.runningTests = true
   config.port = 3001
