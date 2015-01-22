@@ -44,7 +44,8 @@
     "express-useragent": "~0.0.9",
     "gridfs-stream": "0.4.x",
     "stream-buffers": "0.2.x",
-    "xml2js": "2.4.5"
+    "xml2js": "2.4.5",
+    "gaze": "0.6.4"
   },
   "devDependencies": {
     "jade": "0.33.x",

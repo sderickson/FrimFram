@@ -4,6 +4,7 @@ fs = require 'fs'
 spawn = require('child_process').spawn
 xml2js = require 'xml2js'
 async = require 'async'
+gaze = require 'gaze'
 
 #- Server test finding
 
@@ -41,6 +42,8 @@ module.exports.listServerTests = (req, res) ->
 module.exports.runServerTests = (req, res) ->
   # Since I'm using this endpoint just as a fancy way to run and view test results,
   # I'm not going to bother with using async fs calls.
+
+  setupCustomWatcher()
   
   if config.isProduction
     return respond.forbidden(res, {message: 'Only allowed on local dev machines.'})
@@ -76,3 +79,13 @@ module.exports.runServerTests = (req, res) ->
         return respond.internalServerError(res, {message: 'Error parsing reports.', error: err}) if err
         response.reports = reports
         respond.ok(res, response)
+
+        
+setupCustomWatcher = _.once ->
+  process.on 'SIGUSR2', ->
+    # https://github.com/remy/nodemon#controlling-shutdown-of-your-script
+    console.warn 'Nodemon no longer has power here. When running server tests, the server will not auto-reload.'
+
+  gaze ['server/**', 'test/server/**', 'app/schemas/**'], ->
+    @on 'all', (event, filepath) ->
+      module.exports.lastChange = new Date().getTime()
