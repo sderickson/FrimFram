@@ -14,18 +14,18 @@ module.exports.onReady = (done) ->
     try
       @startServer()
     catch e
-      console.error 'COULD NOT START SERVER FOR TESTS', e, e.stack
+      console.error "Failed to start test server.", e.stack
       throw e
 
 module.exports.startServer = ->
   @serverStarted = true
-  require('../../server/projRequire')
-  config = projRequire 'server/server-config'
+  require('../../server/rootRequire')
+  config = rootRequire 'server/server-config'
   config.runningTests = true
   config.port = 3001
   
   spawn = require('child_process').spawn
-  server = projRequire('server/server')
+  server = rootRequire('server/server')
   server.start =>
     @serverReady = true
     callback() for callback in @callbacks

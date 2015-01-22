@@ -1,5 +1,5 @@
 crypto = require 'crypto'
-config = projRequire 'server/server-config'
+config = rootRequire 'server/server-config'
 mongoose = require 'mongoose'
 UserSchema = new mongoose.Schema({}, {strict: false, minimize: false})
 

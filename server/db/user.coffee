@@ -1,6 +1,6 @@
-User = projRequire('server/models/User')
-respond = projRequire('server/respond')
-utils = projRequire('server/utils')
+User = rootRequire('server/models/User')
+respond = rootRequire('server/respond')
+utils = rootRequire('server/utils')
 
 editableProperties = ['email', 'name']
 

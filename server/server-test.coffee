@@ -1,5 +1,5 @@
-config = projRequire 'server/server-config'
-respond = projRequire 'server/respond'
+config = rootRequire 'server/server-config'
+respond = rootRequire 'server/respond'
 fs = require 'fs'
 spawn = require('child_process').spawn
 xml2js = require 'xml2js'

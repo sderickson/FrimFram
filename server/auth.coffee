@@ -1,8 +1,8 @@
 authentication = require 'passport'
 LocalStrategy = require('passport-local').Strategy
-User = projRequire 'server/models/User'
+User = rootRequire 'server/models/User'
 config = require '../../server_config'
-respond = projRequire 'server/respond'
+respond = rootRequire 'server/respond'
 
 module.exports.setup = (app) ->
   authentication.serializeUser (user, done) ->

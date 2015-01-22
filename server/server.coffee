@@ -1,6 +1,6 @@
 winston = require 'winston'
-require './projRequire'
-rootSchema = projRequire 'app/schemas/root.schema'
+require './rootRequire'
+rootSchema = rootRequire 'app/schemas/root.schema'
 mongoose = require 'mongoose'
 
 module.exports.start = (readyCallback) ->
@@ -23,7 +23,7 @@ module.exports.start = (readyCallback) ->
   
   #- connect to db
   Grid = require 'gridfs-stream'
-  config = projRequire 'server/server-config'
+  config = rootRequire 'server/server-config'
   if config.runningTests
     mockgoose = require('mockgoose')
     mockgoose(mongoose)

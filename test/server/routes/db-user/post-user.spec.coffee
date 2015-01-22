@@ -13,9 +13,9 @@ describe 'POST /db/user', ->
       done()
       
   it 'returns 201 if enough data is provided', (done) ->
-    # TODO: restructure main to have it set up projRequire and the server globals first thing
-    # so this projRequire can go at the top of the file. 
-    User = projRequire 'server/models/User'
+    # TODO: restructure main to have it set up rootRequire and the server globals first thing
+    # so this rootRequire can go at the top of the file. 
+    User = rootRequire 'server/models/User'
     json = { email: 'something@gmail.com', name: 'Mr FooBar', password: 'password' }
     request.post { uri: url, json: json}, (err, res, body) ->
       expect(res.statusCode).toBe(201)
