@@ -5,4 +5,4 @@ module.exports =
     if @isMongoDBID(handle)
       Model.findById(handle).exec(next)
     else
-      Model.findOne({slug: idOrSlug}).exec(next)
+      Model.findOne({slug: handle}).exec(next)

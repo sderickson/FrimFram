@@ -98,8 +98,9 @@ module.exports.setup = (req, res) ->
     @on 'all', (event, filepath) ->
       module.exports.lastChange = new Date().getTime()
       wss.clients.forEach (client) -> client.send('1')
+    # TODO: Recognize when a file is changed, created or deleted, refresh the list, and tell the client to update.
+    # TODO: It broke down when I renamed a folder. Make it not do that.
 
-  @wss = wss
   @inTestMode = true
 
 
