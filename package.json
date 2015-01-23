@@ -44,8 +44,7 @@
     "express-useragent": "~0.0.9",
     "gridfs-stream": "0.4.x",
     "stream-buffers": "0.2.x",
-    "xml2js": "2.4.5",
-    "gaze": "0.6.4"
+    "xml2js": "2.4.5"
   },
   "devDependencies": {
     "jade": "0.33.x",
@@ -75,7 +74,9 @@
     "karma": "~0.12",
     "karma-coverage": "~0.1.4",
     "compressible": "~1.0.1",
-    "jasmine-spec-reporter": "~0.3.0"
+    "jasmine-spec-reporter": "~0.3.0",
+    "gaze": "0.6.4",
+    "ws": "*"
   },
   "license": "MIT for the code, and CC-BY for the art and music",
   "private": true,

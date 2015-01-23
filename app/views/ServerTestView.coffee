@@ -10,32 +10,86 @@ TEST_URL_PREFIX = '/test/server/'
 module.exports = ServerTestView = class ServerTestView extends RootView
   id: 'server-test-view'
   template: template
+  status: 'Off'
   
   events:
     'click .show-stack-button': 'onClickShowStackButton'
+    'click #toggle': 'onToggleTesting'
 
   constructor: (options, @subPath='') ->
     super(options)
     @specFiles = []
     @subPath = @subPath[1..] if @subPath[0] is '/'
     
+    jqxhr = $.get('/server-test/list')
+    jqxhr.done(_.bind(@onTestListLoaded, @))
+    @supermodel.registerJQXHR(jqxhr)
+    
+    jqxhr = $.get('/server-test/running')
+    jqxhr.done(_.bind(@onServerRunningLoaded, @))
+    @supermodel.registerJQXHR(jqxhr)
+    
+    @runTests = _.bind(_.debounce(@runTests, 200), @)
+
+  onServerRunningLoaded: (testing) ->
+    @setTesting(testing)
+    if testing
+      @listenForChanges()
+    else
+      @setStatus('Off')
+    
+  listenForChanges: ->
+    @setStatus('Listening In')
+    self = @
+    connection = new WebSocket('ws://localhost:3002')
+    connection.onopen = -> self.runTests()
+    connection.onerror = (error) -> console.error 'web socket errored', error
+    connection.onmessage = (message) -> self.runTests()
+    connection.onclose = -> self.setupServerTesting() if self.testing
+
+  runTests: ->
+    @setStatus('Running Tests')
     path = @subPath
     if path and not (_.string.endsWith(path, '/') or _.string.endsWith(path, 'coffee'))
       path = path + '/'
-
-    # TODO: Have the tests run when you toggle a button, not immediately.
     jqxhr = $.post('/server-test/run', {path: path})
     jqxhr.done(_.bind(@onReportsLoaded, @))
-    @supermodel.registerJQXHR(jqxhr)
+    
+  setupServerTesting: =>
+    @setTesting(true)
+    @setStatus('Initializing Testing System')
+    jqxhr = $.post('/server-test/setup')
+    
+    jqxhr.done =>
+      @listenForChanges()
+      
+    jqxhr.fail =>
+      @setStatus('Server Down, Polling...')
+      setTimeout(@setupServerTesting, 3000)
+    
+  teardownServerTesting: ->
+    @setTesting(false)
+    @setStatus('Restarting Server')
+    jqxhr = $.post('/server-test/teardown')
+    jqxhr.done =>
+      @setStatus('Off')
+      
+  setStatus: (@status) ->
+    @$el.find('#status').text(@status)
 
-    jqxhr = $.get('/server-test/list', {path: @subPath})
-    jqxhr.done(_.bind(@onTestListLoaded, @))
-    @supermodel.registerJQXHR(jqxhr)
-
+  onToggleTesting: ->
+    if @testing then @teardownServerTesting() else @setupServerTesting()
+    
+  setTesting: (@testing) ->
+    toggle = @$el.find('#toggle')
+    toggle.removeClass('btn-danger btn-success')
+    toggle.addClass(if @testing then 'btn-success' else 'btn-danger')
+    toggle.text(if @testing then 'Turn Off Testing' else 'Turn On Testing')
     
   #- Report digestion. Tests were parsed from XML with odd names. Make the reports sensical.
     
   onReportsLoaded: (result) ->
+    @setStatus('Standing By')
     @stacks = []
     @rootDir = result.rootDir
     
@@ -46,7 +100,9 @@ module.exports = ServerTestView = class ServerTestView extends RootView
       suites = (obj.testsuites.testsuite for obj in result.reports)
       suites = _.flatten(suites)
       @suites = (@digestSuite(suite) for suite in suites)
-    
+      
+    @render()
+
   digestStack: (stack) ->
     short = []
     lastLineWasRemoved = false
@@ -139,4 +195,8 @@ module.exports = ServerTestView = class ServerTestView extends RootView
     c.hasSpecFocus = document.location.href.indexOf('?') > -1
     c.suites = @suites or []
     c.stacks = @stacks or []
+    c.status = @status
     c
+    
+  afterRender: ->
+    @setTesting(@testing)

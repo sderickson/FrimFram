@@ -5,6 +5,7 @@ spawn = require('child_process').spawn
 xml2js = require 'xml2js'
 async = require 'async'
 gaze = require 'gaze'
+WebSocketServer = require('ws').Server
 
 #- Server test finding
 
@@ -43,8 +44,6 @@ module.exports.runServerTests = (req, res) ->
   # Since I'm using this endpoint just as a fancy way to run and view test results,
   # I'm not going to bother with using async fs calls.
 
-  setupCustomWatcher()
-  
   if config.isProduction
     return respond.forbidden(res, {message: 'Only allowed on local dev machines.'})
 
@@ -79,13 +78,42 @@ module.exports.runServerTests = (req, res) ->
         return respond.internalServerError(res, {message: 'Error parsing reports.', error: err}) if err
         response.reports = reports
         respond.ok(res, response)
-
         
-setupCustomWatcher = _.once ->
-  process.on 'SIGUSR2', ->
-    # https://github.com/remy/nodemon#controlling-shutdown-of-your-script
-    console.warn 'Nodemon no longer has power here. When running server tests, the server will not auto-reload.'
 
+#- POST /server-test/setup
+
+module.exports.setup = (req, res) ->
+  return respond.noContent(res) if @inTestMode
+
+  # disable nodemon, hackily
+  process.on 'SIGUSR2', _.noop
+  console.warn 'Nodemon no longer has power here. The server will not auto-reload until forced.'
+
+  # setup a socket server for the server client to dial into
+  wss = new WebSocketServer { port: 3002 }, ->
+    return respond.noContent(res)
+
+  # watch all the files ourselves. When there are changes, notify clients via websocket
   gaze ['server/**', 'test/server/**', 'app/schemas/**'], ->
     @on 'all', (event, filepath) ->
       module.exports.lastChange = new Date().getTime()
+      wss.clients.forEach (client) -> client.send('1')
+
+  @wss = wss
+  @inTestMode = true
+
+
+#- GET /server-test/running
+
+module.exports.running = (req, res) ->
+  return respond.ok(res, !!@inTestMode)
+  
+  
+#- POST /server-test/teardown
+
+module.exports.teardown = (req, res) ->
+  respond.noContent(res)
+  if @inTestMode
+    # let nodemon continue the kililng process, hackily
+    process.removeListener 'SIGUSR2', _.noop
+    process.kill(process.pid, 'SIGUSR2')
