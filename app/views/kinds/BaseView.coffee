@@ -62,7 +62,7 @@ module.exports = class BaseView extends Backbone.View
     @subviews = {}
     
     # render to element
-    html = if _.isString(@template) then @template else @template(@getContext())
+    html = @getTemplateResult()
     @$el.html html
 
     # loading screen
@@ -71,13 +71,27 @@ module.exports = class BaseView extends Backbone.View
     @afterRender()
     @
     
+  renderSelectors: (selectors...) ->
+    newTemplate = $(@getTemplateResult())
+
+    for selector in selectors
+      @$el.find(selector).replaceWith(newTemplate.find(selector))
+
+    @delegateEvents()
+
+  getTemplateResult: ->
+    if _.isString(@template)
+      return @template
+    else
+      return @template(@getContext())
+
   afterRender: ->
 
   getContext: (pick) ->
     context = {}
     context.pathname = document.location.pathname  # ex. '/play/level'
     context.moment = moment
-    context = _.extend @, _.pick(pick) if pick
+    context = _.extend context, _.pick(@, pick) if pick
     context
 
   afterInsert: ->
