@@ -73,10 +73,11 @@ module.exports = class BaseView extends Backbone.View
     
   afterRender: ->
 
-  getContext: ->
+  getContext: (pick) ->
     context = {}
     context.pathname = document.location.pathname  # ex. '/play/level'
     context.moment = moment
+    context = _.extend @, _.pick(pick) if pick
     context
 
   afterInsert: ->
@@ -201,7 +202,7 @@ module.exports = class BaseView extends Backbone.View
 
   listenToShortcuts: (recurse) ->
     for shortcut, func of @shortcuts
-      func = utils.normalizeFunc(func, @)
+      func = BaseClass.normalizeFunc(func, @)
       key(shortcut, @scope, _.bind(func, @))
     if recurse
       for viewID, view of @subviews

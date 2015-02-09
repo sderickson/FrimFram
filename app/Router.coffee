@@ -35,7 +35,7 @@ module.exports = class CocoRouter extends Backbone.Router
         throw error
 
     ViewClass ?= NotFoundView
-    view = new ViewClass({}, args...)
+    view = new ViewClass({params: args})
     @openView(view)
 
   showNotFoundView: ->
