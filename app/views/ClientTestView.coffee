@@ -16,8 +16,9 @@ module.exports = ClientTestView = class ClientTestView extends RootView
   
   #- Initialization
 
-  constructor: (options, @subPath='') ->
+  constructor: (options) ->
     super(options)
+    @subPath = options.params[0] or ''
     @subPath = @subPath[1..] if @subPath[0] is '/'
     @loadTestingLibs()
 

@@ -1,5 +1,4 @@
-
-FrimFram.BaseClass = {
+class BaseClass
   superMerge: (propertyName) ->
     combined = {}
     obj = @
@@ -14,7 +13,7 @@ FrimFram.BaseClass = {
     return if _.isEmpty(shortcuts)
     @scope = _.uniqueId('class-scope-')
     for shortcut, func of shortcuts
-      func = @[func] if not !_.isFunction(func)
+      func = @[func] if not _.isFunction(func)
       continue unless func
       key(shortcut, @scope, _.bind(func, @))
 
@@ -27,6 +26,7 @@ FrimFram.BaseClass = {
     @stopListeningToShortcuts() # clear keymaster shortcuts
     delete @[key] for key of @ # salt the earth
     @destroyed = true
-}
 
-FrimFram.BaseClass = _.extend(FrimFram.BaseClass, Backbone.Events)
+
+_.extend(BaseClass.prototype, Backbone.Events)
+FrimFram.BaseClass = BaseClass
