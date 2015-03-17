@@ -30,7 +30,7 @@ exports.config =
         before: [
           'src/init.js'
           'bower_components/jquery/dist/jquery.js'
-          'bower_components/lodash/dist/lodash.js'
+          'bower_components/lodash/lodash.js'
           'bower_components/backbone/backbone.js'
           'bower_components/bootstrap/dist/bootstrap.js'
           'bower_components/tv4/tv4.js'

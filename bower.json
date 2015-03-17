@@ -14,7 +14,7 @@
   ],
   "dependencies": {
     "jquery": "~2.1.0",
-    "lodash": "~2.4.1",
+    "lodash": "3.5.0",
     "backbone": "1.1.0",
     "moment": "~2.5.0",
     "underscore.string": "~2.3.3",
@@ -25,7 +25,7 @@
   },
   "overrides": {
     "backbone": { "main": "backbone.js" },
-    "lodash": { "main": "dist/lodash.js" },
+    "lodash": { "main": "lodash.js" },
     "marked": { "main": "lib/marked.js" },
     "underscore.string": { "main": "lib/underscore.string.js" },
     "jsondiffpatch": {
