@@ -12,4 +12,4 @@ module.exports = class RootView extends BaseView
 
     $('title').text(title)
 
-  getTitle: -> ''
+  getTitle: _.noop

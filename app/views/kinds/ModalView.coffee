@@ -2,69 +2,21 @@ BaseView = require './BaseView'
 
 module.exports = class ModalView extends BaseView
   className: 'modal fade'
-  closeButton: true
-  closesOnClickOutside: true
-  modalWidthPercent: null
-  plain: false
-  instant: false
-  template: require 'templates/modal/modal_base'
-
-  events:
-    'click a': 'toggleModal'
-    'click button': 'toggleModal'
-    'click li': 'toggleModal'
-
-  shortcuts:
-    'esc': 'hide'
-
-  constructor: (options) ->
-    options ?= {}
-    @className = @className.replace ' fade', '' if options.instant or @instant
-    @closeButton = options.closeButton if options.closeButton?
-    @modalWidthPercent = options.modalWidthPercent if options.modalWidthPercent
-    super options
-
-  getContext: (context={}) ->
-    context = super(context)
-    context.closeButton = @closeButton
-    context.headerContent = @options.headerContent
-    context.bodyContent = @options.bodyContent
-    context
-
-  subscriptions:
-    {}
 
   afterRender: ->
     super()
-    if Backbone.history.fragment is "employers"
-      $(@$el).find(".background-wrapper").each ->
-        $(this).addClass("employer-modal-background-wrapper").removeClass("background-wrapper")
 
-    if @modalWidthPercent
-      @$el.find('.modal-dialog').css width: "#{@modalWidthPercent}%"
-    @$el.on 'hide.bs.modal', =>
-      @onHidden() unless @hidden
-      @hidden = true
-    @$el.find('.background-wrapper').addClass('plain') if @plain
-
-  afterInsert: ->
-    super()
-    # This makes sure if you press enter right after opening the players guide,
-    # it doesn't just reopen the modal.
-    $(document.activeElement).blur()
-
-  showLoading: ($el) ->
-    $el = @$el.find('.modal-body') unless $el
-    super($el)
-
-  hide: ->
-    @trigger 'hide'
-    @$el.removeClass('fade').modal 'hide'
-
-  onHidden: ->
-    @trigger 'hidden'
+    modal = @
+    @$el.on 'show.bs.modal', -> modal.trigger 'show'
+    @$el.on 'shown.bs.modal', -> modal.trigger 'shown'
+    @$el.on 'hide.bs.modal', -> modal.trigger 'hide'
+    @$el.on 'hidden.bs.modal', -> modal.trigger 'hidden'
+    @$el.on 'loaded.bs.modal', -> modal.trigger 'loaded'
+    
+  hide: -> @$el.modal('hide')
+  show: -> @$el.modal('show')
+  toggle: -> @$el.modal('toggle')
 
   destroy: ->
     @hide() unless @hidden
-    @$el.off 'hide.bs.modal'
     super()
