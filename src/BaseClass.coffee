@@ -10,7 +10,6 @@ class BaseClass
 
   listenToShortcuts: ->
     shortcuts = @superMerge('shortcuts')
-    return if _.isEmpty(shortcuts)
     @scope = _.uniqueId('class-scope-')
     for shortcut, func of shortcuts
       func = @[func] if not _.isFunction(func)
@@ -18,7 +17,6 @@ class BaseClass
       key(shortcut, @scope, _.bind(func, @))
 
   stopListeningToShortcuts: ->
-    return unless @scope
     key.deleteScope(@scope)
 
   destroy: ->
@@ -26,6 +24,7 @@ class BaseClass
     @stopListeningToShortcuts() # clear keymaster shortcuts
     delete @[key] for key of @ # salt the earth
     @destroyed = true
+    @destroy = _.noop
 
 
 _.extend(BaseClass.prototype, Backbone.Events)

@@ -40,6 +40,6 @@ describe 'BaseClass', ->
     it 'clears all properties from the object, except for "destroyed"', ->
       o = new FrimFram.BaseClass()
       o.destroy()
-      expect(_.isEqual(_.keys(o), ['destroyed'])).toBe(true)
+      expect(_.isEqual(_.keys(o), ['destroyed', 'destroy'])).toBe(true)
     
  

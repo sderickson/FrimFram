@@ -3,7 +3,7 @@ waitingModal = null
 
 class BaseView extends Backbone.View
   
-  template: -> ''
+  template: ''
   shortcuts: {}
 
 
@@ -16,35 +16,24 @@ class BaseView extends Backbone.View
     super options
     
     
-  #- Rendering functions, callbacks
+  #- Rendering functions
     
   render: ->
     # reset subviews
     view.destroy() for id, view of @subviews
     @subviews = {}
-    
-    # render to element
-    html = @getTemplateResult()
-    @$el.html html
-
+    @$el.html @getTemplateResult()
     @afterRender()
     @
-    
+
   renderSelectors: (selectors...) ->
     newTemplate = $(@getTemplateResult())
-
     for selector in selectors
       @$el.find(selector).replaceWith(newTemplate.find(selector))
-
     @delegateEvents()
 
   getTemplateResult: ->
-    if _.isString(@template)
-      return @template
-    else
-      return @template(@getContext())
-
-  afterRender: ->
+    if _.isString(@template) then @template else @template(@getContext())
 
   getContext: (pick) ->
     context = {}
@@ -52,56 +41,33 @@ class BaseView extends Backbone.View
     context.moment = moment
     context = _.extend context, _.pick(@, pick) if pick
     context
+    
+    
+  #- Callbacks
 
-  afterInsert: ->
+  afterRender: _.noop # Good place to insert subviews
+
+  afterInsert: _.noop # Called when view is inserted into the DOM
 
 
-  #- Modals
-
-  openModalView: (modalView, softly=false) ->
-    return if waitingModal # can only have one waiting at once
-    if visibleModal
-      waitingModal = modalView
-      return if softly
-      return visibleModal.hide() if visibleModal.$el.is(':visible') # close, then this will get called again
-      return @modalClosed(visibleModal) # was closed, but modalClosed was not called somehow
-    modalView.render()
-    $('#modal-wrapper').empty().append modalView.el
-    modalView.afterInsert()
-    visibleModal = modalView
-    modalOptions = {show: true, backdrop: if modalView.closesOnClickOutside then true else 'static'}
-    $('#modal-wrapper .modal').modal(modalOptions).on 'hidden.bs.modal', @modalClosed
-    @getRootView().stopListeningToShortcuts(true)
-
-  modalClosed: =>
-    visibleModal.destroy()
-    visibleModal = null
-    #$('#modal-wrapper .modal').off 'hidden.bs.modal', @modalClosed
-    if waitingModal
-      wm = waitingModal
-      waitingModal = null
-      @openModalView(wm)
-    else
-      @getRootView().listenToShortcuts(true)
-
-      
   #- Shortcuts
 
   listenToShortcuts: (recurse) ->
+    shortcuts = @superMerge('shortcuts')
     for shortcut, func of @shortcuts
       func = @normalizeFunc(func)
       key(shortcut, @scope, _.bind(func, @))
     if recurse
       for viewID, view of @subviews
-        view.listenToShortcuts()
+        view.listenToShortcuts(true)
 
   stopListeningToShortcuts: (recurse) ->
     key.deleteScope(@scope)
     if recurse
       for viewID, view of @subviews
-        view.stopListeningToShortcuts()
+        view.stopListeningToShortcuts(true)
 
-        
+
   #- Subviews
 
   insertSubView: (view, elToReplace=null) ->
@@ -125,7 +91,7 @@ class BaseView extends Backbone.View
     view
 
   makeSubViewKey: (view) ->
-    key = view.id or (view.constructor.name+classCount++)
+    key = view.id or (_.uniqueId(view.constructor.name))
     key = _.underscored(key)  # handy for autocomplete in dev console
     key
 
@@ -134,10 +100,40 @@ class BaseView extends Backbone.View
     delete @subviews[view.parentKey]
     view.destroy()
 
-    
+
+  #- Modals
+
+  openModalView: (modalView, softly=false) ->
+    return if waitingModal # can only have one waiting at once
+    if visibleModal
+      waitingModal = modalView
+      return if softly
+      return visibleModal.hide() if visibleModal.$el.is(':visible') # close, then this will get called again
+      return @modalClosed(visibleModal) # was closed, but modalClosed was not called somehow
+    modalView.render()
+    $('#modal-wrapper').empty().append modalView.el
+    modalView.afterInsert()
+    visibleModal = modalView
+    modalOptions = {show: true, backdrop: if modalView.closesOnClickOutside then true else 'static'}
+    $('#modal-wrapper .modal').modal(modalOptions).on 'hidden.bs.modal', @modalClosed
+    @getRootView().stopListeningToShortcuts(true)
+
+  modalClosed: =>
+    visibleModal.destroy()
+    visibleModal = null
+    if waitingModal
+      wm = waitingModal
+      waitingModal = null
+      @openModalView(wm)
+    else
+      @getRootView().listenToShortcuts(true)
+
+      
   #- Utilities
 
-  getQueryVariable: (param, defaultValue) -> BaseView.getQueryVariable(param, defaultValue)
+  getQueryVariable: (param, defaultValue) ->
+    BaseView.getQueryVariable(param, defaultValue)
+    
   @getQueryVariable: (param, defaultValue) ->
     query = document.location.search.substring 1
     pairs = (pair.split('=') for pair in query.split '&')
@@ -154,16 +150,14 @@ class BaseView extends Backbone.View
   #- Teardown
 
   destroy: ->
-    @stopListening()
-    @off()
+    @remove()
     @stopListeningToShortcuts()
-    @undelegateEvents() # removes both events and subs
-    view.destroy() for id, view of @subviews
+    view.destroy() for view in _.values(@subviews)
     $('#modal-wrapper .modal').off 'hidden.bs.modal', @modalClosed
-    @[key] = undefined for key, value of @
+    delete @[key] for key, value of @
     @destroyed = true
     @destroy = _.noop
 
-_.extend(BaseView.prototype, FrimFram.BaseClass.prototype)
+_.defaults(BaseView.prototype, FrimFram.BaseClass.prototype)
     
 module.exports = BaseView
