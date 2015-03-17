@@ -1,9 +1,8 @@
-BaseClass = require 'BaseClass'
 Router = require 'Router'
 runtimeErrorTemplate = require 'templates/common/runtime-error-alert'
 rootSchema = require 'schemas/root.schema'
 
-module.exports = Application = class Application extends BaseClass
+class Application extends FrimFram.BaseClass
   
   #- Initialization
   
@@ -73,3 +72,5 @@ module.exports = Application = class Application extends BaseClass
   #- Utilities
 
   isProduction: -> window.location.href.indexOf('localhost') is -1
+    
+module.exports = Application

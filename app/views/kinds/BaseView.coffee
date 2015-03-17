@@ -1,5 +1,3 @@
-BaseClass = require 'BaseClass'
-
 visibleModal = null
 waitingModal = null
 
@@ -91,7 +89,7 @@ class BaseView extends Backbone.View
 
   listenToShortcuts: (recurse) ->
     for shortcut, func of @shortcuts
-      func = BaseClass.normalizeFunc(func, @)
+      func = @normalizeFunc(func)
       key(shortcut, @scope, _.bind(func, @))
     if recurse
       for viewID, view of @subviews
