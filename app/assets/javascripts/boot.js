@@ -114,7 +114,7 @@
     getWindowLocation: function() { return window.location; }
   });
 
-  var catchingExceptions = false; // Setting to false always for CodeCombat, because Jasmine-HTML's reporter doesn't do source maps, and Chrome console does.
+  var catchingExceptions = true; // Turning off because, for some reason, errors in app.js don't print a stack or line number at all
   env.catchExceptions(typeof catchingExceptions === "undefined" ? true : catchingExceptions);
 
   /**
