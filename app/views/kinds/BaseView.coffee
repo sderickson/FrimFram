@@ -1,56 +1,20 @@
-SuperModel = require 'models/SuperModel'
 BaseClass = require 'BaseClass'
-
-loadingScreenTemplate = require 'templates/common/loading-screen'
-loadingErrorTemplate = require 'templates/common/loading-screen-error'
 
 visibleModal = null
 waitingModal = null
 
-module.exports = class BaseView extends Backbone.View
-  
-  #- Default properties
+class BaseView extends Backbone.View
   
   template: -> ''
-
-  events:
-    'click .retry-loading-resource': 'onRetryResource'
-    'click .skip-loading-resource': 'onSkipResource'
-
-  subscriptions: {}
   shortcuts: {}
 
-  loadProgress:
-    progress: 0
 
-    
   #- Setup
 
   constructor: (options) ->
-    
-    # TODO: work on supermodel stuff
-    @loadProgress = _.cloneDeep @loadProgress
-    @supermodel ?= new SuperModel()
-    @options = options
-    if options?.supermodel # kind of a hacky way to get each view to store its own progress
-      @supermodel.models = options.supermodel.models
-      @supermodel.collections = options.supermodel.collections
-      @supermodel.shouldSaveBackups = options.supermodel.shouldSaveBackups
-
-    @subscriptions = BaseClass.superMerge(@, 'subscriptions')
-    @events = BaseClass.superMerge(@, 'events')
-    @scope = _.uniqueId('view-scope-')
-    @shortcuts = BaseClass.superMerge(@, 'shortcuts')
+    @events = @superMerge(@, 'events')
     @subviews = {}
     @listenToShortcuts()
-    @updateProgressBar = _.debounce @updateProgressBar, 100
-    # Backbone.Mediator handles subscription setup/teardown automatically
-
-    @listenTo(@supermodel, 'finished-loading', @onLoaded)
-    @listenTo(@supermodel, 'progress-changed', @updateProgress)
-    # TODO: Fix failed handler
-    @listenTo(@supermodel, 'failed', @onResourceLoadFailed)
-
     super options
     
     
@@ -64,9 +28,6 @@ module.exports = class BaseView extends Backbone.View
     # render to element
     html = @getTemplateResult()
     @$el.html html
-
-    # loading screen
-    if @supermodel.finished() then @hideLoading() else @showLoading()
 
     @afterRender()
     @
@@ -96,57 +57,8 @@ module.exports = class BaseView extends Backbone.View
 
   afterInsert: ->
 
-  onLoaded: -> @render()
 
-
-  #- Loading progress
-
-  updateProgress: (progress) ->
-    @loadProgress.progress = progress if progress > @loadProgress.progress
-    @updateProgressBar(progress)
-
-  updateProgressBar: (progress) =>
-    prog = "#{parseInt(progress*100)}%"
-    @$el?.find('.loading-container .progress-bar').css('width', prog)
-
-  onResourceLoadFailed: (e) ->
-    r = e.resource
-    @$el.find('.loading-container .errors').append(loadingErrorTemplate({
-      status: r.jqxhr?.status
-      name: r.name
-      resourceIndex: r.rid,
-      responseText: r.jqxhr?.responseText
-    })).i18n()
-    @$el.find('.progress').hide()
-
-  onRetryResource: (e) ->
-    res = @supermodel.getResource($(e.target).data('resource-index'))
-    # different views may respond to this call, and not all have the resource to reload
-    return unless res and res.isFailed
-    res.load()
-    @$el.find('.progress').show()
-    $(e.target).closest('.loading-error-alert').remove()
-
-  onSkipResource: (e) ->
-    res = @supermodel.getResource($(e.target).data('resource-index'))
-    return unless res and res.isFailed
-    res.markLoaded()
-    @$el.find('.progress').show()
-    $(e.target).closest('.loading-error-alert').remove()
-
-    
   #- Modals
-
-  toggleModal: (e) ->
-    if $(e.currentTarget).prop('target') is '_blank'
-      return true
-    # special handler for opening modals that are dynamically loaded, rather than static in the page. It works (or should work) like Bootstrap's modals, except use coco-modal for the data-toggle value.
-    elem = $(e.target)
-    return unless elem.data('toggle') is 'coco-modal'
-    target = elem.data('target')
-    Modal = require 'views/'+target
-    e.stopPropagation()
-    @openModalView new Modal supermodel: @supermodal
 
   openModalView: (modalView, softly=false) ->
     return if waitingModal # can only have one waiting at once
@@ -161,15 +73,11 @@ module.exports = class BaseView extends Backbone.View
     visibleModal = modalView
     modalOptions = {show: true, backdrop: if modalView.closesOnClickOutside then true else 'static'}
     $('#modal-wrapper .modal').modal(modalOptions).on 'hidden.bs.modal', @modalClosed
-    window.currentModal = modalView
     @getRootView().stopListeningToShortcuts(true)
-    Backbone.Mediator.publish 'modal:opened', {}
 
   modalClosed: =>
-    visibleModal.willDisappear() if visibleModal
     visibleModal.destroy()
     visibleModal = null
-    window.currentModal = null
     #$('#modal-wrapper .modal').off 'hidden.bs.modal', @modalClosed
     if waitingModal
       wm = waitingModal
@@ -177,41 +85,8 @@ module.exports = class BaseView extends Backbone.View
       @openModalView(wm)
     else
       @getRootView().listenToShortcuts(true)
-      Backbone.Mediator.publish 'modal:closed', {}
 
       
-  #- Loading RootViews
-
-  showLoading: ($el=@$el) ->
-    $el.find('>').addClass('hidden')
-    $el.append loadingScreenTemplate()
-    @_lastLoading = $el
-
-  hideLoading: ->
-    return unless @_lastLoading?
-    @_lastLoading.find('.loading-screen').remove()
-    @_lastLoading.find('>').removeClass('hidden')
-    @_lastLoading = null
-
-    
-  #- Loading ModalViews
-
-  enableModalInProgress: (modal) ->
-    el = modal.find('.modal-content')
-    el.find('> div', modal).hide()
-    el.find('.wait', modal).show()
-
-  disableModalInProgress: (modal) ->
-    el = modal.find('.modal-content')
-    el.find('> div', modal).show()
-    el.find('.wait', modal).hide()
-
-    
-  #- Subscriptions
-
-  addNewSubscription: BaseClass.prototype.addNewSubscription
-
-  
   #- Shortcuts
 
   listenToShortcuts: (recurse) ->
@@ -291,3 +166,6 @@ module.exports = class BaseView extends Backbone.View
     @destroyed = true
     @destroy = _.noop
 
+_.extend(BaseView.prototype, FrimFram.BaseClass.prototype)
+    
+module.exports = BaseView

@@ -20,8 +20,7 @@
     "underscore.string": "~2.3.3",
     "jsondiffpatch": "0.1.8",
     "treema": "https://github.com/codecombat/treema.git#master",
-    "bootstrap": "~3.2.0",
-    "validated-backbone-mediator": "~0.1.3"
+    "bootstrap": "~3.2.0"
   },
   "overrides": {
     "backbone": { "main": "backbone.js" },

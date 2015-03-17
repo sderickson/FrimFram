@@ -23,11 +23,9 @@ module.exports = ServerTestView = class ServerTestView extends RootView
     
     jqxhr = $.get('/server-test/list')
     jqxhr.done(_.bind(@onTestListLoaded, @))
-    @supermodel.registerJQXHR(jqxhr)
     
     jqxhr = $.get('/server-test/running')
     jqxhr.done(_.bind(@onServerRunningLoaded, @))
-    @supermodel.registerJQXHR(jqxhr)
     
     @runTests = _.bind(_.debounce(@runTests, 200), @)
 

@@ -64,8 +64,6 @@ module.exports = ClientTestView = class ClientTestView extends RootView
       jasmine.Ajax.install()
       beforeEach ->
         jasmine.Ajax.requests.reset()
-        Backbone.Mediator.init()
-        Backbone.Mediator.setValidationEnabled false
   
       require f for f in specFiles # runs the tests
 
