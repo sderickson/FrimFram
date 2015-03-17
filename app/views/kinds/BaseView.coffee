@@ -253,7 +253,7 @@ module.exports = class BaseView extends Backbone.View
 
   makeSubViewKey: (view) ->
     key = view.id or (view.constructor.name+classCount++)
-    key = _.string.underscored(key)  # handy for autocomplete in dev console
+    key = _.underscored(key)  # handy for autocomplete in dev console
     key
 
   removeSubView: (view) ->

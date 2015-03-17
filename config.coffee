@@ -1,14 +1,17 @@
 sysPath = require 'path'
-startsWith = (string, substring) ->
-  string.lastIndexOf(substring, 0) is 0
+fs = require('fs')
+_ = require 'lodash'
+commonjsHeader = fs.readFileSync('node_modules/brunch/node_modules/commonjs-require-definition/require.js', {encoding: 'utf8'})
+regJoin = (s) -> new RegExp(s.replace(/\//g, '[\\\/\\\\]'))
 
 exports.config =
   paths:
     'public': 'public'
-    'watched': ['app', 'test/app', 'vendor']
+    'watched': ['app', 'test/app', 'vendor', 'src']
     
   conventions:
-    ignored: (path) -> startsWith(sysPath.basename(path), '_')
+    ignored: (path) -> _.startsWith(sysPath.basename(path), '_')
+    vendor: /(vendor|src|bower_components)[\\/]/
 
   sourceMaps: true
 
@@ -17,6 +20,7 @@ exports.config =
     javascripts:
       defaultExtension: 'coffee'
       joinTo:
+        'javascripts/frimfram.js': /^src/
         'javascripts/app.js': /^app/
         'javascripts/vendor.js': /^(vendor|bower_components)/
         'javascripts/test-app.js': /^test[\/\\]app/
@@ -24,6 +28,7 @@ exports.config =
 
       order:
         before: [
+          'src/init.js'
           'bower_components/jquery/dist/jquery.js'
           'bower_components/lodash/dist/lodash.js'
           'bower_components/backbone/backbone.js'
@@ -68,6 +73,11 @@ exports.config =
     sass:
       mode: 'ruby'
       allowCache: true
+
+  modules:
+    definition: (path) ->
+      if _(path).endsWith('app.js') then commonjsHeader else ''
+
 
   onCompile: (files) ->
     # TODO: update to the new setting
