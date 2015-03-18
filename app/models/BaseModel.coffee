@@ -1,19 +1,10 @@
 storage = require 'lib/storage'
-deltasLib = require 'lib/deltas'
 
 class BaseModel extends Backbone.Model
-  idAttribute: '_id'
-  
+
   #- state flags
   fetching: false
   saving: false
-  
-  #- internal use attribute objects
-  _revertAttributes: null # A deep copy of the unchanged model since the last save. Only created when changes are made.
-  _defaultAttributes: null # A cache of default properties.
-  _changedAttributes: null # A set for keeping track of exactly what attributes have changed.
-  
-  saveBackups: false
   
   #- Initialization
   
@@ -32,8 +23,7 @@ class BaseModel extends Backbone.Model
     @on 'error', @onError, @
     @on 'add', @onLoadedOrAdded, @
     @on 'invalid', @onInvalid, @
-    @saveBackup = _.debounce(@saveBackup, 500)
-
+  
 
   #- Misc
 
@@ -56,7 +46,6 @@ class BaseModel extends Backbone.Model
     @jqxhr = null
     @_attributesChanged = {}
     @url = "#{@urlRoot}/#{@id}"
-    @loadFromBackup() unless @saveBackups
     
   onInvalid: ->
     console.debug "Validation failed for #{@constructor.className}: '#{@get('name') or @}'."
@@ -65,64 +54,11 @@ class BaseModel extends Backbone.Model
 
     
   #- Get, set, unset overrides
-    
-  get: (attribute, withDefault=false) ->
-    # sanity checks
-    if @project and attribute not in @project
-      throw new Error("Attribute #{attribute} is not included in this projected model.")
-    
-    # TODO: Have it only populate the property being defaulted.
-    if withDefault
-      if @_defaultAttributes is null then @buildDefaultAttributes()
-      return @_defaultAttributes[attribute]
-    else
-      super(attribute)
 
   set: (attributes, options) ->
-    # sanity checks
     throw new Error('Cannot set while fetching.') if (@fetching or @saving) and not (options.xhr or options.headers)
-    attributeKeys = if _.isString(attributes) then [attributes] else _.keys(attributes)
-    for attribute in attributeKeys
-      if @project and attribute not in @project
-        throw new Error("Cannot set to attribute #{attribute} because it is not part of the projection!")
-
-    # state updates
-    @_attributesChanged[attribute] = true for attribute in attributeKeys
-    delete @_defaultAttributes
-    @markToRevert() unless @_revertAttributes or @project or _.isEmpty(@attributes) or options?.fromMerge
-    @saveBackup() if @saveBackups
-    
     return super attributes, options
     
-  unset: (attribute, options) ->
-    super(arguments...)
-    delete @attributes[attribute]
-
-    
-  #- Defaults
-
-  attributesWithDefaults: undefined
-
-  buildDefaultAttributes: ->
-    clone = $.extend true, {}, @attributes
-    # TODO: Have one big tv4 that has all schemas and that everything shares
-    TreemaNode.utils.populateDefaults(clone, @schema(), tv4)
-    @_defaultAttributes = clone
-
-    
-  #- Backups
-    
-  loadFromBackup: ->
-    if existing = storage.load @id
-      @set(existing, {silent: true})
-
-  saveBackup: -> @saveBackupNow()
-  
-  saveBackupNow: -> storage.save(@id, @attributes)
-
-  clearBackup: -> storage.remove @id
-
-
   #- Validation
   
   getValidationErrors: ->
@@ -147,7 +83,6 @@ class BaseModel extends Backbone.Model
     options.success = (model, res) =>
       originalOptions.success?(@, res)
       @markToRevert() if @_revertAttributes
-      @clearBackup()
       options.success = options.error = null  # So the callbacks can be garbage-collected.
     
     options.error = (model, res) =>
@@ -176,85 +111,5 @@ class BaseModel extends Backbone.Model
     @fetching = true
     @jqxhr
 
-
-  #- Patch
-    
-  patch: (options) ->
-    keys = _.keys(@_attributesChanged)
-    return unless keys.length
-    options ?= {}
-    options.patch = true
-    attrs = {_id: @id}
-    attrs[key] = @attributes[key] for key in keys
-    @save(attrs, options)
-
-
-  #- Revert
-
-  markToRevert: ->
-    @_revertAttributes = $.extend(true, {}, @attributes)
-
-  revert: ->
-    @clear({silent: true})
-    @set(@_revertAttributes) if @_revertAttributes
-    @clearBackup()
-
-  hasLocalChanges: ->
-    return not _.isEmpty(@_changedAttributes)
-
-
-  #- Permissions
-    
-  hasReadAccess: (actor) ->
-    actor ?= me
-    return true if actor.isAdmin()
-    for permission in (@get('permissions', true) ? [])
-      if permission.target is 'public' or actor.get('_id') is permission.target
-        return true if permission.access in ['owner', 'read']
-    return false
-
-  hasWriteAccess: (actor) ->
-    actor ?= me
-    return true if actor.isAdmin()
-    for permission in (@get('permissions', true) ? [])
-      if permission.target is 'public' or actor.get('_id') is permission.target
-        return true if permission.access in ['owner', 'write']
-    return false
-
-  getOwner: ->
-    ownerPermission = _.find @get('permissions', true), access: 'owner'
-    ownerPermission?.target
-    
-    
-  #- Deltas
-
-  getDelta: ->
-    differ = deltasLib.makeJSONDiffer()
-    differ.diff @_revertAttributes, @attributes
-
-  getDeltaWith: (otherModel) ->
-    differ = deltasLib.makeJSONDiffer()
-    differ.diff @attributes, otherModel.attributes
-
-  applyDelta: (delta) ->
-    newAttributes = $.extend(true, {}, @attributes)
-    try
-      jsondiffpatch.patch newAttributes, delta
-    catch error
-      console.error 'Error applying delta\n', JSON.stringify(delta, null, '\t'), '\n\nto attributes\n\n', newAttributes
-      return false
-    for key, value of newAttributes
-      delete newAttributes[key] if _.isEqual value, @attributes[key]
-
-    @set newAttributes
-    return true
-
-  getExpandedDelta: ->
-    delta = @getDelta()
-    deltasLib.expandDelta(delta, @_revertAttributes, @schema())
-
-  getExpandedDeltaWith: (otherModel) ->
-    delta = @getDeltaWith(otherModel)
-    deltasLib.expandDelta(delta, @attributes, @schema())
 
 module.exports = BaseModel

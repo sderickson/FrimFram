@@ -13,6 +13,7 @@ tv4.addSchema({
 })
 
 class BlandModel extends BaseModel
+  idAttribute: '_id'
   @className: 'Bland'
   @schema: 'http://my.site/schemas#bland'
   urlRoot: '/db/bland'
@@ -67,26 +68,7 @@ describe 'BaseModel', ->
       request = jasmine.Ajax.requests.mostRecent()
       expect(decodeURIComponent(request.url).indexOf('project=number,object')).toBeGreaterThan(-1)
 
-  describe 'get()', ->
-    it 'throws an error when you try to get properties which are not included in the projection', ->
-      b = new BlandModel({}, {project: ['a']})
-      b.fetch()
-      request = jasmine.Ajax.requests.mostRecent()
-      request.response({status: 200, responseText: '{a:1}'})
-      expect(-> b.get('b')).toThrow()
-      
-    it 'returns default values if the second argument is true', ->
-      b = new BlandModel({})
-      expect(b.get('number', true)).toBe(1)
-      
   describe 'set()', ->
-    it 'throws an error when you try to set properties which are not included in the projection', ->
-      b = new BlandModel({}, {project: ['a']})
-      b.fetch()
-      request = jasmine.Ajax.requests.mostRecent()
-      request.response({status: 200, responseText: '{a:1}'})
-      expect(-> b.set('b', 2)).toThrow()
-
     it 'throws an error when you try to set properties while saving', ->
       b = new BlandModel({})
       b.save()
@@ -96,12 +78,6 @@ describe 'BaseModel', ->
       b = new BlandModel({})
       b.fetch()
       expect(-> b.set('a', 1)).toThrow()
-
-  describe 'unset()', ->
-    it 'actually removes the property from attributes', ->
-      b = new BlandModel({'a':'b'})
-      b.unset('a')
-      expect('a' in _.keys(b.attributes)).toBe(false)
 
   describe 'save()', ->
     it 'saves to db/<urlRoot>', ->
@@ -162,60 +138,3 @@ describe 'BaseModel', ->
       request = jasmine.Ajax.requests.mostRecent()
       request.response({status: 200, responseText: '{"_id":1}'})
       expect(b.url).toBe('/db/bland/1')
-      
-  describe 'patch()', ->
-    it 'PATCHes only properties that have changed', ->
-      b = new BlandModel({_id: 'test', number: 1})
-      b.loaded = true
-      b.set('string', 'string')
-      b.patch()
-      request = jasmine.Ajax.requests.mostRecent()
-      params = JSON.parse request.params
-      expect(params.string).toBeDefined()
-      expect(params.number).toBeUndefined()
-
-    it 'collates all changes made over several sets', ->
-      b = new BlandModel({_id: 'test', number: 1})
-      b.loaded = true
-      b.set('string', 'string')
-      b.set('object', {4: 5})
-      b.patch()
-      request = jasmine.Ajax.requests.mostRecent()
-      params = JSON.parse request.params
-      expect(params.string).toBeDefined()
-      expect(params.object).toBeDefined()
-      expect(params.number).toBeUndefined()
-
-    it 'does not include data from previous patches', ->
-      b = new BlandModel({_id: 'test', number: 1})
-      b.loaded = true
-      b.set('object', {1: 2})
-      b.patch()
-      request = jasmine.Ajax.requests.mostRecent()
-      attrs = JSON.stringify(b.attributes) # server responds with all
-      request.response({status: 200, responseText: attrs})
-
-      b.set('number', 3)
-      b.patch()
-      request = jasmine.Ajax.requests.mostRecent()
-      params = JSON.parse request.params
-      expect(params.object).toBeUndefined()
-
-    it 'does nothing when there\'s nothing to patch', ->
-      b = new BlandModel({_id: 'test', number: 1})
-      b.loaded = true
-      b.patch()
-      request = jasmine.Ajax.requests.mostRecent()
-      expect(request).toBeUndefined()
-      
-  describe 'revert()', ->
-    it 'sets attributes back to the data when initialized', ->
-      b = new BlandModel({prop: 'value'})
-      b.set('prop', 'new value')
-      expect(b.attributes.prop).toBe('new value')
-      b.revert()
-      expect(b.attributes.prop).toBe('value')
-
-  describe 'permissions', ->
-  
-  describe 'deltas', ->
