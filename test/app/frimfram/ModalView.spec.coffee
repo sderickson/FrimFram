@@ -84,4 +84,14 @@ describe 'ModalView', ->
       modal.show(true)
       modal.hide()
       modal.once 'hidden', -> done()
- 
+      
+      
+  describe '.destroyOnHidden', ->
+    it 'can be used to keep a modal from destroying itself on hidden', ->
+      Modal = FrimFram.ModalView.extend({
+        destroyOnHidden: false
+      })
+      modal = new Modal()
+      modal.show(true)
+      modal.hide(true)
+      expect(modal.destroyed).toBeFalsy()
