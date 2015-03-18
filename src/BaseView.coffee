@@ -3,6 +3,8 @@ class BaseView extends Backbone.View
   
   template: ''
   shortcuts: {}
+  @globals = ['moment']
+  @setGlobals: (@globals)
 
 
   #- Setup
@@ -22,13 +24,11 @@ class BaseView extends Backbone.View
     @subviews = {}
     @$el.html @getTemplateResult()
     @afterRender()
-    @
 
   renderSelectors: (selectors...) ->
     newTemplate = $(@getTemplateResult())
     for selector in selectors
       @$el.find(selector).replaceWith(newTemplate.find(selector))
-    @delegateEvents()
 
   getTemplateResult: ->
     if _.isString(@template) then @template else @template(@getContext())
@@ -36,7 +36,7 @@ class BaseView extends Backbone.View
   getContext: (pick) ->
     context = {}
     context.pathname = document.location.pathname  # ex. '/play/level'
-    context.moment = moment
+    context = _.extend context, _.pick(window, BaseView.globals)
     context = _.extend context, _.pick(@, pick) if pick
     context
     
@@ -68,53 +68,47 @@ class BaseView extends Backbone.View
 
   #- Subviews
 
-  insertSubView: (view, elToReplace=null) ->
+  insertSubview: (view, elToReplace=null) ->
     # used to insert views with ids
-    key = @makeSubViewKey(view)
+    key = @makeSubviewKey(view)
     @subviews[key].destroy() if key of @subviews
     elToReplace ?= @$el.find('#'+view.id)
     elToReplace.after(view.el).remove()
-    @registerSubView(view, key)
+    @registerSubview(view, key)
     view.render()
     view.afterInsert()
     view
 
-  registerSubView: (view, key) ->
+  registerSubview: (view, key) ->
     # used to register views which are custom inserted into the view,
     # like views where you add multiple instances of them
-    key = @makeSubViewKey(view)
-    view.parent = @
-    view.parentKey = key
+    key ?= @makeSubviewKey(view)
     @subviews[key] = view
     view
 
-  makeSubViewKey: (view) ->
+  makeSubviewKey: (view) ->
     key = view.id or (_.uniqueId(view.constructor.name))
     key = _.underscored(key)  # handy for autocomplete in dev console
     key
 
-  removeSubView: (view) ->
+  removeSubview: (view) ->
     view.$el.empty()
-    delete @subviews[view.parentKey]
+    key = _.findKey @subviews, (v) -> v is view 
+    delete @subviews[key] if key
     view.destroy()
 
       
   #- Utilities
 
-  getQueryVariable: (param, defaultValue) ->
-    BaseView.getQueryVariable(param, defaultValue)
+  getQueryVariable: (param) ->
+    BaseView.getQueryVariable(param)
     
-  @getQueryVariable: (param, defaultValue) ->
+  @getQueryVariable: (param) ->
     query = document.location.search.substring 1
     pairs = (pair.split('=') for pair in query.split '&')
     for pair in pairs when pair[0] is param
       return {'true': true, 'false': false}[pair[1]] ? decodeURIComponent(pair[1])
-    defaultValue
-
-  getRootView: ->
-    view = @
-    view = view.parent while view.parent?
-    view
+    return
 
   
   #- Teardown
@@ -123,7 +117,6 @@ class BaseView extends Backbone.View
     @remove()
     @stopListeningToShortcuts()
     view.destroy() for view in _.values(@subviews)
-    $('#modal-wrapper .modal').off 'hidden.bs.modal', @modalClosed
     delete @[key] for key, value of @
     @destroyed = true
     @destroy = _.noop

@@ -37,7 +37,7 @@ describe 'BaseClass', ->
       expect(key.calls.count()).toBe(2)
       
   describe '.destroy()', ->
-    it 'clears all properties from the object, except for "destroyed"', ->
+    it 'clears all properties from the object, except for "destroyed" and "destroy"', ->
       o = new FrimFram.BaseClass()
       o.destroy()
       expect(_.isEqual(_.keys(o), ['destroyed', 'destroy'])).toBe(true)
