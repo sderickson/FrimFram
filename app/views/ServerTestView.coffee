@@ -1,5 +1,3 @@
-RootView = require 'views/kinds/RootView'
-template = require 'templates/server-test-view'
 requireUtils = require 'lib/requireUtils'
 BaseCollection = require 'collections/BaseCollection'
 
@@ -7,9 +5,9 @@ TEST_URL_PREFIX = '/test/server/'
 
 # TODO: deconstruct these class declarations so WebStorm can find them.
 
-module.exports = ServerTestView = class ServerTestView extends RootView
+module.exports = ServerTestView = class ServerTestView extends FrimFram.RootView
   id: 'server-test-view'
-  template: template
+  template: require 'templates/server-test-view'
   status: 'Off'
   
   events:

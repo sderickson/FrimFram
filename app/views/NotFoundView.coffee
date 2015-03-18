@@ -1,6 +1,3 @@
-RootView = require 'views/kinds/RootView'
-template = require 'templates/not-found-view'
-
-module.exports = class NotFoundView extends RootView
+module.exports = class NotFoundView extends FrimFram.RootView
   id: 'not-found-view'
-  template: template
+  template: require 'templates/not-found-view'

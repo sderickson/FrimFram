@@ -29,6 +29,8 @@ exports.config =
       order:
         before: [
           'src/init.js'
+          'src/BaseClass.coffee'
+          'src/BaseView.coffee'
           'bower_components/jquery/dist/jquery.js'
           'bower_components/lodash/lodash.js'
           'bower_components/backbone/backbone.js'

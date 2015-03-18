@@ -26,6 +26,6 @@ class BaseClass
     @destroyed = true
     @destroy = _.noop
 
-
 _.extend(BaseClass.prototype, Backbone.Events)
+
 FrimFram.BaseClass = BaseClass

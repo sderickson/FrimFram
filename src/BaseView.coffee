@@ -1,5 +1,3 @@
-visibleModal = null
-waitingModal = null
 
 class BaseView extends Backbone.View
   
@@ -100,34 +98,6 @@ class BaseView extends Backbone.View
     delete @subviews[view.parentKey]
     view.destroy()
 
-
-  #- Modals
-
-  openModalView: (modalView, softly=false) ->
-    return if waitingModal # can only have one waiting at once
-    if visibleModal
-      waitingModal = modalView
-      return if softly
-      return visibleModal.hide() if visibleModal.$el.is(':visible') # close, then this will get called again
-      return @modalClosed(visibleModal) # was closed, but modalClosed was not called somehow
-    modalView.render()
-    $('#modal-wrapper').empty().append modalView.el
-    modalView.afterInsert()
-    visibleModal = modalView
-    modalOptions = {show: true, backdrop: if modalView.closesOnClickOutside then true else 'static'}
-    $('#modal-wrapper .modal').modal(modalOptions).on 'hidden.bs.modal', @modalClosed
-    @getRootView().stopListeningToShortcuts(true)
-
-  modalClosed: =>
-    visibleModal.destroy()
-    visibleModal = null
-    if waitingModal
-      wm = waitingModal
-      waitingModal = null
-      @openModalView(wm)
-    else
-      @getRootView().listenToShortcuts(true)
-
       
   #- Utilities
 
@@ -160,4 +130,4 @@ class BaseView extends Backbone.View
 
 _.defaults(BaseView.prototype, FrimFram.BaseClass.prototype)
     
-module.exports = BaseView
+FrimFram.BaseView = BaseView

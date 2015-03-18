@@ -1,13 +1,11 @@
-RootView = require 'views/kinds/RootView'
-template = require 'templates/client-test-view'
 requireUtils = require 'lib/requireUtils'
 
 TEST_REQUIRE_PREFIX = 'test/app/'
 TEST_URL_PREFIX = '/test/client/'
 
-module.exports = ClientTestView = class ClientTestView extends RootView
+module.exports = ClientTestView = class ClientTestView extends FrimFram.RootView
   id: 'client-test-view'
-  template: template
+  template: require 'templates/client-test-view'
   reloadOnClose: true
   testingLibs: ['jasmine', 'jasmine-html', 'boot', 'mock-ajax', 'test-app']
   

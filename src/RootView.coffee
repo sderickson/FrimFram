@@ -1,6 +1,4 @@
-BaseView = require './BaseView'
-
-module.exports = class RootView extends BaseView
+class RootView extends FrimFram.BaseView
 
   afterRender: ->
     super(arguments...)
@@ -13,3 +11,5 @@ module.exports = class RootView extends BaseView
     $('title').text(title)
 
   getTitle: _.noop
+
+FrimFram.RootView = RootView
