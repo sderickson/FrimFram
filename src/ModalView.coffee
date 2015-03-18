@@ -21,9 +21,10 @@ class ModalView extends FrimFram.BaseView
     @$el.removeClass('fade') if fast
     @$el.modal('hide')
 
-  show: ->
+  show: (fast) ->
     ModalView.visibleModal?.hide(true)
     @render()
+    @$el.removeClass('fade') if fast
     $('body').append @$el
     @$el.modal('show')
     ModalView.visibleModal = @
