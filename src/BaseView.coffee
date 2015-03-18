@@ -4,7 +4,7 @@ class BaseView extends Backbone.View
   template: ''
   shortcuts: {}
   @globals = ['moment']
-  @setGlobals: (@globals)
+  @setGlobals: (@globals) ->
 
 
   #- Setup
@@ -23,7 +23,7 @@ class BaseView extends Backbone.View
     view.destroy() for id, view of @subviews
     @subviews = {}
     @$el.html @getTemplateResult()
-    @afterRender()
+    @onRender()
 
   renderSelectors: (selectors...) ->
     newTemplate = $(@getTemplateResult())
@@ -32,20 +32,22 @@ class BaseView extends Backbone.View
 
   getTemplateResult: ->
     if _.isString(@template) then @template else @template(@getContext())
-
-  getContext: (pick) ->
+    
+  initContext: (pickPredicate) ->
     context = {}
     context.pathname = document.location.pathname  # ex. '/play/level'
     context = _.extend context, _.pick(window, BaseView.globals)
-    context = _.extend context, _.pick(@, pick) if pick
+    context = _.extend context, _.pick(@, pickPredicate, @) if pickPredicate
     context
+
+  getContext: -> @initContext()
     
     
   #- Callbacks
 
-  afterRender: _.noop # Good place to insert subviews
+  onRender: _.noop # Good place to insert subviews
 
-  afterInsert: _.noop # Called when view is inserted into the DOM
+  onInsert: _.noop # Called when view is inserted into the DOM
 
 
   #- Shortcuts
@@ -53,7 +55,8 @@ class BaseView extends Backbone.View
   listenToShortcuts: (recurse) ->
     shortcuts = @superMerge('shortcuts')
     for shortcut, func of @shortcuts
-      func = @normalizeFunc(func)
+      func = @[func] if not _.isFunction(func)
+      continue unless func
       key(shortcut, @scope, _.bind(func, @))
     if recurse
       for viewID, view of @subviews
@@ -73,10 +76,12 @@ class BaseView extends Backbone.View
     key = @makeSubviewKey(view)
     @subviews[key].destroy() if key of @subviews
     elToReplace ?= @$el.find('#'+view.id)
+    if not elToReplace.length
+      throw new Error('Error inserting subview: do not have element for it to replace.')
     elToReplace.after(view.el).remove()
     @registerSubview(view, key)
     view.render()
-    view.afterInsert()
+    view.onInsert()
     view
 
   registerSubview: (view, key) ->
@@ -100,15 +105,17 @@ class BaseView extends Backbone.View
       
   #- Utilities
 
-  getQueryVariable: (param) ->
-    BaseView.getQueryVariable(param)
+  getQueryParam: (param) ->
+    BaseView.getQueryParam(param)
     
-  @getQueryVariable: (param) ->
-    query = document.location.search.substring 1
+  @getQueryParam: (param) ->
+    query = @getQueryString()
     pairs = (pair.split('=') for pair in query.split '&')
     for pair in pairs when pair[0] is param
       return {'true': true, 'false': false}[pair[1]] ? decodeURIComponent(pair[1])
     return
+    
+  @getQueryString: -> document.location.search.substring 1
 
   
   #- Teardown

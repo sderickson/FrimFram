@@ -49,6 +49,6 @@ module.exports = class CocoRouter extends Backbone.Router
     view.render()
     $('body').empty().append(view.el)
     @currentView = view
-    view.afterInsert()
+    view.onInsert()
     
   closeCurrentView: -> @currentView?.destroy()

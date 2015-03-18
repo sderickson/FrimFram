@@ -4,14 +4,14 @@ class ModalView extends FrimFram.BaseView
   className: 'modal fade'
   destroyOnHidden: true
 
-  afterRender: ->
+  onRender: ->
     super()
 
     # proxy Bootstrap events to Backbone View events
     modal = @
     @$el.on 'show.bs.modal', -> modal.trigger 'show'
     @$el.on 'shown.bs.modal', ->
-      modal.afterInsert()
+      modal.onInsert()
       modal.trigger 'shown'
     @$el.on 'hide.bs.modal', -> modal.trigger 'hide'
     @$el.on 'hidden.bs.modal', -> modal.onHidden()

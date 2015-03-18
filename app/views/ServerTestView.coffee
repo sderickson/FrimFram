@@ -194,5 +194,5 @@ module.exports = ServerTestView = class ServerTestView extends FrimFram.RootView
     c.status = @status
     c
     
-  afterRender: ->
+  onRender: ->
     @setTesting(@testing)

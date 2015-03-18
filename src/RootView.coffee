@@ -1,6 +1,6 @@
 class RootView extends FrimFram.BaseView
 
-  afterInsert: ->
+  onInsert: ->
     super(arguments...)
 
     if app.isProduction()
