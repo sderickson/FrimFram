@@ -1,6 +1,4 @@
-BaseModel = require 'models/BaseModel'
-
-module.exports = class BaseCollection extends Backbone.Collection
+class BaseCollection extends Backbone.Collection
   loaded: false
 
   initialize: (models, options) ->
@@ -23,3 +21,5 @@ module.exports = class BaseCollection extends Backbone.Collection
     return super(options)
 
   setProjection: (@project) ->
+    
+FrimFram.BaseCollection = BaseCollection 

@@ -110,4 +110,4 @@ class BaseModel extends Backbone.Model
     @jqxhr
 
 
-module.exports = BaseModel
+FrimFram.BaseModel = BaseModel

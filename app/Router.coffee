@@ -1,7 +1,7 @@
 NotFoundView = require('views/NotFoundView')
 go = (path) -> -> @routeDirectly path, arguments
 
-module.exports = class CocoRouter extends Backbone.Router
+class CocoRouter extends Backbone.Router
 
   #- Routing map
   
@@ -52,3 +52,5 @@ module.exports = class CocoRouter extends Backbone.Router
     view.onInsert()
     
   closeCurrentView: -> @currentView?.destroy()
+
+module.exports = CocoRouter

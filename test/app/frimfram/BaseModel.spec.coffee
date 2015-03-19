@@ -1,5 +1,3 @@
-BaseModel = require 'models/BaseModel'
-
 tv4.addSchema({
   id: 'http://my.site/schemas#bland'
   type: 'object'
@@ -12,7 +10,7 @@ tv4.addSchema({
     _id: {type: 'string'}
 })
 
-class BlandModel extends BaseModel
+class BlandModel extends FrimFram.BaseModel
   idAttribute: '_id'
   @className: 'Bland'
   @schema: 'http://my.site/schemas#bland'

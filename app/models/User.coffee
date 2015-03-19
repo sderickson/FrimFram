@@ -1,6 +1,6 @@
-BaseModel = require './BaseModel'
-
-module.exports = class User extends BaseModel
+class User extends FrimFram.BaseModel
   @className: 'User'
   @schema: 'http://my.site/schemas#user'
   urlRoot: '/db/user'
+
+module.exports = User

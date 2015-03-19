@@ -3,7 +3,7 @@ requireUtils = require 'lib/requireUtils'
 TEST_REQUIRE_PREFIX = 'test/app/'
 TEST_URL_PREFIX = '/test/client/'
 
-module.exports = ClientTestView = class ClientTestView extends FrimFram.RootView
+class ClientTestView extends FrimFram.RootView
   id: 'client-test-view'
   template: require 'templates/client-test-view'
   reloadOnClose: true
@@ -74,3 +74,5 @@ module.exports = ClientTestView = class ClientTestView extends FrimFram.RootView
 
   clearSpecParam: ->
     document.location.href = document.location.pathname
+
+module.exports = ClientTestView
