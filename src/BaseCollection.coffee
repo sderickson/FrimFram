@@ -1,25 +1,17 @@
 class BaseCollection extends Backbone.Collection
-  loaded: false
+  
+  dataState: 'standby' # or 'fetching'
 
   initialize: (models, options) ->
-    options ?= {}
-    @loaded = options.loaded if options.loaded
     super(models, options)
-    @setProjection options.project
-    @once 'sync', (-> @loaded = true), @
-    @once 'complete', (-> @fetching = false), @
+    @on 'sync', (-> @dataState = 'standby'), @
+    @on 'error', (-> @dataState = 'standby'), @
 
   fetch: (options) ->
-    options ?= {}
-    if @project
-      options.data ?= {}
-      options.data.project = @project.join(',')
-    @fetching = true
-    # TODO: set this up to not need to save jqxhr objects.
-    # Save just the info we need for reporting errors, or something.
-#    @jqxhr = super(options)
+    @dataState = 'fetching'
     return super(options)
+    
+  # At some later point, create save, patch, destroy methods?
 
-  setProjection: (@project) ->
     
 FrimFram.BaseCollection = BaseCollection 
