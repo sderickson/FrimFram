@@ -1,5 +1,3 @@
-storage = require 'lib/storage'
-
 class BaseModel extends Backbone.Model
 
   #- state flags

@@ -10,7 +10,7 @@ class BaseView extends Backbone.View
   #- Setup
 
   constructor: (options) ->
-    @events = @superMerge(@, 'events')
+    @events = @superMerge('events')
     @subviews = {}
     @listenToShortcuts()
     super options

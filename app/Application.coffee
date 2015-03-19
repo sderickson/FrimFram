@@ -26,7 +26,6 @@ class Application extends FrimFram.BaseClass
       alert.addClass('in')
       alert.alert()
       close = -> alert.alert('close')
-      setTimeout(close, 5000)
       
       
   #- Install the one root schema, all schemas can be referenced from it
