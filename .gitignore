@@ -66,8 +66,9 @@ dump.rdb
 # Mongo
 mongo/
 
-# Karma coverage
+# Karma output
 coverage/
+reports/
 
 # Floo
 .floo
