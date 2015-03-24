@@ -21,14 +21,28 @@
     "jsondiffpatch": "0.1.8",
     "treema": "https://github.com/codecombat/treema.git#master",
     "bootstrap": "~3.2.0",
-    "jasmine": "2.0.0"
+    "jasmine": "2.2.1"
   },
   "overrides": {
-    "backbone": { "main": "backbone.js" },
-    "jasmine": { "main": ["lib/jasmine-core/jasmine.css"] },
-    "lodash": { "main": "lodash.js" },
-    "marked": { "main": "lib/marked.js" },
-    "underscore.string": { "main": "lib/underscore.string.js" },
+    "backbone": {
+      "main": "backbone.js"
+    },
+    "jasmine": {
+      "main": [
+        "lib/jasmine-core/jasmine.css",
+        "lib/jasmine-core/jasmine.js",
+        "lib/jasmine-core/jasmine-html.js"
+      ]
+    },
+    "lodash": {
+      "main": "lodash.js"
+    },
+    "marked": {
+      "main": "lib/marked.js"
+    },
+    "underscore.string": {
+      "main": "lib/underscore.string.js"
+    },
     "jsondiffpatch": {
       "main": [
         "build/bundle-full.js",
@@ -36,5 +50,8 @@
         "src/formatters/html.css"
       ]
     }
+  },
+  "resolutions": {
+    "jasmine": "2.2.1"
   }
 }

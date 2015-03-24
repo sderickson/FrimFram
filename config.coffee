@@ -22,7 +22,8 @@ exports.config =
       joinTo:
         'javascripts/frimfram.js': /^src/
         'javascripts/app.js': /^app/
-        'javascripts/vendor.js': /^(vendor|bower_components)/
+        'javascripts/vendor.js': /^(vendor|bower_components)(?!\/jasmine)/
+        'javascripts/vendor-test.js': /^bower_components[\/\\]jasmine/
         'javascripts/test-app.js': /^test[\/\\]app/
         'javascripts/demo-app.js': /^test[\/\\]demo/
 

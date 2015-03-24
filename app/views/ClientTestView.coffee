@@ -7,7 +7,7 @@ class ClientTestView extends FrimFram.RootView
   id: 'client-test-view'
   template: require 'templates/client-test-view'
   reloadOnClose: true
-  testingLibs: ['jasmine', 'jasmine-html', 'boot', 'mock-ajax', 'test-app']
+  testingLibs: ['vendor-test', 'boot', 'mock-ajax', 'test-app']
   
   events:
     'click .reload-link': 'clearSpecParam' # not exactly sure why it needs this to navigate
