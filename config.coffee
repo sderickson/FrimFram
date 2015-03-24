@@ -41,7 +41,8 @@ exports.config =
     stylesheets:
       defaultExtension: 'sass'
       joinTo:
-        'stylesheets/app.css': /^(app|vendor|bower_components)/
+        'stylesheets/app.css': /^(app|vendor|bower_components)(?!\/jasmine)/
+        'stylesheets/jasmine.css': /^bower_components[\/\\]jasmine/
       order:
         before: [
           'app/styles/bootstrap/*'
