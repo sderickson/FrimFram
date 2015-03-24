@@ -65,6 +65,7 @@ module.exports.start = (readyCallback) ->
     app.use express.logger('dev')
 
   app.use(express.static(path.join(__dirname, '../public')))
+  app.use(express.static(path.join(__dirname, '../bower_components/bootstrap')))
   app.use(useragent.express())
 
   app.use express.favicon()
