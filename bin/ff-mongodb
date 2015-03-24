@@ -73,13 +73,7 @@ def which(cmd, mode=os.F_OK | os.X_OK, path=None):
 
 
 current_directory = os.path.dirname(os.path.realpath(sys.argv[0]))
-allowedMongoVersions = ["v2.6.0","v2.6.4"]
-if which("mongod") and any(i in subprocess.check_output("mongod --version",shell=True) for i in allowedMongoVersions):
-    mongo_executable = "mongod"
-else:
-    mongo_executable = None
-    print("Mongod 2.6.4 wasn't found. Searching in bin directory...")
-
+mongo_executable = "mongod"
 mongo_directory = current_directory + os.sep + u"mongo"
 if not mongo_executable:
     mongo_executable = os.environ.get("FRIMFRAM_MONGOD_PATH",mongo_directory + os.sep + u"mongod")
