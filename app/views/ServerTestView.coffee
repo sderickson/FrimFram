@@ -11,9 +11,10 @@ class ServerTestView extends FrimFram.RootView
     'click .show-stack-button': 'onClickShowStackButton'
     'click #toggle': 'onToggleTesting'
 
-  constructor: (options, @subPath='') ->
+  constructor: (options) ->
     super(options)
     @specFiles = []
+    @subPath = options.params[0] or ''
     @subPath = @subPath[1..] if @subPath[0] is '/'
     
     jqxhr = $.get('/server-test/list')
@@ -138,10 +139,8 @@ class ServerTestView extends FrimFram.RootView
     return result
     
   digestSuite: (suite) ->
-    nestings = suite.$.name.split('.')
     return {
-      name: _.last(nestings)
-      parents: _.first(nestings, nestings.length - 1)
+      name: suite.$.name
       errors: parseInt(suite.$.errors)
       failures: parseInt(suite.$.failures)
       tests: (@digestTest(test) for test in suite.testcase)

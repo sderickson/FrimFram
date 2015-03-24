@@ -15,46 +15,47 @@ block content
     li
       a.reload-link(href=pathname)= currentFolder
 
-  .panel.panel-primary.pull-left#test-nav
-    .panel-heading
-      .panel-title Nav
-    
-    .list-group
-      
-      if hasSpecFocus
-        .list-group-item.list-group-item-success
-          span.glyphicon.glyphicon-refresh
-          a(href=pathname).reload-link
-            strong Clear spec focus
-      
-      if lastParent
-        .list-group-item.list-group-item-success
-          span.glyphicon.glyphicon-arrow-left.spr
-          a(href=lastParent.url)
-            strong Up one folder (#{lastParent.name})
-      
-      for child in children
-        .list-group-item.list-group-item-info
-          a(href=child.url)
-            if child.type == 'folder'
-              span.glyphicon.glyphicon-folder-close
-            else
-              span.glyphicon.glyphicon-file
-            span= child.name
-            if child.type == 'folder'
-              strong (#{child.size})
+  .row
 
-
-  .panel.panel-default#testing-area
-    .panel-heading
-      .panel-title Test Results
-    
-    .panel-body
-      #tests
+    .col-sm-3
+      .panel.panel-primary#test-nav
+        .panel-heading
+          .panel-title Nav
+        
+        .list-group
+          
+          if hasSpecFocus
+            .list-group-item.list-group-item-success
+              span.glyphicon.glyphicon-refresh.spr
+              a(href=pathname).reload-link
+                strong Clear spec focus
+          
+          if lastParent
+            .list-group-item.list-group-item-success
+              span.glyphicon.glyphicon-arrow-left
+              a(href=lastParent.url)
+                strong Up one folder (#{lastParent.name})
+          
+          for child in children
+            .list-group-item.list-group-item-info
+              a(href=child.url)
+                if child.type == 'folder'
+                  span.glyphicon.glyphicon-folder-close(aria-hidden="true")
+                else
+                  span.glyphicon.glyphicon-file
+                span.spl= child.name
+                if child.type == 'folder'
+                  strong (#{child.size})
   
   
-  .clearfix
-
-  p
-    em.spr “Testing is an infinite process of comparing the invisible to the ambiguous in order to avoid the unthinkable happening to the anonymous.”
-    span - James Bach
+    .col-sm-9
+      .panel.panel-default#testing-area
+        .panel-heading
+          .panel-title Test Results
+        
+        .panel-body
+          #tests
+    
+  blockquote
+    p “Testing is an infinite process of comparing the invisible to the ambiguous in order to avoid the unthinkable happening to the anonymous.”
+    footer James Bach

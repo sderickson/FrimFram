@@ -6,8 +6,9 @@ block content
 
   .page-header
 
-    button.btn.pull-right#toggle
-    .pull-right.alert.alert-info#status= status
+    .btn-group.pull-right
+      button#status.btn.btn-primary(disabled=true)= status
+      button#toggle.btn
 
     h1
       span.spr Server Tests
@@ -18,60 +19,56 @@ block content
         a(href=path.url)= path.name
     li
       a.reload-link(href=pathname)= currentFolder
-
-  .panel.panel-primary.pull-left#test-nav
-    .panel-heading
-      .panel-title Nav
-
-    .list-group
-
-      if lastParent
-        .list-group-item.list-group-item-success
-          span.glyphicon.glyphicon-arrow-left.spr
-          a(href=lastParent.url)
-            strong Up one folder (#{lastParent.name})
-
-      for child in children
-        .list-group-item.list-group-item-info
-          a(href=child.url)
-            if child.type == 'folder'
-              span.glyphicon.glyphicon-folder-close
-            else
-              span.glyphicon.glyphicon-file
-            span= child.name
-            if child.type == 'folder'
-              strong (#{child.size})
-
-
-  #testing-area
-    
-    for stack in stacks
-      .panel.panel-danger
+  
+  .row
+    .col-sm-3
+      .panel.panel-default#test-nav
         .panel-heading
-          .panel-title= stack.summary
-        .panel-body
-          button.btn.btn-sm.btn-primary.show-stack-button Show Raw Stack
-          div!= stack.short
-          pre.hide!= stack.raw
+          .panel-title Nav
+    
+        .list-group
+    
+          if lastParent
+            .list-group-item
+              span.glyphicon.glyphicon-arrow-left.spr
+              a(href=lastParent.url)
+                strong Up one folder (#{lastParent.name})
+    
+          for child in children
+            .list-group-item
+              a(href=child.url)
+                if child.type == 'folder'
+                  span.glyphicon.glyphicon-folder-close
+                else
+                  span.glyphicon.glyphicon-file
+                span.spl= child.name
+                if child.type == 'folder'
+                  strong (#{child.size})
+            
+    .col-sm-9
+      #testing-area
+        
+        for stack in stacks
+          .panel.panel-danger
+            .panel-heading
+              .panel-title= stack.summary
+            .panel-body
+              button.btn.btn-sm.btn-primary.show-stack-button.pull-right Show Raw Stack
+              div!= stack.short
+              pre.hide!= stack.raw
+    
+        .panel.panel-default
+          .panel-heading
+            .panel-title Suites and Tests
+          .list-group
+            for suite in suites
+              .list-group-item
+                h5 #{suite.name} (#{suite.time})
+                ul.list-unstyled
+                  for test in suite.tests
+                    li(class=test.failures ? "text-warning" : "")
+                      | - #{test.name} (#{test.time))
 
-    .panel.panel-default
-      .panel-heading
-        .panel-title Suites and Tests
-      ul.list-group
-        for suite in suites
-          li.list-group-item.suite
-            for parent in suite.parents
-              div.spacer.spr
-            strong #{suite.name} (#{suite.time})
-      
-          for test in suite.tests
-            li.list-group-item.test(class=test.failures ? "list-group-item-warning" : "")
-              for parent in suite.parents
-                div.spacer.spr
-              | - #{test.name} (#{test.time))
-
-  .clearfix
-
-  p
-    em.spr “If debugging is the process of removing bugs, then programming must be the process of putting them in.”
-    span - Edsger W. Dijkstra
+      blockquote
+        p “If debugging is the process of removing bugs, then programming must be the process of putting them in.”
+        footer Edsger W. Dijkstra
