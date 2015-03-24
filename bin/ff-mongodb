@@ -69,8 +69,6 @@ def which(cmd, mode=os.F_OK | os.X_OK, path=None):
                     return name
     return None
 
-# TODO: Upgrade this so it works on windows
-
 
 current_directory = os.path.dirname(os.path.realpath(sys.argv[0]))
 mongo_executable = "mongod"

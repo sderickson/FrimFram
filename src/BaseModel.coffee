@@ -16,7 +16,7 @@ class BaseModel extends Backbone.Model
     if _.isString s then tv4.getSchema(s) else s
 
   onInvalid: ->
-    console.debug "Validation failed for #{@constructor.className}: '#{@get('name') or @}'."
+    console.debug "Validation failed for #{@constructor.className or @}: '#{@get('name') or @}'."
     for error in @validationError
       console.debug "\t", error.dataPath, ':', error.message
 
