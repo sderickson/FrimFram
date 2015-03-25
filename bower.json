@@ -28,9 +28,7 @@
     "moment": "2.*",
     "underscore.string": "3.*",
     "bootstrap": "3.*",
-    "tv4": "1.*"
-  },
-  "devDependencies": {
+    "tv4": "1.*",
     "jasmine": "2.*"
   },
   "overrides": {
