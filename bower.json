@@ -1,6 +1,6 @@
 {
   "name": "frimfram",
-  "main": "index.js",
+  "main": "dist/frimfram.js",
   "version": "0.0.0",
   "description": "A framework shell.",
   "license": "MIT",

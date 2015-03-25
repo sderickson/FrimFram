@@ -21,6 +21,7 @@ exports.config =
       defaultExtension: 'coffee'
       joinTo:
         'javascripts/frimfram.js': /^src/
+        '../dist/frimfram.js': /^src/
         'javascripts/app.js': /^app/
         'javascripts/vendor.js': /^(vendor|bower_components)(?!\/jasmine)/
         'javascripts/vendor-test.js': /^bower_components[\/\\]jasmine/
