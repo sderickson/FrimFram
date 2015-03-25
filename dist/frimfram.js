@@ -680,5 +680,44 @@ FrimFram = {};
   FrimFram.Router = Router;
 
 }).call(this);
+;(function() {
+  FrimFram.storage = {
+    prefix: '-storage-',
+    load: function(key) {
+      var SyntaxError, s, value;
+      s = localStorage.getItem(this.prefix + key);
+      if (!s) {
+        return null;
+      }
+      try {
+        value = JSON.parse(s);
+        return value;
+      } catch (_error) {
+        SyntaxError = _error;
+        console.warn('error loading from storage', key);
+        return null;
+      }
+    },
+    save: function(key, value) {
+      return localStorage.setItem(this.prefix + key, JSON.stringify(value));
+    },
+    remove: function(key) {
+      return localStorage.removeItem(this.prefix + key);
+    },
+    clear: function() {
+      var key, _results;
+      _results = [];
+      for (key in localStorage) {
+        if (key.indexOf(this.prefix) === 0) {
+          _results.push(localStorage.removeItem(key));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    }
+  };
+
+}).call(this);
 ;
 //# sourceMappingURL=/javascripts/frimfram.js.map
