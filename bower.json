@@ -8,19 +8,17 @@
   "ignore": [
     "**/.*",
     "app",
-    "bower_components",
-    "mongo",
-    "node_modules",
-    "public",
-    "reports",
+    "bin",
     "scripts",
     "server",
     "src",
     "test",
     "vendor",
+    "bower.json",
     "config.coffee",
     "index.js",
     "karma.conf.js",
+    "package.json",
     "README.md"
   ],
   "dependencies": {
