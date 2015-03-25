@@ -4,6 +4,7 @@ describe 'require', ->
     for module in modules
       try
         require(module)
+        expect(true).toBe(true)
       catch
         console.error 'Could not load', module
         expect(false).toBe(true)

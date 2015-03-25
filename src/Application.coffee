@@ -20,7 +20,7 @@ class Application extends FrimFram.BaseClass
     $(document).bind 'keydown', @preventBackspace
     Backbone.history.start({ pushState: true })
     @handleNormalUrls()
-    _.mixin(_.string.exports())
+    _.mixin(s.exports())
     @initialize()
     
   initialize: _.noop

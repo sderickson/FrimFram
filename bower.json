@@ -28,7 +28,8 @@
     "moment": "2.*",
     "underscore.string": "3.*",
     "bootstrap": "3.*",
-    "jasmine": "2.*"
+    "jasmine": "2.*",
+    "tv4": "1.*"
   },
   "overrides": {
     "jasmine": {

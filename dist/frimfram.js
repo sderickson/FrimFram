@@ -309,7 +309,7 @@ FrimFram = {};
         pushState: true
       });
       this.handleNormalUrls();
-      _.mixin(_.string.exports());
+      _.mixin(s.exports());
       this.initialize();
     }
 

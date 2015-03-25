@@ -90,15 +90,15 @@ describe 'BaseView', ->
       view.getContext()
       expect(view.initContext).toHaveBeenCalled()
     
-    it 'is intended to be overridden', ->
+    it 'is intended to be overridden', -> expect(true).toBe(true)
 
 
   describe '.onRender()', ->
-    it 'is intended to be overridden', ->
+    it 'is intended to be overridden', -> expect(true).toBe(true)
 
 
   describe '.onInsert()', ->
-    it 'is intended to be overridden', ->
+    it 'is intended to be overridden', -> expect(true).toBe(true)
 
 
   describe '.listenToShortcuts(recurse)', ->
