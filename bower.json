@@ -4,50 +4,40 @@
   "version": "0.0.0",
   "description": "A framework shell.",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "ignore": [
     "**/.*",
-    "node_modules",
+    "app",
     "bower_components",
+    "mongo",
+    "node_modules",
+    "public",
+    "reports",
+    "scripts",
+    "server",
+    "src",
+    "test",
     "vendor",
-    "test"
+    "config.coffee",
+    "index.js",
+    "karma.conf.js",
+    "README.md"
   ],
   "dependencies": {
-    "jquery": "~2.1.0",
-    "lodash": "3.5.0",
-    "backbone": "1.1.0",
-    "moment": "~2.5.0",
-    "underscore.string": "~2.3.3",
-    "jsondiffpatch": "0.1.8",
-    "treema": "https://github.com/codecombat/treema.git#master",
-    "bootstrap": "~3.2.0",
-    "jasmine": "2.2.1"
+    "jquery": "2.*",
+    "lodash": "3.*",
+    "backbone": "1.*",
+    "moment": "2.*",
+    "underscore.string": "3.*",
+    "bootstrap": "3.*",
+    "jasmine": "2.*"
   },
   "overrides": {
-    "backbone": {
-      "main": "backbone.js"
-    },
     "jasmine": {
       "main": [
         "lib/jasmine-core/jasmine.css",
         "lib/jasmine-core/jasmine.js",
         "lib/jasmine-core/jasmine-html.js"
-      ]
-    },
-    "lodash": {
-      "main": "lodash.js"
-    },
-    "marked": {
-      "main": "lib/marked.js"
-    },
-    "underscore.string": {
-      "main": "lib/underscore.string.js"
-    },
-    "jsondiffpatch": {
-      "main": [
-        "build/bundle-full.js",
-        "build/formatters.js",
-        "src/formatters/html.css"
       ]
     }
   },
