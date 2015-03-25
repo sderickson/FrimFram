@@ -25,12 +25,12 @@ describe 'BaseModel', ->
       b.fetch()
       expect(b.dataState).toBe("fetching")
       request = jasmine.Ajax.requests.mostRecent()
-      request.response({status: 200, responseText: '{}'})
+      request.respondWith({status: 200, responseText: '{}'})
       expect(b.dataState).toBe("standby")
       b.fetch()
       expect(b.dataState).toBe("fetching")
       request = jasmine.Ajax.requests.mostRecent()
-      request.response({status: 404, responseText: '{}'})
+      request.respondWith({status: 404, responseText: '{}'})
       expect(b.dataState).toBe("standby")
       
   describe 'set()', ->
