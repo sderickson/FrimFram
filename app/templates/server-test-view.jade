@@ -2,8 +2,6 @@ extends /templates/common/base
 
 block content
   
-  // TODO: Add links between server and client testing pages.
-
   .page-header
 
     .btn-group.pull-right
@@ -19,7 +17,11 @@ block content
         a(href=path.url)= path.name
     li
       a.reload-link(href=pathname)= currentFolder
-  
+
+    a.pull-right(href="/test/client/")
+      span.spr Client Tests
+      span.glyphicon.glyphicon-arrow-right
+
   .row
     .col-sm-3
       .panel.panel-default#test-nav

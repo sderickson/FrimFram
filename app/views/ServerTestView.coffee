@@ -17,11 +17,15 @@ class ServerTestView extends FrimFram.RootView
     @subPath = options.params[0] or ''
     @subPath = @subPath[1..] if @subPath[0] is '/'
     
-    jqxhr = $.get('/server-test/list')
-    jqxhr.done(_.bind(@onTestListLoaded, @))
+    $.ajax('/server-test/list', {
+      success: _.bind(@onTestListLoaded, @)
+      error: FrimFram.onAjaxError
+    })
     
-    jqxhr = $.get('/server-test/running')
-    jqxhr.done(_.bind(@onServerRunningLoaded, @))
+    $.ajax('/server-test/running', {
+      success: _.bind(@onServerRunningLoaded, @)
+      error: FrimFram.onAjaxError
+    })
     
     @runTests = _.bind(_.debounce(@runTests, 200), @)
 
@@ -44,29 +48,39 @@ class ServerTestView extends FrimFram.RootView
   runTests: ->
     @setStatus('Running Tests')
     path = @subPath
-    if path and not (_.string.endsWith(path, '/') or _.string.endsWith(path, 'coffee'))
+    if path and not (_(path).endsWith('/') or _(path).endsWith('coffee'))
       path = path + '/'
-    jqxhr = $.post('/server-test/run', {path: path})
-    jqxhr.done(_.bind(@onReportsLoaded, @))
+    $.ajax('/server-test/run', {
+      type: 'POST'
+      data: {path: path}
+      success: _.bind(@onReportsLoaded, @)
+      error: FrimFram.onAjaxError
+    })
     
   setupServerTesting: =>
     @setTesting(true)
     @setStatus('Initializing Testing System')
-    jqxhr = $.post('/server-test/setup')
+    $.ajax('/server-test/setup', {
+      type: 'POST'
+      success: _.bind(@listenForChanges, @)
+      error: _.bind(@onServerTestingSetupFailed, @)
+    })
     
-    jqxhr.done =>
-      @listenForChanges()
-      
-    jqxhr.fail =>
-      @setStatus('Server Down, Polling...')
-      setTimeout(@setupServerTesting, 3000)
+  onServerTestingSetupFailed: ->
+    @setStatus('Server Down, Polling...')
+    setTimeout(@setupServerTesting, 3000)
     
   teardownServerTesting: ->
     @setTesting(false)
     @setStatus('Restarting Server')
-    jqxhr = $.post('/server-test/teardown')
-    jqxhr.done =>
-      @setStatus('Off')
+    $.ajax('/server-test/teardown', {
+      type: 'POST'
+      success: _.bind(@onTeardownDone, @)
+      error: FrimFram.onAjaxError
+    })
+    
+  onTeardownDone: ->
+    @setStatus('Off')
       
   setStatus: (@status) ->
     @$el.find('#status').text(@status)
@@ -173,9 +187,9 @@ class ServerTestView extends FrimFram.RootView
     $(e.target).closest('.btn').hide()
 
   onTestListLoaded: (files) ->
-    @specFiles = (f for f in files when _.string.endsWith(f, '.coffee'))
+    @specFiles = (f for f in files when _(f).endsWith('.coffee'))
     if @subPath
-      @specFiles = (f for f in @specFiles when _(f).startsWith(@subPath).value())
+      @specFiles = (f for f in @specFiles when _(f).startsWith(@subPath))
 
   getContext: ->
     c = super(arguments...)

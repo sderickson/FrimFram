@@ -1,18 +1,6 @@
 class Application extends FrimFram.BaseClass
   @extend: Backbone.Model.extend
   
-  runtimeErrorTemplate = _.template("""
-    <div class="runtime-error-alert alert alert-danger fade">
-      <button class="close" type="button" data-dismiss="alert">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <strong class="spr">Runtime Error:</strong>
-      <span><%= errorMessage %></span>
-      <br/>
-      <span>See console for more info.</span>
-    </div>
-    """)
-
   #- Initialization
   
   constructor: ->

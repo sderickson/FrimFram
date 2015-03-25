@@ -12,8 +12,11 @@ block content
     for path in parentFolders
       li
         a(href=path.url)= path.name
-    li
+    li.active
       a.reload-link(href=pathname)= currentFolder
+    a.pull-right(href="/test/server/")
+      span.spr Server Tests
+      span.glyphicon.glyphicon-arrow-right
 
   .row
 

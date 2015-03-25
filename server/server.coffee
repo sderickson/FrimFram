@@ -85,11 +85,11 @@ module.exports.start = (readyCallback) ->
   routes(app)
 
   
-  #- Serve main.html
+  #- Serve index.html
   try
-    mainHTML = fs.readFileSync(path.join(__dirname, '../public', 'main.html'), 'utf8')
+    mainHTML = fs.readFileSync(path.join(__dirname, '../public', 'index.html'), 'utf8')
   catch e
-    log.error "Error modifying main.html: #{e}"
+    winston.error "Error modifying index.html: #{e}"
 
   app.all '*', (req, res) ->
     # insert the user object directly into the html so the application can have it immediately. Sanitize </script>

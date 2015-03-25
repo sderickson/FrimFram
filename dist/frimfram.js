@@ -293,13 +293,9 @@ FrimFram = {};
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   Application = (function(_super) {
-    var runtimeErrorTemplate;
-
     __extends(Application, _super);
 
     Application.extend = Backbone.Model.extend;
-
-    runtimeErrorTemplate = _.template("<div class=\"runtime-error-alert alert alert-danger fade\">\n  <button class=\"close\" type=\"button\" data-dismiss=\"alert\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n  <strong class=\"spr\">Runtime Error:</strong>\n  <span><%= errorMessage %></span>\n  <br/>\n  <span>See console for more info.</span>\n</div>");
 
     function Application() {
       this.preventBackspace = __bind(this.preventBackspace, this);
@@ -678,6 +674,30 @@ FrimFram = {};
   })(Backbone.Router);
 
   FrimFram.Router = Router;
+
+}).call(this);
+;(function() {
+  FrimFram.onModelError = function(model, jqxhr) {
+    return this.onAjaxError(jqxhr);
+  };
+
+  FrimFram.onAjaxError = function(jqxhr) {
+    var alert, close, r, s;
+    r = jqxhr.responseJSON;
+    console.log(r || jqxhr.responseText);
+    s = "Response error " + r.error + " (" + r.statusCode + "): " + r.message;
+    alert = $(FrimFram.runtimeErrorTemplate({
+      errorMessage: s
+    }));
+    $('body').append(alert);
+    alert.addClass('in');
+    alert.alert();
+    return close = function() {
+      return alert.alert('close');
+    };
+  };
+
+  FrimFram.runtimeErrorTemplate = _.template("<div class=\"runtime-error-alert alert alert-danger fade\">\n  <button class=\"close\" type=\"button\" data-dismiss=\"alert\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n  <strong class=\"spr\">Runtime Error:</strong>\n  <span><%= errorMessage %></span>\n  <br/>\n  <span class=\"pull-right text-muted\">See console for more info.</span>\n</div>");
 
 }).call(this);
 ;(function() {

@@ -32,9 +32,8 @@
 //    window.userObject = "userObjectTag";
     init = function() {
       Application = require('Application');
-      app = new Application();
-      app.initialize();
-      window.app = app;
+      window.app = new Application();
+      window.app.initialize();
     }
     $(init);
   </script>
