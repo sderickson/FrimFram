@@ -1,6 +1,6 @@
 {
   "name": "frimfram",
-  "main": "dist/frimfram.js",
+  "main": ["dist/frimfram.js", "dist/frimfram.css"],
   "version": "0.0.1",
   "description": "A framework shell.",
   "license": "MIT",

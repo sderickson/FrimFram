@@ -1,0 +1,14 @@
+.runtime-error-alert {
+  position: fixed;
+  top: 10px;
+  left: 20%;
+  right: 20%; }
+
+.spr:after {
+  content: " "; }
+
+.spl:before {
+  content: " "; }
+
+
+/*# sourceMappingURL=frimfram.css.map*/
