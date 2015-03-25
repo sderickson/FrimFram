@@ -678,13 +678,16 @@ FrimFram = {};
 }).call(this);
 ;(function() {
   FrimFram.onModelError = function(model, jqxhr) {
-    return this.onAjaxError(jqxhr);
+    return FrimFram.onAjaxError(jqxhr);
   };
 
   FrimFram.onAjaxError = function(jqxhr) {
     var alert, close, r, s;
     r = jqxhr.responseJSON;
     console.log(r || jqxhr.responseText);
+    if (r == null) {
+      r = {};
+    }
     s = "Response error " + r.error + " (" + r.statusCode + "): " + r.message;
     alert = $(FrimFram.runtimeErrorTemplate({
       errorMessage: s

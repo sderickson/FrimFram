@@ -43,7 +43,7 @@ exports.config =
       defaultExtension: 'sass'
       joinTo:
         '../dist/frimfram.css': /^src/
-        'stylesheets/app.css': /^(app|vendor|bower_components)/
+        'stylesheets/app.css': /^(app|vendor|bower_components|src)/
       order:
         before: [
           'app/styles/bootstrap/*'

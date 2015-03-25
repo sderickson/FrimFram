@@ -1,10 +1,11 @@
 
 #- Error handling
-FrimFram.onModelError = (model, jqxhr) -> @onAjaxError(jqxhr)
+FrimFram.onModelError = (model, jqxhr) -> FrimFram.onAjaxError(jqxhr)
 
 FrimFram.onAjaxError = (jqxhr) ->
   r = jqxhr.responseJSON
   console.log r or jqxhr.responseText
+  r ?= {}
   s = "Response error #{r.error} (#{r.statusCode}): #{r.message}"
   alert = $(FrimFram.runtimeErrorTemplate({errorMessage: s}))
   $('body').append(alert)
