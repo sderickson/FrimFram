@@ -23,8 +23,7 @@ exports.config =
         'javascripts/frimfram.js': /^src/
         '../dist/frimfram.js': /^src/
         'javascripts/app.js': /^app/
-        'javascripts/vendor.js': /^(vendor|bower_components)(?!\/jasmine)/
-        'javascripts/vendor-test.js': /^bower_components[\/\\]jasmine/
+        'javascripts/vendor.js': /^(vendor|bower_components)/
         'javascripts/test-app.js': /^test[\/\\]app/
         'javascripts/demo-app.js': /^test[\/\\]demo/
 

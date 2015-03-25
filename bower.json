@@ -28,19 +28,6 @@
     "moment": "2.*",
     "underscore.string": "3.*",
     "bootstrap": "3.*",
-    "tv4": "1.*",
-    "jasmine": "2.*"
-  },
-  "overrides": {
-    "jasmine": {
-      "main": [
-        "lib/jasmine-core/jasmine.css",
-        "lib/jasmine-core/jasmine.js",
-        "lib/jasmine-core/jasmine-html.js"
-      ]
-    }
-  },
-  "resolutions": {
-    "jasmine": "2.2.1"
+    "tv4": "1.*"
   }
 }
