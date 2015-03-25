@@ -68,7 +68,7 @@ module.exports.start = (readyCallback) ->
   app.use(express.static(path.join(__dirname, '../bower_components/bootstrap')))
   app.use(useragent.express())
 
-  app.use express.favicon()
+  app.use(express.favicon(path.join(__dirname, '../public','images','favicon.ico')))
   app.use express.cookieParser(config.cookie_secret)
   app.use express.bodyParser()
   app.use express.methodOverride()
