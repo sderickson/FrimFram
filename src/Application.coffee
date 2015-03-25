@@ -19,7 +19,7 @@ class Application extends FrimFram.BaseClass
   watchForErrors: ->
     window.onerror = (msg, url, line, col, error) ->
       return if $('body').find('.runtime-error-alert').length
-      alert = $(runtimeErrorTemplate({errorMessage: msg}))
+      alert = $(FrimFram.runtimeErrorTemplate({errorMessage: msg}))
       $('body').append(alert)
       alert.addClass('in')
       alert.alert()

@@ -317,7 +317,7 @@ FrimFram = {};
         if ($('body').find('.runtime-error-alert').length) {
           return;
         }
-        alert = $(runtimeErrorTemplate({
+        alert = $(FrimFram.runtimeErrorTemplate({
           errorMessage: msg
         }));
         $('body').append(alert);
