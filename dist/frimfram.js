@@ -23,7 +23,11 @@ FrimFram = {};
     BaseClass.prototype.listenToShortcuts = function() {
       var func, shortcut, shortcuts, _results;
       shortcuts = this.superMerge('shortcuts');
-      this.scope = _.uniqueId('class-scope-');
+      if (this.scope) {
+        this.stopListeningToShortcuts();
+      } else {
+        this.scope = _.uniqueId('class-scope-');
+      }
       _results = [];
       for (shortcut in shortcuts) {
         func = shortcuts[shortcut];
@@ -142,6 +146,11 @@ FrimFram = {};
     BaseView.prototype.listenToShortcuts = function(recurse) {
       var func, shortcut, shortcuts, view, viewID, _ref, _ref1, _results;
       shortcuts = this.superMerge('shortcuts');
+      if (this.scope) {
+        this.stopListeningToShortcuts();
+      } else {
+        this.scope = _.uniqueId('view-scope-');
+      }
       _ref = this.shortcuts;
       for (shortcut in _ref) {
         func = _ref[shortcut];

@@ -10,7 +10,10 @@ class BaseClass
 
   listenToShortcuts: ->
     shortcuts = @superMerge('shortcuts')
-    @scope = _.uniqueId('class-scope-')
+    if @scope
+      @stopListeningToShortcuts()
+    else
+      @scope = _.uniqueId('class-scope-')
     for shortcut, func of shortcuts
       func = @[func] if not _.isFunction(func)
       continue unless func

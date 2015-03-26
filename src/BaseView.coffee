@@ -54,6 +54,10 @@ class BaseView extends Backbone.View
 
   listenToShortcuts: (recurse) ->
     shortcuts = @superMerge('shortcuts')
+    if @scope
+      @stopListeningToShortcuts()
+    else
+      @scope = _.uniqueId('view-scope-')
     for shortcut, func of @shortcuts
       func = @[func] if not _.isFunction(func)
       continue unless func
