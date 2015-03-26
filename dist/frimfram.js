@@ -397,13 +397,25 @@ FrimFram = {};
       this.on('sync', (function() {
         return this.dataState = 'standby';
       }), this);
-      return this.on('error', (function() {
+      this.on('error', (function() {
         return this.dataState = 'standby';
       }), this);
+      if (options != null ? options.defaultFetchData : void 0) {
+        return this.defaultFetchData = options.defaultFetchData;
+      }
     };
 
     BaseCollection.prototype.fetch = function(options) {
       this.dataState = 'fetching';
+      if (this.defaultFetchData) {
+        if (options == null) {
+          options = {};
+        }
+        if (options.data == null) {
+          options.data = {};
+        }
+        _.defaults(options.data, this.defaultFetchData);
+      }
       return BaseCollection.__super__.fetch.call(this, options);
     };
 
