@@ -23,7 +23,7 @@ exports.config =
         'javascripts/frimfram.js': /^src/
         '../dist/frimfram.js': /^src/
         'javascripts/app.js': /^app/
-        'javascripts/vendor.js': /^(vendor|bower_components)/
+        'javascripts/vendor.js': /^(vendor|bower_components)(?![\/\\]underscore[\/\\])/
         'javascripts/test-app.js': /^test[\/\\]app/
         'javascripts/demo-app.js': /^test[\/\\]demo/
 
@@ -35,7 +35,7 @@ exports.config =
           'bower_components/jquery/dist/jquery.js'
           'bower_components/lodash/lodash.js'
           'bower_components/backbone/backbone.js'
-          'bower_components/bootstrap/dist/bootstrap.js'
+          'bower_components/bootstrap/dist/js/bootstrap.js'
           'bower_components/tv4/tv4.js'
          ]
         
