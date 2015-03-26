@@ -4,15 +4,21 @@ class BaseCollection extends Backbone.Collection
 
   initialize: (models, options) ->
     super(models, options)
-    @on 'sync', (-> @dataState = 'standby'), @
-    @on 'error', (-> @dataState = 'standby'), @
     if options?.defaultFetchData
       @defaultFetchData = options.defaultFetchData
 
   fetch: (options) ->
     @dataState = 'fetching'
+    options ?= {}
+    givenSuccess = options.success
+    givenError = options.error
+    options.success = =>
+      @dataState = 'standby'
+      givenSuccess?(arguments...)
+    options.error = =>
+      @dataState = 'standby'
+      givenError?(arguments...)
     if @defaultFetchData
-      options ?= {}
       options.data ?= {}
       _.defaults(options.data, @defaultFetchData)
     return super(options)

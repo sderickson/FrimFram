@@ -394,23 +394,32 @@ FrimFram = {};
 
     BaseCollection.prototype.initialize = function(models, options) {
       BaseCollection.__super__.initialize.call(this, models, options);
-      this.on('sync', (function() {
-        return this.dataState = 'standby';
-      }), this);
-      this.on('error', (function() {
-        return this.dataState = 'standby';
-      }), this);
       if (options != null ? options.defaultFetchData : void 0) {
         return this.defaultFetchData = options.defaultFetchData;
       }
     };
 
     BaseCollection.prototype.fetch = function(options) {
+      var givenError, givenSuccess;
       this.dataState = 'fetching';
+      if (options == null) {
+        options = {};
+      }
+      givenSuccess = options.success;
+      givenError = options.error;
+      options.success = (function(_this) {
+        return function() {
+          _this.dataState = 'standby';
+          return typeof givenSuccess === "function" ? givenSuccess.apply(null, arguments) : void 0;
+        };
+      })(this);
+      options.error = (function(_this) {
+        return function() {
+          _this.dataState = 'standby';
+          return typeof givenError === "function" ? givenError.apply(null, arguments) : void 0;
+        };
+      })(this);
       if (this.defaultFetchData) {
-        if (options == null) {
-          options = {};
-        }
         if (options.data == null) {
           options.data = {};
         }
