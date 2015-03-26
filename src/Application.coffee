@@ -5,11 +5,11 @@ class Application extends FrimFram.BaseClass
   
   constructor: ->
     @watchForErrors()
+    _.mixin(s.exports())
     $(document).bind 'keydown', @preventBackspace
+    @initialize()
     Backbone.history.start({ pushState: true })
     @handleNormalUrls()
-    _.mixin(s.exports())
-    @initialize()
     
   initialize: _.noop
 

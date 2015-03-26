@@ -300,13 +300,13 @@ FrimFram = {};
     function Application() {
       this.preventBackspace = __bind(this.preventBackspace, this);
       this.watchForErrors();
+      _.mixin(s.exports());
       $(document).bind('keydown', this.preventBackspace);
+      this.initialize();
       Backbone.history.start({
         pushState: true
       });
       this.handleNormalUrls();
-      _.mixin(s.exports());
-      this.initialize();
     }
 
     Application.prototype.initialize = _.noop;
