@@ -71,12 +71,10 @@ module.exports = function(config) {
     },
 
     plugins : [
-      'karma-jasmine',
       'karma-chrome-launcher',
-      'karma-phantomjs-launcher',
       'karma-coffee-preprocessor',
       'karma-coverage',
-      'karma-firefox-launcher'
+      'karma-jasmine'
     ]
   });
 

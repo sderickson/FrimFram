@@ -67,7 +67,9 @@ module.exports.runServerTests = (req, res) ->
   # TODO: Try to put this into an async.waterfall or something like it. Avoid callback hell!
   response = { rootDir: rootDir }
   jasmineNode.on 'exit', (exitCode) ->
-    if consoleError = consoleError.join('')
+    consoleError = consoleError.join('')
+    # seems to be a bug with node 0.12: http://stackoverflow.com/questions/28651028/cannot-find-module-build-release-bson-code-module-not-found-js-bson
+    if consoleError isnt "Failed to load c++ bson extension, using pure JS version\n"
       response.consoleError = consoleError
       return respond.ok(res, response)
     files = fs.readdirSync(reportDir)
