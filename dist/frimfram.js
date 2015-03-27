@@ -1,8 +1,12 @@
-// Creates the object tree that other files will build on
-
-FrimFram = {};
-
 (function() {
+  window.FrimFram = {
+    isProduction: function() {
+      return window.location.href.indexOf('localhost') === -1;
+    }
+  };
+
+}).call(this);
+;(function() {
   var BaseClass;
 
   BaseClass = (function() {
@@ -374,10 +378,6 @@ FrimFram = {};
           return false;
         }
       });
-    };
-
-    Application.prototype.isProduction = function() {
-      return window.location.href.indexOf('localhost') === -1;
     };
 
     return Application;

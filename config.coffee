@@ -29,7 +29,7 @@ exports.config =
 
       order:
         before: [
-          'src/init.js'
+          'src/init.coffee'
           'src/BaseClass.coffee'
           'src/BaseView.coffee'
           'bower_components/jquery/dist/jquery.js'

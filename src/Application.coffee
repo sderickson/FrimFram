@@ -59,9 +59,5 @@ class Application extends FrimFram.BaseClass
         app.router.navigate url, { trigger: true }
         return false
     
-        
-  #- Utilities
-
-  isProduction: -> window.location.href.indexOf('localhost') is -1
     
 FrimFram.Application = Application
