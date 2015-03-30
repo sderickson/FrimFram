@@ -43,6 +43,10 @@ describe 'BaseModel', ->
       b = new BlandModel({})
       b.fetch()
       expect(-> b.set('a', 1)).toThrow()
+      
+    it 'does not throw an error when set is called through save', ->
+      b = new BlandModel({})
+      expect(-> b.save({1:2})).not.toThrow()
 
   describe 'save()', ->
     it 'does not save if the data is invalid based on the schema', ->

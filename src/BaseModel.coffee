@@ -32,8 +32,9 @@ class BaseModel extends Backbone.Model
   validate: -> @getValidationErrors()
 
   save: (attrs, options) ->
+    result = super(attrs, options)
     @dataState = 'saving'
-    return super(attrs, options)
+    return result
 
   fetch: (options) ->
     @dataState = 'fetching'

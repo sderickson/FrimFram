@@ -515,8 +515,10 @@
     };
 
     BaseModel.prototype.save = function(attrs, options) {
+      var result;
+      result = BaseModel.__super__.save.call(this, attrs, options);
       this.dataState = 'saving';
-      return BaseModel.__super__.save.call(this, attrs, options);
+      return result;
     };
 
     BaseModel.prototype.fetch = function(options) {
