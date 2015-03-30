@@ -18,7 +18,7 @@ class BlandModel extends FrimFram.BaseModel
 
 describe 'BaseModel', ->
   
-  describe 'dataState', ->
+  describe '.dataState', ->
     it 'is "fetching" while the model is being fetched, "saving" while the model is being saved, and "standby" otherwise', ->
       b = new BlandModel({})
       expect(b.dataState).toBe("standby")
@@ -32,8 +32,15 @@ describe 'BaseModel', ->
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 404, responseText: '{}'})
       expect(b.dataState).toBe("standby")
-      
-  describe 'set()', ->
+
+  describe '.get(attribute)', ->
+    it 'can accept nested properties', ->
+      m = new FrimFram.BaseModel({prop: 1, nested: {a: 1, b: 2}})
+      expect(m.get('nested.a')).toBe(1)
+      expect(m.get('nested.b')).toBe(2)
+      expect(m.get('nested.3')).toBeUndefined()
+
+  describe '.set(attributes, options)', ->
     it 'throws an error when you try to set properties while saving', ->
       b = new BlandModel({})
       b.save()
@@ -48,7 +55,16 @@ describe 'BaseModel', ->
       b = new BlandModel({})
       expect(-> b.save({1:2})).not.toThrow()
 
-  describe 'save()', ->
+    it 'can accept nested properties', ->
+      m = new FrimFram.BaseModel({prop: 1, nested: {a: 1, b: 2}})
+      m.set('nested.a', 'one')
+      expect(m.get('nested').a).toBe('one')
+      m.set({'nested.b': 'two'})
+      expect(m.get('nested').b).toBe('two')
+      m.set('whatev.a', 'somethin')
+      expect(JSON.stringify(m.attributes)).toBe(JSON.stringify({"prop":1,"nested":{"a":"one","b":"two"}}))
+      
+  describe 'save(attributes, options)', ->
     it 'does not save if the data is invalid based on the schema', ->
       b = new BlandModel({number: 'NaN'})
       res = b.save()

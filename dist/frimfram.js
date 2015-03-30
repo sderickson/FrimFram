@@ -495,10 +495,58 @@
       return _results;
     };
 
+    BaseModel.prototype.get = function(attr) {
+      var parts, subKey, value, _i, _len;
+      if (_(attr).contains('.')) {
+        parts = attr.split('.');
+        value = this.attributes;
+        for (_i = 0, _len = parts.length; _i < _len; _i++) {
+          subKey = parts[_i];
+          if (_.isArray(value)) {
+            subKey = parseInt(subKey);
+          }
+          value = value != null ? value[subKey] : void 0;
+        }
+        return value;
+      } else {
+        return Backbone.Model.prototype.get.apply(this, [attr]);
+      }
+    };
+
     BaseModel.prototype.set = function(attributes, options) {
+      var a, clone, key, parent, parts, slim, subKey, value, _i, _len;
       if ((this.dataState !== 'standby') && !(options.xhr || options.headers)) {
         throw new Error('Cannot set while fetching or saving.');
       }
+      if (_.isString(attributes)) {
+        a = {};
+        a[attributes] = options;
+        attributes = a;
+        options = {};
+      }
+      for (key in attributes) {
+        if (!_(key).contains('.')) {
+          continue;
+        }
+        parts = key.split('.');
+        slim = _.pick(this.attributes, parts[0]);
+        clone = _.merge({}, slim);
+        value = clone;
+        for (_i = 0, _len = parts.length; _i < _len; _i++) {
+          subKey = parts[_i];
+          parent = value;
+          if (_.isArray(value)) {
+            subKey = parseInt(subKey);
+          }
+          value = value != null ? value[subKey] : void 0;
+        }
+        if (parent) {
+          parent[subKey] = attributes[key];
+          this.set(clone);
+        }
+        delete attributes[key];
+      }
+      Backbone.Model.prototype.set.apply(this, [attributes, options]);
       return BaseModel.__super__.set.call(this, attributes, options);
     };
 
