@@ -54,7 +54,7 @@ class ClientTestView extends FrimFram.RootView
     @specFiles = ClientTestView.getAllSpecFiles()
     if @subPath
       prefix = TEST_REQUIRE_PREFIX + @subPath
-      @specFiles = (f for f in @specFiles when _(f).startsWith(prefix))
+      @specFiles = (f for f in @specFiles when _(f).startsWith(prefix).value())
       
   @runTests: (specFiles) ->
     describe 'Client', ->
