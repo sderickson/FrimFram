@@ -7,6 +7,16 @@ describe 'BaseView', ->
     spyOn(window, 'key')
     new View()
     expect(key).toHaveBeenCalled()
+    
+    
+  describe '.constructor(options, ...)', ->
+    it 'passes options and any additional arguments on to initialize', ->
+      spy = jasmine.createSpy()
+      View = FrimFram.BaseView.extend({
+        initialize: spy
+      })
+      view = new View(1, 2, 3)
+      expect(spy).toHaveBeenCalledWith(1, 2, 3)
 
     
   describe '.render()', ->

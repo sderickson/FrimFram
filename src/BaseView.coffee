@@ -13,7 +13,7 @@ class BaseView extends Backbone.View
     @events = @superMerge('events')
     @subviews = {}
     @listenToShortcuts()
-    super options
+    super arguments...
     
     
   #- Rendering functions
