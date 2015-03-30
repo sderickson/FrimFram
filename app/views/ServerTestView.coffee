@@ -48,7 +48,7 @@ class ServerTestView extends FrimFram.RootView
   runTests: ->
     @setStatus('Running Tests')
     path = @subPath
-    if path and not (_(path).endsWith('/') or _(path).endsWith('coffee'))
+    if path and not (_(path).endsWith('/').value() or _(path).endsWith('coffee').value())
       path = path + '/'
     $.ajax('/server-test/run', {
       type: 'POST'
