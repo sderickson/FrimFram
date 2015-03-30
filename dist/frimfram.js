@@ -93,7 +93,7 @@
       this.events = this.superMerge('events');
       this.subviews = {};
       this.listenToShortcuts();
-      BaseView.__super__.constructor.call(this, options);
+      BaseView.__super__.constructor.apply(this, arguments);
     }
 
     BaseView.prototype.render = function() {
