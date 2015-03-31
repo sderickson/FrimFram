@@ -7,11 +7,13 @@ class Application extends FrimFram.BaseClass
     @watchForErrors()
     _.mixin(s.exports())
     $(document).bind 'keydown', @preventBackspace
-    @initialize()
-    Backbone.history.start({ pushState: true })
     @handleNormalUrls()
+    @initialize()
     
   initialize: _.noop
+  
+  start: ->
+    Backbone.history.start({ pushState: true })
 
     
   #- Error reporting

@@ -318,14 +318,17 @@
       this.watchForErrors();
       _.mixin(s.exports());
       $(document).bind('keydown', this.preventBackspace);
-      this.initialize();
-      Backbone.history.start({
-        pushState: true
-      });
       this.handleNormalUrls();
+      this.initialize();
     }
 
     Application.prototype.initialize = _.noop;
+
+    Application.prototype.start = function() {
+      return Backbone.history.start({
+        pushState: true
+      });
+    };
 
     Application.prototype.watchForErrors = function() {
       return window.onerror = function(msg, url, line, col, error) {
