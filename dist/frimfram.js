@@ -83,10 +83,12 @@
 
     BaseView.prototype.shortcuts = {};
 
-    BaseView.globals = ['moment'];
+    BaseView.globalContext = {
+      'moment': window.moment
+    };
 
-    BaseView.setGlobals = function(globals) {
-      this.globals = globals;
+    BaseView.extendGlobalContext = function(globals) {
+      return this.globalContext = _.extend(this.globalContext, globals);
     };
 
     function BaseView(options) {
@@ -132,7 +134,7 @@
       var context;
       context = {};
       context.pathname = document.location.pathname;
-      context = _.extend(context, _.pick(window, BaseView.globals));
+      context = _.defaults(context, BaseView.globalContext);
       if (pickPredicate) {
         context = _.extend(context, _.pick(this, pickPredicate, this));
       }

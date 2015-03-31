@@ -3,8 +3,10 @@ class BaseView extends Backbone.View
   
   template: ''
   shortcuts: {}
-  @globals = ['moment']
-  @setGlobals: (@globals) ->
+  @globalContext = {
+    'moment': window.moment
+  }
+  @extendGlobalContext: (globals) -> @globalContext = _.extend(@globalContext, globals)
 
 
   #- Setup
@@ -36,7 +38,7 @@ class BaseView extends Backbone.View
   initContext: (pickPredicate) ->
     context = {}
     context.pathname = document.location.pathname  # ex. '/play/level'
-    context = _.extend context, _.pick(window, BaseView.globals)
+    context = _.defaults context, BaseView.globalContext
     context = _.extend context, _.pick(@, pickPredicate, @) if pickPredicate
     context
 

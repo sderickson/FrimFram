@@ -86,11 +86,11 @@ describe 'BaseView', ->
       view = new FrimFram.BaseView()
       expect(view.initContext().pathname).toBe(document.location.pathname)
           
-    it 'includes globals set by @setGlobals()', ->
+    it 'includes globals added by @extendGlobalContext(context)', ->
       view = new FrimFram.BaseView()
-      window.someLib = {}
-      FrimFram.BaseView.setGlobals(['someLib'])
-      expect(view.initContext().someLib).toBe(window.someLib)
+      someLib = {}
+      FrimFram.BaseView.extendGlobalContext({'someLib':someLib})
+      expect(view.initContext().someLib).toBe(someLib)
     
     
   describe '.getContext()', ->
