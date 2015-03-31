@@ -80,7 +80,7 @@ class BaseView extends Backbone.View
   insertSubview: (view, elToReplace=null) ->
     # used to insert views with ids
     key = @makeSubviewKey(view)
-    @subviews[key].destroy() if key of @subviews
+    oldSubview = @subviews[key]
     elToReplace ?= @$el.find('#'+view.id)
     if not elToReplace.length
       throw new Error('Error inserting subview: do not have element for it to replace.')
@@ -88,6 +88,7 @@ class BaseView extends Backbone.View
     @registerSubview(view, key)
     view.render()
     view.onInsert()
+    oldSubview?.destroy()
     view
 
   registerSubview: (view, key) ->

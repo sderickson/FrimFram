@@ -194,14 +194,12 @@
     };
 
     BaseView.prototype.insertSubview = function(view, elToReplace) {
-      var key;
+      var key, oldSubview;
       if (elToReplace == null) {
         elToReplace = null;
       }
       key = this.makeSubviewKey(view);
-      if (key in this.subviews) {
-        this.subviews[key].destroy();
-      }
+      oldSubview = this.subviews[key];
       if (elToReplace == null) {
         elToReplace = this.$el.find('#' + view.id);
       }
@@ -212,6 +210,9 @@
       this.registerSubview(view, key);
       view.render();
       view.onInsert();
+      if (oldSubview != null) {
+        oldSubview.destroy();
+      }
       return view;
     };
 

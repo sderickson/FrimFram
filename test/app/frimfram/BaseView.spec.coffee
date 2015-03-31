@@ -178,7 +178,20 @@ describe 'BaseView', ->
       expect(subview.render).toHaveBeenCalled()
       expect(subview.onInsert).toHaveBeenCalled()
 
+    it 'replaces existing subviews for a given id', ->
+      View = FrimFram.BaseView.extend({ template: '<div id="subview"></div>' })
+      view = new View()
+      view.render()
+      Subview = FrimFram.BaseView.extend({ id: 'subview' })
+      subview1 = new Subview()
+      subview2 = new Subview()
+      view.insertSubview(subview1)
+      view.insertSubview(subview2)
+      expect(subview1.destroyed).toBeTruthy()
+      expect(subview2.destroyed).toBeFalsy()
+      expect(view.$el.find('#subview')[0]).toBe(subview2.el)
 
+      
   describe '.registerSubview()', ->
     it 'adds the given view to the subviews object', ->
       View = FrimFram.BaseView.extend({
