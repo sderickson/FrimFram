@@ -105,6 +105,8 @@ class BaseView extends Backbone.View
 
   removeSubview: (view) ->
     view.$el.empty()
+    newEl = view.$el.clone()
+    view.$el.replaceWith(newEl)
     key = _.findKey @subviews, (v) -> v is view 
     delete @subviews[key] if key
     view.destroy()

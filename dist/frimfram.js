@@ -232,8 +232,10 @@
     };
 
     BaseView.prototype.removeSubview = function(view) {
-      var key;
+      var key, newEl;
       view.$el.empty();
+      newEl = view.$el.clone();
+      view.$el.replaceWith(newEl);
       key = _.findKey(this.subviews, function(v) {
         return v === view;
       });

@@ -207,7 +207,7 @@ describe 'BaseView', ->
       expect(_.values(view.subviews)[0]).toBe(subview)
     
     
-  describe '.removeSubView()', ->
+  describe '.removeSubview()', ->
     it 'removes and destroys a given view', ->
       View = FrimFram.BaseView.extend({
         template: '<div><div id="subview"></div></div>'
@@ -220,12 +220,32 @@ describe 'BaseView', ->
       })
       subview = new Subview()
       view.insertSubview(subview)
-      expect(view.$el.find('#subview').length).toBe(1)
+      expect(view.$el.find('#subview').text()).toBeTruthy()
       view.removeSubview(subview)
-      expect(view.$el.find('#subview').length).toBe(0)
+      expect(view.$el.find('#subview').text()).toBeFalsy()
       expect(subview.destroyed).toBeTruthy()
-    
-    
+      
+    it 'leaves a clone of the original el behind so insertSubview still works', ->
+      View = FrimFram.BaseView.extend({
+        template: '<div><div id="subview"></div></div>'
+      })
+      view = new View()
+      view.render()
+      Subview = FrimFram.BaseView.extend({
+        id: 'subview'
+        template: '<div>Test</div>'
+      })
+      subview = new Subview()
+      expect(view.$el.find('#subview').text()).toBeFalsy()
+      view.insertSubview(subview)
+      expect(view.$el.find('#subview').text()).toBeTruthy()
+      view.removeSubview(subview)
+      expect(view.$el.find('#subview').text()).toBeFalsy()
+
+      subview = new Subview()
+      view.insertSubview(subview)
+      expect(view.$el.find('#subview').text()).toBeTruthy()
+
   describe '@getQueryParam(param) and .getQueryParam(param)', ->
     it 'parses a given parameter out of the query string', ->
       spyOn(FrimFram.BaseView, 'getQueryString').and.returnValue('test=ing&what=wut')
