@@ -9,15 +9,7 @@ class BaseCollection extends Backbone.Collection
 
   fetch: (options) ->
     @dataState = 'fetching'
-    options ?= {}
-    givenSuccess = options.success
-    givenError = options.error
-    options.success = =>
-      @dataState = 'standby'
-      givenSuccess?(arguments...)
-    options.error = =>
-      @dataState = 'standby'
-      givenError?(arguments...)
+    options = FrimFram.wrapBackboneRequestCallbacks(options)
     if @defaultFetchData
       options.data ?= {}
       _.defaults(options.data, @defaultFetchData)

@@ -71,6 +71,59 @@ describe 'BaseModel', ->
       expect(res).toBe(false)
       request = jasmine.Ajax.requests.mostRecent()
       expect(request).toBeUndefined()
+      
+    it 'calls options.success and options.error after dataState is back to "standby"', ->
+      count = 0
+      callback = (model) ->
+        expect(model.dataState).toBe('standby')
+        count += 1
+      
+      b = new BlandModel({_id:'1'})
+      expect(b.dataState).toBe('standby')
+
+      b.save(null, { success: callback })
+      expect(b.dataState).toBe('saving')
+      request = jasmine.Ajax.requests.mostRecent()
+      request.respondWith({status: 200, responseText: '{}'})
+
+      b.save(null, { complete: callback })
+      expect(b.dataState).toBe('saving')
+      request = jasmine.Ajax.requests.mostRecent()
+      request.respondWith({status: 200, responseText: '{}'})
+
+      b.save(null, { error: callback })
+      expect(b.dataState).toBe('saving')
+      request = jasmine.Ajax.requests.mostRecent()
+      request.respondWith({status: 404, responseText: '{}'})
+
+      expect(count).toBe(3)
+      
+  describe 'fetch(options)', ->
+    it 'calls options.success and options.error after dataState is back to "standby"', ->
+      count = 0
+      callback = (model) ->
+        expect(model.dataState).toBe('standby')
+        count += 1
+
+      b = new BlandModel({_id:1})
+      expect(b.dataState).toBe('standby')
+
+      b.fetch({ success: callback })
+      expect(b.dataState).toBe('fetching')
+      request = jasmine.Ajax.requests.mostRecent()
+      request.respondWith({status: 200, responseText: '{}'})
+
+      b.fetch({ complete: callback })
+      expect(b.dataState).toBe('fetching')
+      request = jasmine.Ajax.requests.mostRecent()
+      request.respondWith({status: 200, responseText: '{}'})
+
+      b.fetch({ error: callback })
+      expect(b.dataState).toBe('fetching')
+      request = jasmine.Ajax.requests.mostRecent()
+      request.respondWith({status: 404, responseText: '{}'})
+
+      expect(count).toBe(3)
 
   describe 'schema()', ->
     it 'dereferences the class property "schema" if it\'s a string using tv4.getSchema', ->

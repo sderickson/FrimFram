@@ -5,11 +5,9 @@ class BaseModel extends Backbone.Model
   initialize: (attributes, options) ->
     super(attributes, options)
     @on 'sync', @onLoadedOrAdded, @
-    @on 'add', @onLoadedOrAdded, @
-    @on 'error', @onError, @
+    @on 'add', @onAdded, @
     
-  onError: -> @dataState = 'standby'
-  onLoadedOrAdded: -> @dataState = 'standby'
+  onAdded: -> @dataState = 'standby'
 
   schema: ->
     s = @constructor.schema
@@ -67,11 +65,13 @@ class BaseModel extends Backbone.Model
   validate: -> @getValidationErrors()
 
   save: (attrs, options) ->
+    options = FrimFram.wrapBackboneRequestCallbacks(options)
     result = super(attrs, options)
-    @dataState = 'saving'
+    @dataState = 'saving' if result
     return result
 
   fetch: (options) ->
+    options = FrimFram.wrapBackboneRequestCallbacks(options)
     @dataState = 'fetching'
     return super(options)
 

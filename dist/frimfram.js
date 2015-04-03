@@ -2,6 +2,26 @@
   window.FrimFram = {
     isProduction: function() {
       return window.location.href.indexOf('localhost') === -1;
+    },
+    wrapBackboneRequestCallbacks: function(options) {
+      var originalOptions;
+      if (options == null) {
+        options = {};
+      }
+      originalOptions = _.clone(options);
+      options.success = function(model) {
+        model.dataState = 'standby';
+        return typeof originalOptions.success === "function" ? originalOptions.success.apply(originalOptions, arguments) : void 0;
+      };
+      options.error = function(model) {
+        model.dataState = 'standby';
+        return typeof originalOptions.error === "function" ? originalOptions.error.apply(originalOptions, arguments) : void 0;
+      };
+      options.complete = function(model) {
+        model.dataState = 'standby';
+        return typeof originalOptions.complete === "function" ? originalOptions.complete.apply(originalOptions, arguments) : void 0;
+      };
+      return options;
     }
   };
 
@@ -417,25 +437,8 @@
     };
 
     BaseCollection.prototype.fetch = function(options) {
-      var givenError, givenSuccess;
       this.dataState = 'fetching';
-      if (options == null) {
-        options = {};
-      }
-      givenSuccess = options.success;
-      givenError = options.error;
-      options.success = (function(_this) {
-        return function() {
-          _this.dataState = 'standby';
-          return typeof givenSuccess === "function" ? givenSuccess.apply(null, arguments) : void 0;
-        };
-      })(this);
-      options.error = (function(_this) {
-        return function() {
-          _this.dataState = 'standby';
-          return typeof givenError === "function" ? givenError.apply(null, arguments) : void 0;
-        };
-      })(this);
+      options = FrimFram.wrapBackboneRequestCallbacks(options);
       if (this.defaultFetchData) {
         if (options.data == null) {
           options.data = {};
@@ -469,15 +472,10 @@
     BaseModel.prototype.initialize = function(attributes, options) {
       BaseModel.__super__.initialize.call(this, attributes, options);
       this.on('sync', this.onLoadedOrAdded, this);
-      this.on('add', this.onLoadedOrAdded, this);
-      return this.on('error', this.onError, this);
+      return this.on('add', this.onAdded, this);
     };
 
-    BaseModel.prototype.onError = function() {
-      return this.dataState = 'standby';
-    };
-
-    BaseModel.prototype.onLoadedOrAdded = function() {
+    BaseModel.prototype.onAdded = function() {
       return this.dataState = 'standby';
     };
 
@@ -572,12 +570,16 @@
 
     BaseModel.prototype.save = function(attrs, options) {
       var result;
+      options = FrimFram.wrapBackboneRequestCallbacks(options);
       result = BaseModel.__super__.save.call(this, attrs, options);
-      this.dataState = 'saving';
+      if (result) {
+        this.dataState = 'saving';
+      }
       return result;
     };
 
     BaseModel.prototype.fetch = function(options) {
+      options = FrimFram.wrapBackboneRequestCallbacks(options);
       this.dataState = 'fetching';
       return BaseModel.__super__.fetch.call(this, options);
     };
