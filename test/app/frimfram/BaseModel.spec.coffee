@@ -12,6 +12,7 @@ tv4.addSchema({
 
 class BlandModel extends FrimFram.BaseModel
   idAttribute: '_id'
+  initialize: _.noop
   @className: 'Bland'
   @schema: 'http://my.site/schemas#bland'
   urlRoot: '/db/bland'
@@ -35,7 +36,7 @@ describe 'BaseModel', ->
 
   describe '.get(attribute)', ->
     it 'can accept nested properties', ->
-      m = new FrimFram.BaseModel({prop: 1, nested: {a: 1, b: 2}})
+      m = new BlandModel({prop: 1, nested: {a: 1, b: 2}})
       expect(m.get('nested.a')).toBe(1)
       expect(m.get('nested.b')).toBe(2)
       expect(m.get('nested.3')).toBeUndefined()
@@ -56,7 +57,7 @@ describe 'BaseModel', ->
       expect(-> b.save({1:2})).not.toThrow()
 
     it 'can accept nested properties', ->
-      m = new FrimFram.BaseModel({prop: 1, nested: {a: 1, b: 2}})
+      m = new BlandModel({prop: 1, nested: {a: 1, b: 2}})
       m.set('nested.a', 'one')
       expect(m.get('nested').a).toBe('one')
       m.set({'nested.b': 'two'})

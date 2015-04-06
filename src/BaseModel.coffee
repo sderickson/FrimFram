@@ -2,9 +2,8 @@ class BaseModel extends Backbone.Model
 
   dataState: 'standby' # or 'fetching', 'saving'
   
-  initialize: (attributes, options) ->
+  constructor: (attributes, options) ->
     super(attributes, options)
-    @on 'sync', @onLoadedOrAdded, @
     @on 'add', @onAdded, @
     
   onAdded: -> @dataState = 'standby'

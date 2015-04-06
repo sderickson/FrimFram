@@ -423,18 +423,14 @@
   BaseCollection = (function(_super) {
     __extends(BaseCollection, _super);
 
-    function BaseCollection() {
-      return BaseCollection.__super__.constructor.apply(this, arguments);
-    }
-
     BaseCollection.prototype.dataState = 'standby';
 
-    BaseCollection.prototype.initialize = function(models, options) {
-      BaseCollection.__super__.initialize.call(this, models, options);
+    function BaseCollection(models, options) {
+      BaseCollection.__super__.constructor.call(this, models, options);
       if (options != null ? options.defaultFetchData : void 0) {
-        return this.defaultFetchData = options.defaultFetchData;
+        this.defaultFetchData = options.defaultFetchData;
       }
-    };
+    }
 
     BaseCollection.prototype.fetch = function(options) {
       this.dataState = 'fetching';
@@ -463,17 +459,12 @@
   BaseModel = (function(_super) {
     __extends(BaseModel, _super);
 
-    function BaseModel() {
-      return BaseModel.__super__.constructor.apply(this, arguments);
-    }
-
     BaseModel.prototype.dataState = 'standby';
 
-    BaseModel.prototype.initialize = function(attributes, options) {
-      BaseModel.__super__.initialize.call(this, attributes, options);
-      this.on('sync', this.onLoadedOrAdded, this);
-      return this.on('add', this.onAdded, this);
-    };
+    function BaseModel(attributes, options) {
+      BaseModel.__super__.constructor.call(this, attributes, options);
+      this.on('add', this.onAdded, this);
+    }
 
     BaseModel.prototype.onAdded = function() {
       return this.dataState = 'standby';

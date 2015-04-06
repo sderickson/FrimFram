@@ -2,7 +2,7 @@ class BaseCollection extends Backbone.Collection
   
   dataState: 'standby' # or 'fetching'
 
-  initialize: (models, options) ->
+  constructor: (models, options) ->
     super(models, options)
     if options?.defaultFetchData
       @defaultFetchData = options.defaultFetchData
