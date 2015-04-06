@@ -58,7 +58,7 @@ describe 'BaseView', ->
   describe '.renderSelectors(selectors...)', ->
     it 'rerenders selectors passed in as arguments', ->
       View = FrimFram.BaseView.extend({
-        template: (c) -> "<div><div id='foo'>#{c.foo}</div><div id='bar'>#{c.bar}</div></div>"
+        template: (c) -> "<div id='foo'>#{c.foo}</div><div id='bar'>#{c.bar}</div>"
         getContext: -> @initContext(['foo', 'bar'])
       })
       view = new View()

@@ -28,7 +28,7 @@ class BaseView extends Backbone.View
     @onRender()
 
   renderSelectors: (selectors...) ->
-    newTemplate = $(@getTemplateResult())
+    newTemplate = $('<div>'+@getTemplateResult()+'</div>')
     for selector in selectors
       @$el.find(selector).replaceWith(newTemplate.find(selector))
 
