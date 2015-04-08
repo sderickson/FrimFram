@@ -133,7 +133,7 @@
     BaseView.prototype.renderSelectors = function() {
       var newTemplate, selector, selectors, _i, _len, _results;
       selectors = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      newTemplate = $(this.getTemplateResult());
+      newTemplate = $('<div>' + this.getTemplateResult() + '</div>');
       _results = [];
       for (_i = 0, _len = selectors.length; _i < _len; _i++) {
         selector = selectors[_i];

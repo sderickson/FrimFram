@@ -17,7 +17,7 @@ module.exports.created = (res, data) ->
   send(res, 201, data)
 
 module.exports.noContent = (res) ->
-  res.send(204)
+  res.sendStatus(204)
 
 
 #- 400 client errors 
@@ -82,6 +82,6 @@ send = (res, code, details) ->
   code ?= 500
   if code >= 400
     details.code = code or 500
-  res.json code, details
+  res.status(code).json(details)
 
   

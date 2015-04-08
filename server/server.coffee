@@ -1,6 +1,10 @@
 require('./globals').setup()
 
 winston = require 'winston'
+morgan = require 'morgan'
+cookieParser = require 'cookie-parser'
+bodyParser = require 'body-parser'
+
 mongoose = require 'mongoose'
 Grid = require 'gridfs-stream'
 express = require 'express'
@@ -41,40 +45,14 @@ module.exports.start = (readyCallback) ->
   app = express()
   app.set 'port', config.port
   app.set 'env', if config.isProduction then 'production' else 'development'
-
-  
-  #- express middleware
-  if config.isProduction
-
-    productionLogging = (tokens, req, res) ->
-      status = res.statusCode
-      color = 32
-      if status >= 500 then color = 31
-      else if status >= 400 then color = 33
-      else if status >= 300 then color = 36
-      elapsed = (new Date()) - req._startTime
-      elapsedColor = if elapsed < 500 then 90 else 31
-      if (status not in [200, 204, 302, 304]) or elapsed > 500
-        return "\x1b[90m#{req.method} #{req.originalUrl} \x1b[#{color}m#{res.statusCode} \x1b[#{elapsedColor}m#{elapsed}ms\x1b[0m"
-      null
-    
-    express.logger.format 'prod', productionLogging
-    app.use express.logger('prod')
-    app.use express.compress()
-  else
-    app.use express.logger('dev')
-
   app.use(express.static(path.join(__dirname, '../public')))
   app.use(express.static(path.join(__dirname, '../bower_components/bootstrap')))
+  app.use(morgan('dev'))
   app.use(useragent.express())
+  app.use(cookieParser(config.cookie_secret))
+  app.use(bodyParser.json())
 
-  app.use(express.favicon(path.join(__dirname, '../public','images','favicon.ico')))
-  app.use express.cookieParser(config.cookie_secret)
-  app.use express.bodyParser()
-  app.use express.methodOverride()
-  app.use express.cookieSession({secret:'2EqPfxTEqUtRXVfZygLR'})
-
-
+  
   #- passport middlware
   authentication = require('passport')
   app.use(authentication.initialize())
@@ -97,7 +75,7 @@ module.exports.start = (readyCallback) ->
     res.header 'Cache-Control', 'no-cache, no-store, must-revalidate'
     res.header 'Pragma', 'no-cache'
     res.header 'Expires', 0
-    res.send 200, mainHTML
+    res.status(200).send(mainHTML)
 
   @server = http.createServer(app).listen app.get('port'), ->
     winston.info('Express server listening on port ' + app.get('port'))
