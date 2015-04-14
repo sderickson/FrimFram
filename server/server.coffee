@@ -4,6 +4,7 @@ winston = require 'winston'
 morgan = require 'morgan'
 cookieParser = require 'cookie-parser'
 bodyParser = require 'body-parser'
+multer = require 'multer'
 
 mongoose = require 'mongoose'
 Grid = require 'gridfs-stream'
@@ -19,28 +20,27 @@ routes = require './routes'
 
 module.exports.start = (readyCallback) ->
   return if @server
-  
+
   #- setup logging
   winston.remove(winston.transports.Console)
   winston.add(winston.transports.Console,
     colorize: true,
     timestamp: true
   )
-  
-  
+
   #- connect to db
 #  dbName = config.mongo.db
 #  address = "#{config.mongo.host}:#{config.mongo.port}"
 #  if config.mongo.username and config.mongo.password
 #    address = "#{config.mongo.username}:#{config.mongo.password}@#{address}"
 #  address = "mongodb://#{address}/#{dbName}"
-#  
+#
 #  winston.info "DB connecting to #{address}"
 #  mongoose.connect address
-#  mongoose.connection.once 'open', -> 
+#  mongoose.connection.once 'open', ->
 #    Grid.gfs = Grid(mongoose.connection.db, mongoose.mongo)
-  
-  
+
+
   #- express creation, config
   app = express()
   app.set 'port', config.port
@@ -51,8 +51,9 @@ module.exports.start = (readyCallback) ->
   app.use(useragent.express())
   app.use(cookieParser(config.cookie_secret))
   app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(multer())
 
-  
   #- passport middlware
   authentication = require('passport')
   app.use(authentication.initialize())
@@ -62,7 +63,7 @@ module.exports.start = (readyCallback) ->
   #- setup routes
   routes(app)
 
-  
+
   #- Serve index.html
   try
     mainHTML = fs.readFileSync(path.join(__dirname, '../public', 'index.html'), 'utf8')
@@ -80,8 +81,8 @@ module.exports.start = (readyCallback) ->
   @server = http.createServer(app).listen app.get('port'), ->
     winston.info('Express server listening on port ' + app.get('port'))
     readyCallback?()
-    
-    
+
+
 module.exports.close = ->
   @server?.close()
   @server = null

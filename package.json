@@ -40,6 +40,7 @@
     "mongoose": "3.8.x",
     "mongoose-text-search": "0.0.x",
     "morgan": "1.5.x",
+    "multer": "0.1.x",
     "passport": "0.2.x",
     "passport-local": "1.0.x",
     "request": "2.54.x",
