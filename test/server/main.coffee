@@ -33,7 +33,6 @@ module.exports.startServer = ->
   config.runningTests = true
   config.port = 3001
   
-  spawn = require('child_process').spawn
   server = rootRequire('server/server')
   server.start =>
     @serverReady = true

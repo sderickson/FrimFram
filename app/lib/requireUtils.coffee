@@ -20,6 +20,7 @@ module.exports.parseImmediateChildren = (allChildren, subPath, baseRequirePath='
     requirePrefix += '/'
 
   for f in allChildren
+    continue unless _(f).startsWith(subPath).value()
     f = f[requirePrefix.length..]
     continue unless f
     parts = f.split('/')
