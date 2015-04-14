@@ -6,7 +6,7 @@ class ServerTestView extends FrimFram.RootView
   id: 'server-test-view'
   template: require 'templates/server-test-view'
   status: 'Off'
-  
+
   events:
     'click .show-stack-button': 'onClickShowStackButton'
     'click #toggle': 'onToggleTesting'
@@ -16,17 +16,17 @@ class ServerTestView extends FrimFram.RootView
     @specFiles = []
     @subPath = options.params[0] or ''
     @subPath = @subPath[1..] if @subPath[0] is '/'
-    
+
     $.ajax('/server-test/list', {
       success: _.bind(@onTestListLoaded, @)
       error: FrimFram.onAjaxError
     })
-    
+
     $.ajax('/server-test/running', {
       success: _.bind(@onServerRunningLoaded, @)
       error: FrimFram.onAjaxError
     })
-    
+
     @runTests = _.bind(_.debounce(@runTests, 200), @)
 
   onServerRunningLoaded: (testing) ->
@@ -35,15 +35,16 @@ class ServerTestView extends FrimFram.RootView
       @listenForChanges()
     else
       @setStatus('Off')
-    
+
   listenForChanges: ->
     @setStatus('Listening In')
     self = @
-    connection = new WebSocket('ws://localhost:3002')
-    connection.onopen = -> self.runTests()
-    connection.onerror = (error) -> console.error 'web socket errored', error
-    connection.onmessage = (message) -> self.runTests()
-    connection.onclose = -> self.setupServerTesting() if self.testing
+    @connection?.close()
+    @connection = new WebSocket('ws://localhost:3002')
+    @connection.onopen = -> self.runTests()
+    @connection.onerror = (error) -> console.error 'web socket errored', error
+    @connection.onmessage = (message) -> self.runTests()
+    @connection.onclose = -> self.setupServerTesting() if self.testing
 
   runTests: ->
     @setStatus('Running Tests')
@@ -56,7 +57,7 @@ class ServerTestView extends FrimFram.RootView
       success: _.bind(@onReportsLoaded, @)
       error: FrimFram.onAjaxError
     })
-    
+
   setupServerTesting: =>
     @setTesting(true)
     @setStatus('Initializing Testing System')
@@ -65,58 +66,59 @@ class ServerTestView extends FrimFram.RootView
       success: _.bind(@listenForChanges, @)
       error: _.bind(@onServerTestingSetupFailed, @)
     })
-    
+
   onServerTestingSetupFailed: ->
     @setStatus('Server Down, Polling...')
     setTimeout(@setupServerTesting, 3000)
-    
+
   teardownServerTesting: ->
     @setTesting(false)
+    @connection?.close()
     @setStatus('Restarting Server')
     $.ajax('/server-test/teardown', {
       type: 'POST'
       success: _.bind(@onTeardownDone, @)
       error: FrimFram.onAjaxError
     })
-    
+
   onTeardownDone: ->
     @setStatus('Off')
-      
+
   setStatus: (@status) ->
     @$el.find('#status').text(@status)
 
   onToggleTesting: ->
     if @testing then @teardownServerTesting() else @setupServerTesting()
-    
+
   setTesting: (@testing) ->
     toggle = @$el.find('#toggle')
     toggle.removeClass('btn-danger btn-success')
     toggle.addClass(if @testing then 'btn-success' else 'btn-danger')
     toggle.text(if @testing then 'Turn Off Testing' else 'Turn On Testing')
-    
+
   #- Report digestion. Tests were parsed from XML with odd names. Make the reports sensical.
-    
+
   onReportsLoaded: (result) ->
     @setStatus('Standing By')
     @stacks = []
     @rootDir = result.rootDir
-    
+
     if result.consoleError
       @consoleError = @digestStack(result.consoleError)
-      
+
     if result.reports
       suites = (obj.testsuites.testsuite for obj in result.reports)
       suites = _.flatten(suites)
       @suites = (@digestSuite(suite) for suite in suites)
-      
+
     @render()
 
   digestStack: (stack) ->
     short = []
     lastLineWasRemoved = false
-    
+
     # shorten the stack by ...'ing all jasmine-node lines, and "removing" the rootDir.
-    
+
     lineIsUseless = (line) ->
       return _.any([
           'node_modules/jasmine-node'
@@ -125,7 +127,7 @@ class ServerTestView extends FrimFram.RootView
           'module.js'
         ], (substring) -> _.contains(line, substring)
       )
-      
+
     for line, index in stack.split('\n')
       if lineIsUseless(line)
         continue if lastLineWasRemoved
@@ -141,9 +143,9 @@ class ServerTestView extends FrimFram.RootView
         else if index > 0
           line = '(/¯◡ ‿ ◡)/¯ ~ ~ ~ /' + line
         short.push(line)
-        
+
     summary = short.shift()
-        
+
     result = {
       summary: summary
       raw: stack
@@ -151,18 +153,18 @@ class ServerTestView extends FrimFram.RootView
     }
     @stacks.push result
     return result
-    
+
   digestSuite: (suite) ->
     return {
-      name: suite.$.name
-      errors: parseInt(suite.$.errors)
-      failures: parseInt(suite.$.failures)
-      tests: (@digestTest(test) for test in suite.testcase)
-      time: @digestTime(suite.$.time)
+    name: suite.$.name
+    errors: parseInt(suite.$.errors)
+    failures: parseInt(suite.$.failures)
+    tests: (@digestTest(test) for test in suite.testcase)
+    time: @digestTime(suite.$.time)
     }
-    
+
   digestTime: (time) -> "#{(parseFloat(time)*1000).toFixed(0)} ms"
-    
+
   digestTest: (test) ->
     result = {
       name: test.$.name
@@ -171,15 +173,15 @@ class ServerTestView extends FrimFram.RootView
     if test.failure
       result.failures = (@digestFailure(failure) for failure in test.failure)
     return result
-    
+
   digestFailure: (failure) ->
     return {
-      stack: @digestStack(failure._)
-      type: failure.$.type # always expect? Is something broken?
-      message: failure.$.message
+    stack: @digestStack(failure._)
+    type: failure.$.type # always expect? Is something broken?
+    message: failure.$.message
     }
 
-    
+
   #- other
 
   onClickShowStackButton: (e) ->
@@ -203,8 +205,12 @@ class ServerTestView extends FrimFram.RootView
     c.stacks = @stacks or []
     c.status = @status
     c
-    
+
   onRender: ->
     @setTesting(@testing)
+
+  destroy: ->
+    @connection?.close()
+    super()
 
 module.exports = ServerTestView
