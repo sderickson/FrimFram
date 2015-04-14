@@ -6,6 +6,7 @@ xml2js = require 'xml2js'
 async = require 'async'
 gaze = require 'gaze'
 WebSocketServer = require('ws').Server
+winston = require 'winston'
 
 #- Server test finding
 
@@ -39,7 +40,7 @@ module.exports.listServerTests = (req, res) ->
 
 
 #- POST /server-test/run
-  
+
 module.exports.runServerTests = (req, res) ->
   # Since I'm using this endpoint just as a fancy way to run and view test results,
   # I'm not going to bother with using async fs calls.
@@ -48,25 +49,42 @@ module.exports.runServerTests = (req, res) ->
     return respond.forbidden(res, {message: 'Only allowed on local dev machines.'})
 
   givenPath = req.body.path or ''
-  
+
   if givenPath not in serverTestPaths
     return respond.unprocessableEntity(res, {message: 'Given path does not match any test files.'})
 
   # clear the reports directory
   reportDir = rootDir + 'reports/'
-  files = fs.readdirSync(reportDir)
-  for file in files
-    fs.unlinkSync(reportDir+file)
+  try
+    files = fs.readdirSync(reportDir)
+    for file in files
+      fs.unlinkSync(reportDir+file)
+  catch e
+    if e.code isnt 'ENOENT'
+      throw e
 
   path = 'test/server/' + givenPath
-  jasmineNode = spawn('node_modules/jasmine-node/bin/jasmine-node', [path, '--coffee', '--captureExceptions', '--forceexit', '--junitreport'])
-
+  args = [path, '--coffee', '--captureExceptions', '--forceexit', '--junitreport']
+  buffer = ''
+  program = 'node_modules/jasmine-node/bin/jasmine-node'
+  jasmineNode = spawn(program, args)
+  #  console.log 'Running', "#{program} #{args.join(' ')}"
   consoleError = []
+
+  jasmineNode.stdout.on('data', (data) ->
+    buffer += String(data)
+    if buffer.indexOf('\n') > -1
+      lines = buffer.split('\n')
+      console.log('\t', line) for line in lines.slice(0, lines.length-1)
+      buffer = _.last(lines)
+  )
+
   jasmineNode.stderr.on('data', (data) -> consoleError.push(String(data)))
 
   # TODO: Try to put this into an async.waterfall or something like it. Avoid callback hell!
   response = { rootDir: rootDir }
   jasmineNode.on 'exit', (exitCode) ->
+    console.log '\t', buffer
     consoleError = consoleError.join('')
     # seems to be a bug with node 0.12: http://stackoverflow.com/questions/28651028/cannot-find-module-build-release-bson-code-module-not-found-js-bson
     if consoleError isnt "Failed to load c++ bson extension, using pure JS version\n"
@@ -80,7 +98,7 @@ module.exports.runServerTests = (req, res) ->
         return respond.internalServerError(res, {message: 'Error parsing reports.', error: err}) if err
         response.reports = reports
         respond.ok(res, response)
-        
+
 
 #- POST /server-test/setup
 
@@ -100,8 +118,8 @@ module.exports.setup = (req, res) ->
     @on 'all', (event, filepath) ->
       module.exports.lastChange = new Date().getTime()
       wss.clients.forEach (client) -> client.send('1')
-    # TODO: Recognize when a file is changed, created or deleted, refresh the list, and tell the client to update.
-    # TODO: It broke down when I renamed a folder. Make it not do that.
+  # TODO: Recognize when a file is changed, created or deleted, refresh the list, and tell the client to update.
+  # TODO: It broke down when I renamed a folder. Make it not do that.
 
   @inTestMode = true
 
@@ -110,8 +128,8 @@ module.exports.setup = (req, res) ->
 
 module.exports.running = (req, res) ->
   return respond.ok(res, !!@inTestMode)
-  
-  
+
+
 #- POST /server-test/teardown
 
 module.exports.teardown = (req, res) ->
