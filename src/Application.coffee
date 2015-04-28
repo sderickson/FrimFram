@@ -1,23 +1,23 @@
 class Application extends FrimFram.BaseClass
   @extend: Backbone.Model.extend
-  
+
   #- Initialization
-  
+
   constructor: ->
     @watchForErrors()
     _.mixin(s.exports())
     $(document).bind 'keydown', @preventBackspace
     @handleNormalUrls()
-    @initialize()
-    
+    @initialize(arguments...)
+
   initialize: _.noop
-  
+
   start: ->
     Backbone.history.start({ pushState: true })
 
-    
+
   #- Error reporting
-    
+
   watchForErrors: ->
     window.onerror = (msg, url, line, col, error) ->
       return if $('body').find('.runtime-error-alert').length
@@ -26,10 +26,10 @@ class Application extends FrimFram.BaseClass
       alert.addClass('in')
       alert.alert()
       close = -> alert.alert('close')
-      
-      
+
+
   #- Backspace navigation stopping
-  
+
   # Prevent Ctrl/Cmd + [ / ], P, S
   @ctrlDefaultPrevented: [219, 221, 80, 83]
   preventBackspace: (event) =>
@@ -47,9 +47,9 @@ class Application extends FrimFram.BaseClass
     # not radio, checkbox, range, or color
     return (tag is 'textarea' or (tag is 'input' and type in textInputTypes) or el.contentEditable in ['', 'true']) and not (el.readOnly or el.disabled)
 
-    
+
   #- Single-page web app URLs w/out hashbang
-    
+
   handleNormalUrls: ->
     # http://artsy.github.com/blog/2012/06/25/replacing-hashbang-routes-with-pushstate/
     $(document).on 'click', "a[href^='/']", (event) ->
@@ -60,6 +60,6 @@ class Application extends FrimFram.BaseClass
         url = href.replace(/^\//,'').replace('\#\!\/','')
         app.router.navigate url, { trigger: true }
         return false
-    
-    
+
+
 FrimFram.Application = Application

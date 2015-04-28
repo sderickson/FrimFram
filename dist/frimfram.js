@@ -341,7 +341,7 @@
       _.mixin(s.exports());
       $(document).bind('keydown', this.preventBackspace);
       this.handleNormalUrls();
-      this.initialize();
+      this.initialize.apply(this, arguments);
     }
 
     Application.prototype.initialize = _.noop;
