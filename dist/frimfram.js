@@ -270,7 +270,7 @@
     };
 
     BaseView.getQueryParam = function(param) {
-      var pair, pairs, query, _i, _len, _ref;
+      var pair, pairs, query, _i, _len;
       query = this.getQueryString();
       pairs = (function() {
         var _i, _len, _ref, _results;
@@ -285,10 +285,7 @@
       for (_i = 0, _len = pairs.length; _i < _len; _i++) {
         pair = pairs[_i];
         if (pair[0] === param) {
-          return (_ref = {
-            'true': true,
-            'false': false
-          }[pair[1]]) != null ? _ref : decodeURIComponent(pair[1]);
+          return decodeURIComponent(pair[1].replace(/\+/g, '%20'));
         }
       }
     };

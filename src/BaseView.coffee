@@ -1,6 +1,6 @@
 
 class BaseView extends Backbone.View
-  
+
   template: ''
   shortcuts: {}
   @globalContext = {
@@ -16,10 +16,10 @@ class BaseView extends Backbone.View
     @subviews = {}
     @listenToShortcuts()
     super arguments...
-    
-    
+
+
   #- Rendering functions
-    
+
   render: ->
     # reset subviews
     view.destroy() for id, view of @subviews
@@ -34,7 +34,7 @@ class BaseView extends Backbone.View
 
   getTemplateResult: ->
     if _.isString(@template) then @template else @template(@getContext())
-    
+
   initContext: (pickPredicate) ->
     context = {}
     context.pathname = document.location.pathname  # ex. '/play/level'
@@ -43,8 +43,8 @@ class BaseView extends Backbone.View
     context
 
   getContext: -> @initContext()
-    
-    
+
+
   #- Callbacks
 
   onRender: _.noop # Good place to insert subviews
@@ -107,26 +107,26 @@ class BaseView extends Backbone.View
     view.$el.empty()
     newEl = view.$el.clone()
     view.$el.replaceWith(newEl)
-    key = _.findKey @subviews, (v) -> v is view 
+    key = _.findKey @subviews, (v) -> v is view
     delete @subviews[key] if key
     view.destroy()
 
-      
+
   #- Utilities
 
   getQueryParam: (param) ->
     BaseView.getQueryParam(param)
-    
+
   @getQueryParam: (param) ->
     query = @getQueryString()
     pairs = (pair.split('=') for pair in query.split '&')
     for pair in pairs when pair[0] is param
-      return {'true': true, 'false': false}[pair[1]] ? decodeURIComponent(pair[1])
+      return decodeURIComponent(pair[1].replace(/\+/g, '%20'))
     return
-    
+
   @getQueryString: -> document.location.search.substring 1
 
-  
+
   #- Teardown
 
   destroy: ->
@@ -138,5 +138,5 @@ class BaseView extends Backbone.View
     @destroy = _.noop
 
 _.defaults(BaseView.prototype, FrimFram.BaseClass.prototype)
-    
+
 FrimFram.BaseView = BaseView
