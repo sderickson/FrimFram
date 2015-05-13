@@ -18,7 +18,7 @@ class BlandModel extends FrimFram.BaseModel
   urlRoot: '/db/bland'
 
 describe 'BaseModel', ->
-  
+
   describe '.dataState', ->
     it 'is "fetching" while the model is being fetched, "saving" while the model is being saved, and "standby" otherwise', ->
       b = new BlandModel({})
@@ -51,7 +51,7 @@ describe 'BaseModel', ->
       b = new BlandModel({})
       b.fetch()
       expect(-> b.set('a', 1)).toThrow()
-      
+
     it 'does not throw an error when set is called through save', ->
       b = new BlandModel({})
       expect(-> b.save({1:2})).not.toThrow()
@@ -64,7 +64,7 @@ describe 'BaseModel', ->
       expect(m.get('nested').b).toBe('two')
       m.set('whatev.a', 'somethin')
       expect(JSON.stringify(m.attributes)).toBe(JSON.stringify({"prop":1,"nested":{"a":"one","b":"two"}}))
-      
+
   describe 'save(attributes, options)', ->
     it 'does not save if the data is invalid based on the schema', ->
       b = new BlandModel({number: 'NaN'})
@@ -72,13 +72,13 @@ describe 'BaseModel', ->
       expect(res).toBe(false)
       request = jasmine.Ajax.requests.mostRecent()
       expect(request).toBeUndefined()
-      
+
     it 'calls options.success and options.error after dataState is back to "standby"', ->
       count = 0
       callback = (model) ->
         expect(model.dataState).toBe('standby')
         count += 1
-      
+
       b = new BlandModel({_id:'1'})
       expect(b.dataState).toBe('standby')
 
@@ -98,7 +98,7 @@ describe 'BaseModel', ->
       request.respondWith({status: 404, responseText: '{}'})
 
       expect(count).toBe(3)
-      
+
   describe 'fetch(options)', ->
     it 'calls options.success and options.error after dataState is back to "standby"', ->
       count = 0
@@ -130,3 +130,8 @@ describe 'BaseModel', ->
     it 'dereferences the class property "schema" if it\'s a string using tv4.getSchema', ->
       b = new BlandModel()
       expect(b.schema().id).toBe('http://my.site/schemas#bland')
+
+  describe 'created()', ->
+    it 'gets the document creation date from the MongoDB id', ->
+      b = new BlandModel({_id:'55529729ce2868a7fd8d0bb3'})
+      expect(b.created().getTime()).toBeCloseTo(1431476009000)

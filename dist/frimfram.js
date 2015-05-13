@@ -458,6 +458,10 @@
 
     BaseModel.prototype.dataState = 'standby';
 
+    BaseModel.prototype.created = function() {
+      return new Date(parseInt(this.id.substring(0, 8), 16) * 1000);
+    };
+
     function BaseModel(attributes, options) {
       BaseModel.__super__.constructor.call(this, attributes, options);
       this.on('add', this.onAdded, this);

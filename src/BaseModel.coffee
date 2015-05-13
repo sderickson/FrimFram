@@ -1,11 +1,13 @@
 class BaseModel extends Backbone.Model
 
   dataState: 'standby' # or 'fetching', 'saving'
-  
+
+  created: -> new Date(parseInt(@id.substring(0, 8), 16) * 1000)
+
   constructor: (attributes, options) ->
     super(attributes, options)
     @on 'add', @onAdded, @
-    
+
   onAdded: -> @dataState = 'standby'
 
   schema: ->
