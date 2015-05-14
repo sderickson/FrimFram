@@ -680,11 +680,13 @@
     RootView.prototype.onInsert = function() {
       var title;
       RootView.__super__.onInsert.apply(this, arguments);
-      title = _.result(this, 'title') || this.constructor.name;
+      title = _.result(this, 'title') || _.result(RootView, 'globalTitle') || this.constructor.name;
       return $('title').text(title);
     };
 
     RootView.prototype.title = _.noop;
+
+    RootView.globalTitle = _.noop;
 
     return RootView;
 
