@@ -1,6 +1,9 @@
 {
   "name": "frimfram",
-  "main": ["dist/frimfram.js", "dist/frimfram.css"],
+  "main": [
+    "dist/frimfram.js",
+    "dist/frimfram.css"
+  ],
   "version": "0.0.1",
   "description": "A framework shell.",
   "license": "MIT",
@@ -23,7 +26,7 @@
   ],
   "dependencies": {
     "jquery": "2.*",
-    "lodash": "3.*",
+    "lodash": "~3.9.3",
     "backbone": "1.*",
     "moment": "2.*",
     "underscore.string": "3.*",

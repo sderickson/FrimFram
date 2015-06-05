@@ -22,30 +22,21 @@ block content
 
   .tab-content
     #listing-pane.tab-pane
-      .list-group
 
-        if hasSpecFocus
-          .list-group-item.list-group-item-success
-            span.glyphicon.glyphicon-refresh.spr
-            a(href=pathname).reload-link
-              strong Clear spec focus
-
-        if lastParent
-          .list-group-item.list-group-item-success
-            span.glyphicon.glyphicon-arrow-left
-            a(href=lastParent.url)
-              strong Up one folder (#{lastParent.name})
-
-        for child in children
-          .list-group-item.list-group-item-info
-            a(href=child.url)
-              if child.type == 'folder'
-                span.glyphicon.glyphicon-folder-close(aria-hidden="true")
+      .well
+        mixin listing(path, name, children)
+          if name
+            li
+              a(href=path)= name
+          ul
+            for child, name in children
+              if child
+                +listing(path+'/'+name, name, child)
               else
-                span.glyphicon.glyphicon-file
-              span.spl= child.name
-              if child.type == 'folder'
-                strong (#{child.size})
+                li
+                  a(href=path+'/'+name)= name
+
+        +listing('/test/client', null, testTree)
 
     #tests-pane.tab-pane.active
       .well

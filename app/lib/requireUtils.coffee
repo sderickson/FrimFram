@@ -10,6 +10,12 @@ module.exports.getParentFolders = (subPath, urlPrefix='/test/') ->
     }
   paths
 
+module.exports.testTree = (files, baseRequirePath='test/app') ->
+  tree = {}
+  for f in files
+    _.set tree, f.split('/'), false
+  return _.result tree, baseRequirePath.split('/')
+
 module.exports.parseImmediateChildren = (allChildren, subPath, baseRequirePath='test/app/', urlPrefix='/test/') ->
   return [] unless allChildren
   folders = {}

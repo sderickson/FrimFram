@@ -8,10 +8,7 @@ class ClientTestView extends FrimFram.RootView
   template: require 'templates/client-test-view'
   reloadOnClose: true
   testingLibs: ['jasmine', 'jasmine-html', 'boot', 'mock-ajax', 'test-app']
-  
-  events:
-    'click .reload-link': 'clearSpecParam' # not exactly sure why it needs this to navigate
-  
+
   #- Initialization
 
   constructor: (options) ->
@@ -34,45 +31,39 @@ class ClientTestView extends FrimFram.RootView
     ClientTestView.runTests(@specFiles)
     window.runJasmine()
 
-    
+
   #- Rendering
 
   getContext: ->
     c = super(arguments...)
     c.parentFolders = requireUtils.getParentFolders(@subPath, TEST_URL_PREFIX)
-    c.children = requireUtils.parseImmediateChildren(@specFiles, @subPath, TEST_REQUIRE_PREFIX, TEST_URL_PREFIX)
     parts = @subPath.split('/')
     c.currentFolder = parts[parts.length-1] or parts[parts.length-2] or 'All'
-    c.lastParent = _.last(c.parentFolders)
-    c.hasSpecFocus = document.location.href.indexOf('?') > -1
+    c.testTree = @testTree or {}
     c
 
-    
+
   #- Running tests
 
   initSpecFiles: ->
     @specFiles = ClientTestView.getAllSpecFiles()
+    @testTree = requireUtils.testTree(@specFiles)
     if @subPath
       prefix = TEST_REQUIRE_PREFIX + @subPath
       @specFiles = (f for f in @specFiles when _(f).startsWith(prefix).value())
-      
+
   @runTests: (specFiles) ->
     describe 'Client', ->
       specFiles ?= @getAllSpecFiles()
       jasmine.Ajax.install()
       beforeEach ->
         jasmine.Ajax.requests.reset()
-  
+
       require f for f in specFiles # runs the tests
 
   @getAllSpecFiles = ->
     allFiles = window.require.list()
     (f for f in allFiles when f.indexOf('.spec') > -1)
 
-    
-  #- Navigation
-
-  clearSpecParam: ->
-    document.location.href = document.location.pathname
 
 module.exports = ClientTestView
