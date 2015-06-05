@@ -3,62 +3,54 @@ extends /templates/common/base
 block content
 
   <link rel="stylesheet" href="/stylesheets/jasmine.css">
-  
-  .page-header
-    h1 
-      span.spr Client Tests
-  
-  ol.breadcrumb
-    for path in parentFolders
-      li
-        a(href=path.url)= path.name
+  p
+    ol.breadcrumb
+      for path in parentFolders
+        li
+          a(href=path.url)= path.name
+      li.active
+        a.reload-link(href=pathname)= currentFolder
+      a.pull-right(href="/test/server/")
+        span.spr Server Tests
+        span.glyphicon.glyphicon-arrow-right
+
+  ul.nav.nav-tabs
     li.active
-      a.reload-link(href=pathname)= currentFolder
-    a.pull-right(href="/test/server/")
-      span.spr Server Tests
-      span.glyphicon.glyphicon-arrow-right
+      a(href="#tests-pane" data-toggle="tab") Tests
+    li
+      a(href="#listing-pane" data-toggle="tab") Listing
 
-  .row
+  .tab-content
+    #listing-pane.tab-pane
+      .list-group
 
-    .col-sm-3
-      .panel.panel-primary#test-nav
-        .panel-heading
-          .panel-title Nav
-        
-        .list-group
-          
-          if hasSpecFocus
-            .list-group-item.list-group-item-success
-              span.glyphicon.glyphicon-refresh.spr
-              a(href=pathname).reload-link
-                strong Clear spec focus
-          
-          if lastParent
-            .list-group-item.list-group-item-success
-              span.glyphicon.glyphicon-arrow-left
-              a(href=lastParent.url)
-                strong Up one folder (#{lastParent.name})
-          
-          for child in children
-            .list-group-item.list-group-item-info
-              a(href=child.url)
-                if child.type == 'folder'
-                  span.glyphicon.glyphicon-folder-close(aria-hidden="true")
-                else
-                  span.glyphicon.glyphicon-file
-                span.spl= child.name
-                if child.type == 'folder'
-                  strong (#{child.size})
-  
-  
-    .col-sm-9
-      .panel.panel-default#testing-area
-        .panel-heading
-          .panel-title Test Results
-        
-        .panel-body
-          #tests
-    
+        if hasSpecFocus
+          .list-group-item.list-group-item-success
+            span.glyphicon.glyphicon-refresh.spr
+            a(href=pathname).reload-link
+              strong Clear spec focus
+
+        if lastParent
+          .list-group-item.list-group-item-success
+            span.glyphicon.glyphicon-arrow-left
+            a(href=lastParent.url)
+              strong Up one folder (#{lastParent.name})
+
+        for child in children
+          .list-group-item.list-group-item-info
+            a(href=child.url)
+              if child.type == 'folder'
+                span.glyphicon.glyphicon-folder-close(aria-hidden="true")
+              else
+                span.glyphicon.glyphicon-file
+              span.spl= child.name
+              if child.type == 'folder'
+                strong (#{child.size})
+
+    #tests-pane.tab-pane.active
+      .well
+        #tests
+
   blockquote
     p “Testing is an infinite process of comparing the invisible to the ambiguous in order to avoid the unthinkable happening to the anonymous.”
     footer James Bach
