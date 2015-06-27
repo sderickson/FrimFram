@@ -1,27 +1,36 @@
 
 #- Error handling
-FrimFram.onModelError = (model, jqxhr) -> FrimFram.onAjaxError(jqxhr)
+FrimFram.onNetworkError = ->
+  jqxhr = _.find arguments, (arg) -> arg.promise? and arg.getResponseHeader? # duck typing
 
-FrimFram.onAjaxError = (jqxhr) ->
-  r = jqxhr.responseJSON
-  console.log r or jqxhr.responseText
-  r ?= {}
-  s = "Response error #{r.error} (#{r.statusCode}): #{r.message}"
+  r = jqxhr?.responseJSON
+  if jqxhr?.status is 0
+    s = 'Network failure'
+  else if arguments[2]?.textStatus is 'parsererror'
+    s = 'Backbone parser error'
+  else
+    s = r?.message or r?.error or 'Unknown error'
+
+  if r
+    console.error 'Response JSON:', JSON.stringify(r, null, '\t')
+  else
+    console.error 'Error arguments:', arguments
+
   alert = $(FrimFram.runtimeErrorTemplate({errorMessage: s}))
   $('body').append(alert)
   alert.addClass('in')
   alert.alert()
-  close = -> alert.alert('close')
+
+# deprecated, just use onNetworkError everywhere
+FrimFram.onAjaxError = FrimFram.onNetworkError
+FrimFram.onModelError = FrimFram.onNetworkError
 
 FrimFram.runtimeErrorTemplate = _.template("""
   <div class="runtime-error-alert alert alert-danger fade">
     <button class="close" type="button" data-dismiss="alert">
       <span aria-hidden="true">&times;</span>
     </button>
-    <strong class="spr">Runtime Error:</strong>
     <span><%= errorMessage %></span>
-    <br/>
-    <span class="pull-right text-muted">See console for more info.</span>
   </div>
 """)
 

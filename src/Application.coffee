@@ -19,13 +19,12 @@ class Application extends FrimFram.BaseClass
   #- Error reporting
 
   watchForErrors: ->
-    window.onerror = (msg, url, line, col, error) ->
+    window.addEventListener "error", (e) ->
       return if $('body').find('.runtime-error-alert').length
-      alert = $(FrimFram.runtimeErrorTemplate({errorMessage: msg}))
+      alert = $(FrimFram.runtimeErrorTemplate({errorMessage: e.error.message}))
       $('body').append(alert)
       alert.addClass('in')
       alert.alert()
-      close = -> alert.alert('close')
 
 
   #- Backspace navigation stopping

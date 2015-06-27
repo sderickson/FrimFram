@@ -35,9 +35,9 @@ module.exports.put = (req, res) ->
   user.set(key, value) for key, value of merged
   user.save(returnUser(req, res))
 
-  
+
 #- patch /db/user/:handle
-  
+
 module.exports.patch = (req, res) ->
   user = req.user
   unless user
@@ -55,7 +55,7 @@ module.exports.patch = (req, res) ->
 
   user.set(key, value) for key, value of merged
   user.save(returnUser(req, res))
-  
+
 
 #- post /db/user
 
@@ -77,10 +77,10 @@ returnCreatedUser = _.curry (res, err, user) ->
   if err
     return respond.internalServerError(res, { err: err })
   respond.created(res, formatUser(user, user))
-  
-  
+
+
 #- delete /db/user/:handle
-    
+
 module.exports.delete = (req, res) ->
   user = req.user
   unless user
@@ -95,9 +95,9 @@ returnNoContent = _.curry (res, err) ->
     return respond.internalServerError(res, { err: err })
   respond.noContent(res)
 
-  
+
 #- UTILS
-  
+
 returnUser = _.curry (req, res, err, user) ->
   if err
     return respond.internalServerError(res, { err: err })

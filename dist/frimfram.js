@@ -350,21 +350,18 @@
     };
 
     Application.prototype.watchForErrors = function() {
-      return window.onerror = function(msg, url, line, col, error) {
-        var alert, close;
+      return window.addEventListener("error", function(e) {
+        var alert;
         if ($('body').find('.runtime-error-alert').length) {
           return;
         }
         alert = $(FrimFram.runtimeErrorTemplate({
-          errorMessage: msg
+          errorMessage: e.error.message
         }));
         $('body').append(alert);
         alert.addClass('in');
-        alert.alert();
-        return close = function() {
-          return alert.alert('close');
-        };
-      };
+        return alert.alert();
+      });
     };
 
     Application.ctrlDefaultPrevented = [219, 221, 80, 83];
@@ -761,30 +758,37 @@
 
 }).call(this);
 ;(function() {
-  FrimFram.onModelError = function(model, jqxhr) {
-    return FrimFram.onAjaxError(jqxhr);
-  };
-
-  FrimFram.onAjaxError = function(jqxhr) {
-    var alert, close, r, s;
-    r = jqxhr.responseJSON;
-    console.log(r || jqxhr.responseText);
-    if (r == null) {
-      r = {};
+  FrimFram.onNetworkError = function() {
+    var alert, jqxhr, r, s, _ref;
+    jqxhr = _.find(arguments, function(arg) {
+      return (arg.promise != null) && (arg.getResponseHeader != null);
+    });
+    r = jqxhr != null ? jqxhr.responseJSON : void 0;
+    if ((jqxhr != null ? jqxhr.status : void 0) === 0) {
+      s = 'Network failure';
+    } else if (((_ref = arguments[2]) != null ? _ref.textStatus : void 0) === 'parsererror') {
+      s = 'Backbone parser error';
+    } else {
+      s = (r != null ? r.message : void 0) || (r != null ? r.error : void 0) || 'Unknown error';
     }
-    s = "Response error " + r.error + " (" + r.statusCode + "): " + r.message;
+    if (r) {
+      console.error('Response JSON:', JSON.stringify(r, null, '\t'));
+    } else {
+      console.error('Error arguments:', arguments);
+    }
     alert = $(FrimFram.runtimeErrorTemplate({
       errorMessage: s
     }));
     $('body').append(alert);
     alert.addClass('in');
-    alert.alert();
-    return close = function() {
-      return alert.alert('close');
-    };
+    return alert.alert();
   };
 
-  FrimFram.runtimeErrorTemplate = _.template("<div class=\"runtime-error-alert alert alert-danger fade\">\n  <button class=\"close\" type=\"button\" data-dismiss=\"alert\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n  <strong class=\"spr\">Runtime Error:</strong>\n  <span><%= errorMessage %></span>\n  <br/>\n  <span class=\"pull-right text-muted\">See console for more info.</span>\n</div>");
+  FrimFram.onAjaxError = FrimFram.onNetworkError;
+
+  FrimFram.onModelError = FrimFram.onNetworkError;
+
+  FrimFram.runtimeErrorTemplate = _.template("<div class=\"runtime-error-alert alert alert-danger fade\">\n  <button class=\"close\" type=\"button\" data-dismiss=\"alert\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n  <span><%= errorMessage %></span>\n</div>");
 
 }).call(this);
 ;(function() {
