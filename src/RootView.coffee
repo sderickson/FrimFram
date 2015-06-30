@@ -1,4 +1,4 @@
-class RootView extends FrimFram.BaseView
+class RootView extends FrimFram.View
 
   onInsert: ->
     super(arguments...)

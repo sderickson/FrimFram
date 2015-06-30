@@ -1,5 +1,5 @@
-class BaseCollection extends Backbone.Collection
-  
+class Collection extends Backbone.Collection
+
   dataState: 'standby' # or 'fetching'
 
   constructor: (models, options) ->
@@ -14,8 +14,8 @@ class BaseCollection extends Backbone.Collection
       options.data ?= {}
       _.defaults(options.data, @defaultFetchData)
     return super(options)
-    
+
   # At some later point, create save, patch, destroy methods?
 
-    
-FrimFram.BaseCollection = BaseCollection 
+
+FrimFram.BaseCollection = FrimFram.Collection = Collection

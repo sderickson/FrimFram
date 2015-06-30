@@ -1,5 +1,5 @@
 
-class BaseView extends Backbone.View
+class View extends Backbone.View
 
   template: ''
   shortcuts: {}
@@ -38,7 +38,7 @@ class BaseView extends Backbone.View
   initContext: (pickPredicate) ->
     context = {}
     context.pathname = document.location.pathname  # ex. '/play/level'
-    context = _.defaults context, BaseView.globalContext
+    context = _.defaults context, View.globalContext
     context = _.extend context, _.pick(@, pickPredicate, @) if pickPredicate
     context
 
@@ -115,7 +115,7 @@ class BaseView extends Backbone.View
   #- Utilities
 
   getQueryParam: (param) ->
-    BaseView.getQueryParam(param)
+    View.getQueryParam(param)
 
   @getQueryParam: (param) ->
     query = @getQueryString()
@@ -137,6 +137,6 @@ class BaseView extends Backbone.View
     @destroyed = true
     @destroy = _.noop
 
-_.defaults(BaseView.prototype, FrimFram.BaseClass.prototype)
+_.defaults(View.prototype, FrimFram.BaseClass.prototype)
 
-FrimFram.BaseView = BaseView
+FrimFram.View = FrimFram.BaseView = View

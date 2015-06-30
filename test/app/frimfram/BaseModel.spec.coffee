@@ -10,14 +10,14 @@ tv4.addSchema({
     _id: {type: 'string'}
 })
 
-class BlandModel extends FrimFram.BaseModel
+class BlandModel extends FrimFram.Model
   idAttribute: '_id'
   initialize: _.noop
   @className: 'Bland'
   @schema: 'http://my.site/schemas#bland'
   urlRoot: '/db/bland'
 
-describe 'BaseModel', ->
+describe 'Model', ->
 
   describe '.dataState', ->
     it 'is "fetching" while the model is being fetched, "saving" while the model is being saved, and "standby" otherwise', ->

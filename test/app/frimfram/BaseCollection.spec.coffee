@@ -1,7 +1,7 @@
-describe 'BaseCollection', ->
+describe 'Collection', ->
   describe 'dataState', ->
     it 'is "fetching" while the collection is being fetched, "standby" otherwise', ->
-      Collection = FrimFram.BaseCollection.extend({
+      Collection = FrimFram.Collection.extend({
         url: '/db/thingies'
       })
       collection = new Collection()
@@ -16,9 +16,9 @@ describe 'BaseCollection', ->
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 404, responseText: '{}'})
       expect(collection.dataState).toBe("standby")
-      
+
     it 'is set before any given success or error callback is called', ->
-      Collection = FrimFram.BaseCollection.extend({
+      Collection = FrimFram.Collection.extend({
         url: '/db/thingies'
       })
       collection = new Collection()
@@ -39,7 +39,7 @@ describe 'BaseCollection', ->
 
   describe 'constructor(models, options)', ->
     it 'can be given defaultFetchData as an option, which will be folded into all fetch operations', ->
-      Collection = FrimFram.BaseCollection.extend({
+      Collection = FrimFram.Collection.extend({
         url: '/db/thingies'
       })
       collection = new Collection(null, {defaultFetchData: {foo: 'bar'}})
@@ -66,11 +66,11 @@ describe 'BaseCollection', ->
         expect(c.dataState).toBe('standby')
         count += 1
 
-      Collection = FrimFram.BaseCollection.extend({
+      Collection = FrimFram.Collection.extend({
         url: '/db/thingies'
       })
       c = new Collection()
-      
+
       expect(c.dataState).toBe('standby')
 
       c.fetch({ success: callback })

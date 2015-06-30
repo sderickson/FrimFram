@@ -1,4 +1,4 @@
-class ModalView extends FrimFram.BaseView
+class ModalView extends FrimFram.View
   @visibleModal: null
 
   className: 'modal fade'
@@ -16,7 +16,7 @@ class ModalView extends FrimFram.BaseView
     @$el.on 'hide.bs.modal', -> modal.trigger 'hide'
     @$el.on 'hidden.bs.modal', -> modal.onHidden()
     @$el.on 'loaded.bs.modal', -> modal.trigger 'loaded'
-    
+
   hide: (fast) ->
     @$el.removeClass('fade') if fast
     @$el.modal('hide')

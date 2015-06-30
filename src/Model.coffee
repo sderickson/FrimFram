@@ -1,4 +1,4 @@
-class BaseModel extends Backbone.Model
+class Model extends Backbone.Model
 
   dataState: 'standby' # or 'fetching', 'saving'
 
@@ -78,4 +78,4 @@ class BaseModel extends Backbone.Model
 
 
 
-FrimFram.BaseModel = BaseModel
+FrimFram.BaseModel = FrimFram.Model = Model

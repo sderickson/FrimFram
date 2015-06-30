@@ -1,6 +1,6 @@
-describe 'BaseView', ->
+describe 'View', ->
   it 'listens to shortcuts upon construction', ->
-    View = FrimFram.BaseView.extend({
+    View = FrimFram.View.extend({
       shortcuts:
         'enter': _.noop
     })
@@ -12,7 +12,7 @@ describe 'BaseView', ->
   describe '.constructor(options, ...)', ->
     it 'passes options and any additional arguments on to initialize', ->
       spy = jasmine.createSpy()
-      View = FrimFram.BaseView.extend({
+      View = FrimFram.View.extend({
         initialize: spy
       })
       view = new View(1, 2, 3)
@@ -21,12 +21,12 @@ describe 'BaseView', ->
 
   describe '.render()', ->
     it 'destroys and resets subviews', ->
-      View = FrimFram.BaseView.extend({
+      View = FrimFram.View.extend({
         template: '<div id="subview"></div>'
       })
       view = new View()
       view.render()
-      Subview = FrimFram.BaseView.extend({
+      Subview = FrimFram.View.extend({
         id: 'subview'
       })
       subview = new Subview()
@@ -41,7 +41,7 @@ describe 'BaseView', ->
 
     it 'inserts the template value into $el', ->
       html = '<p>Value</p>'
-      View = FrimFram.BaseView.extend({
+      View = FrimFram.View.extend({
         template: html
       })
       view = new View()
@@ -49,7 +49,7 @@ describe 'BaseView', ->
       expect(view.$el.html()).toBe(html)
 
     it 'it calls onRender at the end', ->
-      view = new FrimFram.BaseView()
+      view = new FrimFram.View()
       spyOn(view, 'onRender')
       view.render()
       expect(view.onRender).toHaveBeenCalled()
@@ -57,7 +57,7 @@ describe 'BaseView', ->
 
   describe '.renderSelectors(selectors...)', ->
     it 'rerenders selectors passed in as arguments', ->
-      View = FrimFram.BaseView.extend({
+      View = FrimFram.View.extend({
         template: (c) -> "<div id='foo'>#{c.foo}</div><div id='bar'>#{c.bar}</div>"
         getContext: -> @initContext(['foo', 'bar'])
       })
@@ -75,7 +75,7 @@ describe 'BaseView', ->
 
   describe '.initContext(pickPredicate)', ->
     it 'picks passed in properties from the view instance', ->
-      view = new FrimFram.BaseView()
+      view = new FrimFram.View()
       view.foo = 1
       view.bar = 2
       expect(view.initContext(['foo']).foo).toBe(1)
@@ -83,19 +83,19 @@ describe 'BaseView', ->
       expect(view.initContext(['foo']).bar).toBeUndefined()
 
     it 'includes pathname', ->
-      view = new FrimFram.BaseView()
+      view = new FrimFram.View()
       expect(view.initContext().pathname).toBe(document.location.pathname)
 
     it 'includes globals added by @extendGlobalContext(context)', ->
-      view = new FrimFram.BaseView()
+      view = new FrimFram.View()
       someLib = {}
-      FrimFram.BaseView.extendGlobalContext({'someLib':someLib})
+      FrimFram.View.extendGlobalContext({'someLib':someLib})
       expect(view.initContext().someLib).toBe(someLib)
 
 
   describe '.getContext()', ->
     it 'proxies to .initContext() by default', ->
-      view = new FrimFram.BaseView()
+      view = new FrimFram.View()
       spyOn(view, 'initContext')
       view.getContext()
       expect(view.initContext).toHaveBeenCalled()
@@ -113,12 +113,12 @@ describe 'BaseView', ->
 
   describe '.listenToShortcuts(recurse)', ->
     it 'recursively calls subviews when the "recurse" is true', ->
-      View = FrimFram.BaseView.extend({
+      View = FrimFram.View.extend({
         template: '<div id="subview"></div>'
       })
       view = new View()
       view.render()
-      Subview = FrimFram.BaseView.extend({
+      Subview = FrimFram.View.extend({
         id: 'subview'
       })
       subview = new Subview()
@@ -131,12 +131,12 @@ describe 'BaseView', ->
 
   describe '.stopListeningToShortcuts(recurse)', ->
     it 'recursively calls subviews when the first argument is true', ->
-      View = FrimFram.BaseView.extend({
+      View = FrimFram.View.extend({
         template: '<div id="subview"></div>'
       })
       view = new View()
       view.render()
-      Subview = FrimFram.BaseView.extend({
+      Subview = FrimFram.View.extend({
         id: 'subview'
       })
       subview = new Subview()
@@ -149,12 +149,12 @@ describe 'BaseView', ->
 
   describe '.insertSubview(view, elToReplace)', ->
     it 'inserts "view" into $el based on the view\'s id property', ->
-      View = FrimFram.BaseView.extend({
+      View = FrimFram.View.extend({
         template: '<div><div id="subview"></div></div>'
       })
       view = new View()
       view.render()
-      Subview = FrimFram.BaseView.extend({
+      Subview = FrimFram.View.extend({
         id: 'subview'
       })
       subview = new Subview()
@@ -163,12 +163,12 @@ describe 'BaseView', ->
 
 
     it 'calls the subview\'s render and onInsert methods', ->
-      View = FrimFram.BaseView.extend({
+      View = FrimFram.View.extend({
         template: '<div><div id="subview"></div></div>'
       })
       view = new View()
       view.render()
-      Subview = FrimFram.BaseView.extend({
+      Subview = FrimFram.View.extend({
         id: 'subview'
       })
       subview = new Subview()
@@ -179,10 +179,10 @@ describe 'BaseView', ->
       expect(subview.onInsert).toHaveBeenCalled()
 
     it 'replaces existing subviews for a given id', ->
-      View = FrimFram.BaseView.extend({ template: '<div id="subview"></div>' })
+      View = FrimFram.View.extend({ template: '<div id="subview"></div>' })
       view = new View()
       view.render()
-      Subview = FrimFram.BaseView.extend({ id: 'subview' })
+      Subview = FrimFram.View.extend({ id: 'subview' })
       subview1 = new Subview()
       subview2 = new Subview()
       view.insertSubview(subview1)
@@ -194,12 +194,12 @@ describe 'BaseView', ->
 
   describe '.registerSubview()', ->
     it 'adds the given view to the subviews object', ->
-      View = FrimFram.BaseView.extend({
+      View = FrimFram.View.extend({
         template: '<div><div id="subview"></div></div>'
       })
       view = new View()
       view.render()
-      Subview = FrimFram.BaseView.extend({
+      Subview = FrimFram.View.extend({
         id: 'subview'
       })
       subview = new Subview()
@@ -209,12 +209,12 @@ describe 'BaseView', ->
 
   describe '.removeSubview()', ->
     it 'removes and destroys a given view', ->
-      View = FrimFram.BaseView.extend({
+      View = FrimFram.View.extend({
         template: '<div><div id="subview"></div></div>'
       })
       view = new View()
       view.render()
-      Subview = FrimFram.BaseView.extend({
+      Subview = FrimFram.View.extend({
         id: 'subview'
         template: '<div>Test</div>'
       })
@@ -226,12 +226,12 @@ describe 'BaseView', ->
       expect(subview.destroyed).toBeTruthy()
 
     it 'leaves a clone of the original el behind so insertSubview still works', ->
-      View = FrimFram.BaseView.extend({
+      View = FrimFram.View.extend({
         template: '<div><div id="subview"></div></div>'
       })
       view = new View()
       view.render()
-      Subview = FrimFram.BaseView.extend({
+      Subview = FrimFram.View.extend({
         id: 'subview'
         template: '<div>Test</div>'
       })
@@ -249,34 +249,34 @@ describe 'BaseView', ->
   describe '@getQueryParam(param) and .getQueryParam(param)', ->
     it 'parses a given parameter out of the query string', ->
       qString = 'test=ing&what=wut&encodings=%23%5E%40%24%2B%25&spaced=Cool+Story%2C+Bro!'
-      spyOn(FrimFram.BaseView, 'getQueryString').and.returnValue(qString)
-      expect(FrimFram.BaseView.getQueryParam('test')).toBe('ing')
-      expect(FrimFram.BaseView.getQueryParam('what')).toBe('wut')
-      expect(FrimFram.BaseView.getQueryParam('encodings')).toBe('#^@$+%')
-      expect(FrimFram.BaseView.getQueryParam('spaced')).toBe('Cool Story, Bro!')
+      spyOn(FrimFram.View, 'getQueryString').and.returnValue(qString)
+      expect(FrimFram.View.getQueryParam('test')).toBe('ing')
+      expect(FrimFram.View.getQueryParam('what')).toBe('wut')
+      expect(FrimFram.View.getQueryParam('encodings')).toBe('#^@$+%')
+      expect(FrimFram.View.getQueryParam('spaced')).toBe('Cool Story, Bro!')
 
   describe '.destroy()', ->
     it 'calls Backbone.View.remove', ->
-      view = new FrimFram.BaseView()
+      view = new FrimFram.View()
       spyOn(view, 'remove')
       spy = view.remove
       view.destroy()
       expect(spy).toHaveBeenCalled()
 
     it 'stops listening to shortcuts', ->
-      view = new FrimFram.BaseView()
+      view = new FrimFram.View()
       spyOn(view, 'stopListeningToShortcuts')
       spy = view.stopListeningToShortcuts
       view.destroy()
       expect(spy).toHaveBeenCalled()
 
     it 'destroys all subviews', ->
-      View = FrimFram.BaseView.extend({
+      View = FrimFram.View.extend({
         template: '<div><div id="subview"></div></div>'
       })
       view = new View()
       view.render()
-      Subview = FrimFram.BaseView.extend({
+      Subview = FrimFram.View.extend({
         id: 'subview'
         template: '<div>Test</div>'
       })
@@ -286,6 +286,6 @@ describe 'BaseView', ->
       expect(subview.destroyed).toBeTruthy()
 
     it 'clears all properties from the object, except for "destroyed" and "destroy"', ->
-      view = new FrimFram.BaseView()
+      view = new FrimFram.View()
       view.destroy()
       expect(_.isEqual(_.keys(view), ['destroyed', 'destroy'])).toBe(true)

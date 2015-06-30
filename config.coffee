@@ -8,7 +8,7 @@ exports.config =
   paths:
     'public': 'public'
     'watched': ['app', 'test/app', 'vendor', 'src']
-    
+
   conventions:
     ignored: (path) -> _.startsWith(sysPath.basename(path), '_')
     vendor: /(vendor|src|bower_components)[\\/]/
@@ -16,7 +16,7 @@ exports.config =
   sourceMaps: true
 
   files:
-  
+
     javascripts:
       defaultExtension: 'coffee'
       joinTo:
@@ -31,14 +31,14 @@ exports.config =
         before: [
           'src/init.coffee'
           'src/BaseClass.coffee'
-          'src/BaseView.coffee'
+          'src/View.coffee'
           'bower_components/jquery/dist/jquery.js'
           'bower_components/lodash/lodash.js'
           'bower_components/backbone/backbone.js'
           'bower_components/bootstrap/dist/js/bootstrap.js'
           'bower_components/tv4/tv4.js'
          ]
-        
+
     stylesheets:
       defaultExtension: 'sass'
       joinTo:
