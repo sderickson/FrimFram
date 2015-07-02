@@ -9,4 +9,6 @@ class RootView extends FrimFram.View
 
   @globalTitle: _.noop
 
+  onLeaveMessage: _.noop
+
 FrimFram.RootView = RootView

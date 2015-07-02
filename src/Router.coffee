@@ -8,7 +8,11 @@ class Router extends Backbone.Router
 
   routeDirectly: (path, args) ->
     return document.location.reload() if @currentView?.reloadOnClose
-    
+    leavingMessage = _.result(@currentView, 'onLeaveMessage')
+    if leavingMessage
+      if not confirm(leavingMessage)
+        return @navigate(this.currentPath, {replace: true})
+
     path = "views/#{path}"
 
     try
@@ -22,14 +26,22 @@ class Router extends Backbone.Router
     @openView(view)
 
   #- Opening, closing views
-    
+
   openView: (view) ->
     @closeCurrentView()
     view.render()
     $('body').empty().append(view.el)
     @currentView = view
+    @currentPath = document.location.pathname + document.location.search
     view.onInsert()
-    
+
   closeCurrentView: -> @currentView?.destroy()
+
+  setupOnLeaveSite: ->
+    window.addEventListener "beforeunload", (e) =>
+      leavingMessage = _.result(@currentView, 'onLeaveMessage')
+      if leavingMessage
+        e.returnValue = leavingMessage
+        return leavingMessage
 
 FrimFram.Router = Router

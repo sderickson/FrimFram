@@ -6,9 +6,10 @@ Application = FrimFram.Application.extend({
 
   initialize: ->
     @installSchema()
+    @router.setupOnLeaveSite()
 
   #- Install the one root schema, all schemas can be referenced from it
-  
+
   installSchema: ->
     tv4.addSchema rootSchema
 })

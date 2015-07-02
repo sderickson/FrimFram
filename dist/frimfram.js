@@ -685,6 +685,8 @@
 
     RootView.globalTitle = _.noop;
 
+    RootView.prototype.onLeaveMessage = _.noop;
+
     return RootView;
 
   })(FrimFram.View);
@@ -715,9 +717,17 @@
     };
 
     Router.prototype.routeDirectly = function(path, args) {
-      var ViewClass, error, view, _ref;
+      var ViewClass, error, leavingMessage, view, _ref;
       if ((_ref = this.currentView) != null ? _ref.reloadOnClose : void 0) {
         return document.location.reload();
+      }
+      leavingMessage = _.result(this.currentView, 'onLeaveMessage');
+      if (leavingMessage) {
+        if (!confirm(leavingMessage)) {
+          return this.navigate(this.currentPath, {
+            replace: true
+          });
+        }
       }
       path = "views/" + path;
       try {
@@ -742,12 +752,26 @@
       view.render();
       $('body').empty().append(view.el);
       this.currentView = view;
+      this.currentPath = document.location.pathname + document.location.search;
       return view.onInsert();
     };
 
     Router.prototype.closeCurrentView = function() {
       var _ref;
       return (_ref = this.currentView) != null ? _ref.destroy() : void 0;
+    };
+
+    Router.prototype.setupOnLeaveSite = function() {
+      return window.addEventListener("beforeunload", (function(_this) {
+        return function(e) {
+          var leavingMessage;
+          leavingMessage = _.result(_this.currentView, 'onLeaveMessage');
+          if (leavingMessage) {
+            e.returnValue = leavingMessage;
+            return leavingMessage;
+          }
+        };
+      })(this));
     };
 
     return Router;
