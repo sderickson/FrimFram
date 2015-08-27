@@ -29,8 +29,9 @@ class View extends Backbone.View
 
   renderSelectors: (selectors...) ->
     newTemplate = $('<div>'+@getTemplateResult()+'</div>')
-    for selector in selectors
-      @$el.find(selector).replaceWith(newTemplate.find(selector))
+    for selector, i in selectors
+      for elPair in _.zip(@$el.find(selector), newTemplate.find(selector))
+        $(elPair[0]).replaceWith($(elPair[1]))
 
   getTemplateResult: ->
     if _.isString(@template) then @template else @template(@getContext())

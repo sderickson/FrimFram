@@ -73,6 +73,26 @@ describe 'View', ->
       expect(view.$el.find('#foo').text()).toBe('2')
       expect(view.$el.find('#bar').text()).toBe('1')
 
+    it 'handles selectors with multiple target', ->
+      View = FrimFram.View.extend({
+        template: (c) -> "<div class='foo'>#{c.foo}</div><div class='foo'>#{c.bar}</div>"
+        getContext: -> @initContext(['foo', 'bar'])
+      })
+      view = new View()
+      view.foo = 1
+      view.bar = 2
+      view.render()
+      expect(view.$el.find('div.foo:nth-child(1)').text()).toBe('1')
+      expect(view.$el.find('div.foo:nth-child(2)').text()).toBe('2')
+      expect(view.$el.find('div').length).toBe(2)
+
+      view.foo = 'a'
+      view.bar = 'b'
+      view.renderSelectors('.foo')
+      expect(view.$el.find('div.foo:nth-child(1)').text()).toBe('a')
+      expect(view.$el.find('div.foo:nth-child(2)').text()).toBe('b')
+      expect(view.$el.find('div').length).toBe(2)
+
   describe '.initContext(pickPredicate)', ->
     it 'picks passed in properties from the view instance', ->
       view = new FrimFram.View()

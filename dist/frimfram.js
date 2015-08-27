@@ -131,13 +131,22 @@
     };
 
     View.prototype.renderSelectors = function() {
-      var newTemplate, selector, selectors, _i, _len, _results;
+      var elPair, i, newTemplate, selector, selectors, _i, _len, _results;
       selectors = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       newTemplate = $('<div>' + this.getTemplateResult() + '</div>');
       _results = [];
-      for (_i = 0, _len = selectors.length; _i < _len; _i++) {
-        selector = selectors[_i];
-        _results.push(this.$el.find(selector).replaceWith(newTemplate.find(selector)));
+      for (i = _i = 0, _len = selectors.length; _i < _len; i = ++_i) {
+        selector = selectors[i];
+        _results.push((function() {
+          var _j, _len1, _ref, _results1;
+          _ref = _.zip(this.$el.find(selector), newTemplate.find(selector));
+          _results1 = [];
+          for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+            elPair = _ref[_j];
+            _results1.push($(elPair[0]).replaceWith($(elPair[1])));
+          }
+          return _results1;
+        }).call(this));
       }
       return _results;
     };
