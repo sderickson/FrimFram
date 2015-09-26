@@ -112,6 +112,10 @@ describe 'View', ->
       FrimFram.View.extendGlobalContext({'someLib':someLib})
       expect(view.initContext().someLib).toBe(someLib)
 
+    it 'includes the property "view", which is the View itself', ->
+      view = new FrimFram.View()
+      expect(view.initContext().view).toBe(view)
+
 
   describe '.getContext()', ->
     it 'proxies to .initContext() by default', ->
