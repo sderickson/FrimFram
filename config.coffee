@@ -55,10 +55,10 @@ exports.config =
 
   framework: 'backbone'
 
-  plugins:
-    autoReload:
-      delay: 300
+  server:
+    command: 'node_modules/.bin/nodemon . -e "coffee,js" --watch server --watch app/schemas'
 
+  plugins:
     coffeelint:
       pattern: /^app\/.*\.coffee$/
       options:
