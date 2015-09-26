@@ -19,20 +19,20 @@ class BlandModel extends FrimFram.Model
 
 describe 'Model', ->
 
-  describe '.dataState', ->
+  describe '.state', ->
     it 'is "fetching" while the model is being fetched, "saving" while the model is being saved, and "standby" otherwise', ->
       b = new BlandModel({})
-      expect(b.dataState).toBe("standby")
+      expect(b.state).toBe("standby")
       b.fetch()
-      expect(b.dataState).toBe("fetching")
+      expect(b.state).toBe("fetching")
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 200, responseText: '{}'})
-      expect(b.dataState).toBe("standby")
+      expect(b.state).toBe("standby")
       b.fetch()
-      expect(b.dataState).toBe("fetching")
+      expect(b.state).toBe("fetching")
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 404, responseText: '{}'})
-      expect(b.dataState).toBe("standby")
+      expect(b.state).toBe("standby")
 
   describe '.get(attribute)', ->
     it 'can accept nested properties', ->
@@ -73,54 +73,54 @@ describe 'Model', ->
       request = jasmine.Ajax.requests.mostRecent()
       expect(request).toBeUndefined()
 
-    it 'calls options.success and options.error after dataState is back to "standby"', ->
+    it 'calls options.success and options.error after state is back to "standby"', ->
       count = 0
       callback = (model) ->
-        expect(model.dataState).toBe('standby')
+        expect(model.state).toBe('standby')
         count += 1
 
       b = new BlandModel({_id:'1'})
-      expect(b.dataState).toBe('standby')
+      expect(b.state).toBe('standby')
 
       b.save(null, { success: callback })
-      expect(b.dataState).toBe('saving')
+      expect(b.state).toBe('saving')
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 200, responseText: '{}'})
 
       b.save(null, { complete: callback })
-      expect(b.dataState).toBe('saving')
+      expect(b.state).toBe('saving')
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 200, responseText: '{}'})
 
       b.save(null, { error: callback })
-      expect(b.dataState).toBe('saving')
+      expect(b.state).toBe('saving')
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 404, responseText: '{}'})
 
       expect(count).toBe(3)
 
   describe 'fetch(options)', ->
-    it 'calls options.success and options.error after dataState is back to "standby"', ->
+    it 'calls options.success and options.error after state is back to "standby"', ->
       count = 0
       callback = (model) ->
-        expect(model.dataState).toBe('standby')
+        expect(model.state).toBe('standby')
         count += 1
 
       b = new BlandModel({_id:1})
-      expect(b.dataState).toBe('standby')
+      expect(b.state).toBe('standby')
 
       b.fetch({ success: callback })
-      expect(b.dataState).toBe('fetching')
+      expect(b.state).toBe('fetching')
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 200, responseText: '{}'})
 
       b.fetch({ complete: callback })
-      expect(b.dataState).toBe('fetching')
+      expect(b.state).toBe('fetching')
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 200, responseText: '{}'})
 
       b.fetch({ error: callback })
-      expect(b.dataState).toBe('fetching')
+      expect(b.state).toBe('fetching')
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 404, responseText: '{}'})
 

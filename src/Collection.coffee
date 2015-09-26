@@ -1,6 +1,6 @@
 class Collection extends Backbone.Collection
 
-  dataState: 'standby' # or 'fetching'
+  state: 'standby' # or 'fetching'
 
   constructor: (models, options) ->
     super(models, options)
@@ -8,7 +8,7 @@ class Collection extends Backbone.Collection
       @defaultFetchData = options.defaultFetchData
 
   fetch: (options) ->
-    @dataState = 'fetching'
+    @state = 'fetching'
     options = FrimFram.wrapBackboneRequestCallbacks(options)
     if @defaultFetchData
       options.data ?= {}

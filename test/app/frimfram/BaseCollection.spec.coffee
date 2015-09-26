@@ -1,21 +1,21 @@
 describe 'Collection', ->
-  describe 'dataState', ->
+  describe 'state', ->
     it 'is "fetching" while the collection is being fetched, "standby" otherwise', ->
       Collection = FrimFram.Collection.extend({
         url: '/db/thingies'
       })
       collection = new Collection()
-      expect(collection.dataState).toBe("standby")
+      expect(collection.state).toBe("standby")
       collection.fetch()
-      expect(collection.dataState).toBe("fetching")
+      expect(collection.state).toBe("fetching")
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 200, responseText: '[]'})
-      expect(collection.dataState).toBe("standby")
+      expect(collection.state).toBe("standby")
       collection.fetch()
-      expect(collection.dataState).toBe("fetching")
+      expect(collection.state).toBe("fetching")
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 404, responseText: '{}'})
-      expect(collection.dataState).toBe("standby")
+      expect(collection.state).toBe("standby")
 
     it 'is set before any given success or error callback is called', ->
       Collection = FrimFram.Collection.extend({
@@ -26,13 +26,13 @@ describe 'Collection', ->
       collection.fetch({
         success: ->
           calls += 1
-          expect(collection.dataState).toBe("standby")
+          expect(collection.state).toBe("standby")
         })
       jasmine.Ajax.requests.mostRecent().respondWith({status: 200, responseText: '[]'})
       collection.fetch({
         error: ->
           calls += 1
-          expect(collection.dataState).toBe("standby")
+          expect(collection.state).toBe("standby")
       })
       jasmine.Ajax.requests.mostRecent().respondWith({status: 404, responseText: '[]'})
       expect(calls).toBe(2)
@@ -60,10 +60,10 @@ describe 'Collection', ->
       expect(_(request.url).contains('foo=BAR')).toBe(true)
 
   describe 'fetch(options)', ->
-    it 'calls options.success and options.error after dataState is back to "standby"', ->
+    it 'calls options.success and options.error after state is back to "standby"', ->
       count = 0
       callback = (c) ->
-        expect(c.dataState).toBe('standby')
+        expect(c.state).toBe('standby')
         count += 1
 
       Collection = FrimFram.Collection.extend({
@@ -71,20 +71,20 @@ describe 'Collection', ->
       })
       c = new Collection()
 
-      expect(c.dataState).toBe('standby')
+      expect(c.state).toBe('standby')
 
       c.fetch({ success: callback })
-      expect(c.dataState).toBe('fetching')
+      expect(c.state).toBe('fetching')
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 200, responseText: '{}'})
 
       c.fetch({ complete: callback })
-      expect(c.dataState).toBe('fetching')
+      expect(c.state).toBe('fetching')
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 200, responseText: '{}'})
 
       c.fetch({ error: callback })
-      expect(c.dataState).toBe('fetching')
+      expect(c.state).toBe('fetching')
       request = jasmine.Ajax.requests.mostRecent()
       request.respondWith({status: 404, responseText: '{}'})
 

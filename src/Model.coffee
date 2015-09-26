@@ -1,6 +1,6 @@
 class Model extends Backbone.Model
 
-  dataState: 'standby' # or 'fetching', 'saving'
+  state: 'standby' # or 'fetching', 'saving'
 
   created: -> new Date(parseInt(@id.substring(0, 8), 16) * 1000)
 
@@ -8,7 +8,7 @@ class Model extends Backbone.Model
     super(attributes, options)
     @on 'add', @onAdded, @
 
-  onAdded: -> @dataState = 'standby'
+  onAdded: -> @state = 'standby'
 
   schema: ->
     s = @constructor.schema
@@ -31,7 +31,7 @@ class Model extends Backbone.Model
       return Backbone.Model.prototype.get.apply(@, [attr])
 
   set: (attributes, options) ->
-    if (@dataState isnt 'standby') and not (options.xhr or options.headers)
+    if (@state isnt 'standby') and not (options.xhr or options.headers)
       throw new Error('Cannot set while fetching or saving.')
 
     if _.isString(attributes)
@@ -68,12 +68,12 @@ class Model extends Backbone.Model
   save: (attrs, options) ->
     options = FrimFram.wrapBackboneRequestCallbacks(options)
     result = super(attrs, options)
-    @dataState = 'saving' if result
+    @state = 'saving' if result
     return result
 
   fetch: (options) ->
     options = FrimFram.wrapBackboneRequestCallbacks(options)
-    @dataState = 'fetching'
+    @state = 'fetching'
     return super(options)
 
 
