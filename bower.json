@@ -31,7 +31,6 @@
     "lodash": "~3.9.3",
     "moment": "2.*",
     "tv4": "1.*",
-    "underscore.string": "3.*",
-    "backbone-nested-models": "https://github.com/blittle/backbone-nested-models"
+    "underscore.string": "3.*"
   }
 }
