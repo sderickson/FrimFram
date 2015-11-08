@@ -44,7 +44,6 @@
     "passport": "0.2.x",
     "passport-local": "1.0.x",
     "request": "2.54.x",
-    "tv4": "1.1.x",
     "underscore.string": "3.0.x",
     "winston": "0.9.x",
     "xml2js": "0.4.x"

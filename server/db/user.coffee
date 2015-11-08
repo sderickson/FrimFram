@@ -28,9 +28,9 @@ module.exports.put = (req, res) ->
   input = _.pick(input, editableProperties...)
   clone = _.merge({}, user.toObject())
   combined = _.extend(clone, input)
-  result = tv4.validateMultiple(combined, User.schema)
-  if not result.valid
-    return respond.unprocessableEntity(res, { validationErrors: result.errors })
+#  result = tv4.validateMultiple(combined, User.schema)
+#  if not result.valid
+#    return respond.unprocessableEntity(res, { validationErrors: result.errors })
 
   user.set(key, value) for key, value of merged
   user.save(returnUser(req, res))
@@ -49,9 +49,9 @@ module.exports.patch = (req, res) ->
   input = _.pick(req.body, editableProperties...)
   clone = _.merge({}, user.toObject())
   merged = _.merge(clone, input)
-  result = tv4.validateMultiple(merged, User.schema)
-  if not result.valid
-    return respond.unprocessableEntity(res, { validationErrors: result.errors })
+#  result = tv4.validateMultiple(merged, User.schema)
+#  if not result.valid
+#    return respond.unprocessableEntity(res, { validationErrors: result.errors })
 
   user.set(key, value) for key, value of merged
   user.save(returnUser(req, res))
@@ -66,9 +66,9 @@ module.exports.post = (req, res) ->
   input = _.pick(input, editableProperties...)
   clone = _.merge({}, user.toObject())
   merged = _.merge(clone, input)
-  result = tv4.validateMultiple(merged, User.jsonSchema)
-  if not result.valid
-    return respond.unprocessableEntity(res, { validationErrors: result.errors })
+#  result = tv4.validateMultiple(merged, User.jsonSchema)
+#  if not result.valid
+#    return respond.unprocessableEntity(res, { validationErrors: result.errors })
 
   user.set(key, value) for key, value of merged
   user.save(returnCreatedUser(res))
