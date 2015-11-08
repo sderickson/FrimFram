@@ -5,7 +5,6 @@ class Application extends FrimFram.BaseClass
 
   constructor: ->
     @watchForErrors()
-    _.mixin(s.exports())
     $(document).bind 'keydown', @preventBackspace
     @handleNormalUrls()
     @initialize(arguments...)

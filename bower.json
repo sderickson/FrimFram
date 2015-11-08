@@ -29,7 +29,6 @@
     "bootstrap": "3.*",
     "jquery": "2.*",
     "lodash": "~3.9.3",
-    "moment": "2.*",
-    "underscore.string": "3.*"
+    "moment": "2.*"
   }
 }

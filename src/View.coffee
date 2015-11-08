@@ -101,7 +101,7 @@ class View extends Backbone.View
 
   makeSubviewKey: (view) ->
     key = view.id or (_.uniqueId(view.constructor.name))
-    key = _.underscored(key)  # handy for autocomplete in dev console
+    key = _.snakeCase(key)  # handy for autocomplete in dev console
     key
 
   removeSubview: (view) ->

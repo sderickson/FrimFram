@@ -256,7 +256,7 @@
     View.prototype.makeSubviewKey = function(view) {
       var key;
       key = view.id || (_.uniqueId(view.constructor.name));
-      key = _.underscored(key);
+      key = _.snakeCase(key);
       return key;
     };
 
@@ -344,7 +344,6 @@
     function Application() {
       this.preventBackspace = bind(this.preventBackspace, this);
       this.watchForErrors();
-      _.mixin(s.exports());
       $(document).bind('keydown', this.preventBackspace);
       this.handleNormalUrls();
       this.initialize.apply(this, arguments);
