@@ -12,7 +12,6 @@ class View extends Backbone.View
   #- Setup
 
   constructor: (options) ->
-    @events = @superMerge('events')
     @subviews = {}
     @listenToShortcuts()
     super arguments...
@@ -56,7 +55,7 @@ class View extends Backbone.View
   #- Shortcuts
 
   listenToShortcuts: (recurse) ->
-    shortcuts = @superMerge('shortcuts')
+    return unless @shortcuts
     if @scope
       @stopListeningToShortcuts()
     else

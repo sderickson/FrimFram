@@ -32,29 +32,20 @@
   BaseClass = (function() {
     function BaseClass() {}
 
-    BaseClass.prototype.superMerge = function(propertyName) {
-      var combined, obj, value;
-      combined = {};
-      obj = this;
-      while (obj) {
-        value = obj != null ? obj[propertyName] : void 0;
-        _.defaults(combined, value);
-        obj = obj.__proto__ || Object.getPrototypeOf(obj);
-      }
-      return combined;
-    };
-
     BaseClass.prototype.listenToShortcuts = function() {
-      var func, results, shortcut, shortcuts;
-      shortcuts = this.superMerge('shortcuts');
+      var func, ref, results, shortcut;
+      if (!this.shortcuts) {
+        return;
+      }
       if (this.scope) {
         this.stopListeningToShortcuts();
       } else {
         this.scope = _.uniqueId('class-scope-');
       }
+      ref = this.shortcuts;
       results = [];
-      for (shortcut in shortcuts) {
-        func = shortcuts[shortcut];
+      for (shortcut in ref) {
+        func = ref[shortcut];
         if (!_.isFunction(func)) {
           func = this[func];
         }
@@ -112,7 +103,6 @@
     };
 
     function View(options) {
-      this.events = this.superMerge('events');
       this.subviews = {};
       this.listenToShortcuts();
       View.__super__.constructor.apply(this, arguments);
@@ -179,8 +169,10 @@
     View.prototype.onInsert = _.noop;
 
     View.prototype.listenToShortcuts = function(recurse) {
-      var func, ref, ref1, results, shortcut, shortcuts, view, viewID;
-      shortcuts = this.superMerge('shortcuts');
+      var func, ref, ref1, results, shortcut, view, viewID;
+      if (!this.shortcuts) {
+        return;
+      }
       if (this.scope) {
         this.stopListeningToShortcuts();
       } else {

@@ -1,20 +1,11 @@
 class BaseClass
-  superMerge: (propertyName) ->
-    combined = {}
-    obj = @
-    while obj
-      value = obj?[propertyName]
-      _.defaults(combined, value)
-      obj = obj.__proto__ or Object.getPrototypeOf(obj)
-    combined
-
   listenToShortcuts: ->
-    shortcuts = @superMerge('shortcuts')
+    return unless @shortcuts
     if @scope
       @stopListeningToShortcuts()
     else
       @scope = _.uniqueId('class-scope-')
-    for shortcut, func of shortcuts
+    for shortcut, func of @shortcuts
       func = @[func] if not _.isFunction(func)
       continue unless func
       key(shortcut, @scope, _.bind(func, @))
