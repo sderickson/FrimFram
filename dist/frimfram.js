@@ -323,7 +323,6 @@
 }).call(this);
 ;(function() {
   var Application,
-    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -334,7 +333,6 @@
     Application.extend = Backbone.Model.extend;
 
     function Application() {
-      this.preventBackspace = bind(this.preventBackspace, this);
       this.watchForErrors();
       $(document).bind('keydown', this.preventBackspace);
       this.initialize.apply(this, arguments);
@@ -363,13 +361,8 @@
       });
     };
 
-    Application.ctrlDefaultPrevented = [219, 221, 80, 83];
-
     Application.prototype.preventBackspace = function(event) {
-      var ref;
       if (event.keyCode === 8 && !this.elementAcceptsKeystrokes(event.srcElement || event.target)) {
-        return event.preventDefault();
-      } else if ((key.ctrl || key.command) && !key.alt && (ref = event.keyCode, indexOf.call(Application.ctrlDefaultPrevented, ref) >= 0)) {
         return event.preventDefault();
       }
     };

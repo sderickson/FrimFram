@@ -27,12 +27,8 @@ class Application extends FrimFram.BaseClass
 
   #- Backspace navigation stopping
 
-  # Prevent Ctrl/Cmd + [ / ], P, S
-  @ctrlDefaultPrevented: [219, 221, 80, 83]
-  preventBackspace: (event) =>
+  preventBackspace: (event) ->
     if event.keyCode is 8 and not @elementAcceptsKeystrokes(event.srcElement or event.target)
-      event.preventDefault()
-    else if (key.ctrl or key.command) and not key.alt and event.keyCode in Application.ctrlDefaultPrevented
       event.preventDefault()
 
   elementAcceptsKeystrokes: (el) ->
