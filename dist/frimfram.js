@@ -45,14 +45,14 @@
     };
 
     BaseClass.prototype.listenToShortcuts = function() {
-      var func, shortcut, shortcuts, _results;
+      var func, results, shortcut, shortcuts;
       shortcuts = this.superMerge('shortcuts');
       if (this.scope) {
         this.stopListeningToShortcuts();
       } else {
         this.scope = _.uniqueId('class-scope-');
       }
-      _results = [];
+      results = [];
       for (shortcut in shortcuts) {
         func = shortcuts[shortcut];
         if (!_.isFunction(func)) {
@@ -61,9 +61,9 @@
         if (!func) {
           continue;
         }
-        _results.push(key(shortcut, this.scope, _.bind(func, this)));
+        results.push(key(shortcut, this.scope, _.bind(func, this)));
       }
-      return _results;
+      return results;
     };
 
     BaseClass.prototype.stopListeningToShortcuts = function() {
@@ -92,12 +92,12 @@
 }).call(this);
 ;(function() {
   var View,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __slice = [].slice;
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty,
+    slice = [].slice;
 
-  View = (function(_super) {
-    __extends(View, _super);
+  View = (function(superClass) {
+    extend(View, superClass);
 
     View.prototype.template = '';
 
@@ -119,10 +119,10 @@
     }
 
     View.prototype.render = function() {
-      var id, view, _ref;
-      _ref = this.subviews;
-      for (id in _ref) {
-        view = _ref[id];
+      var id, ref, view;
+      ref = this.subviews;
+      for (id in ref) {
+        view = ref[id];
         view.destroy();
       }
       this.subviews = {};
@@ -131,24 +131,24 @@
     };
 
     View.prototype.renderSelectors = function() {
-      var elPair, i, newTemplate, selector, selectors, _i, _len, _results;
-      selectors = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      var elPair, i, j, len, newTemplate, results, selector, selectors;
+      selectors = 1 <= arguments.length ? slice.call(arguments, 0) : [];
       newTemplate = $('<div>' + this.getTemplateResult() + '</div>');
-      _results = [];
-      for (i = _i = 0, _len = selectors.length; _i < _len; i = ++_i) {
+      results = [];
+      for (i = j = 0, len = selectors.length; j < len; i = ++j) {
         selector = selectors[i];
-        _results.push((function() {
-          var _j, _len1, _ref, _results1;
-          _ref = _.zip(this.$el.find(selector), newTemplate.find(selector));
-          _results1 = [];
-          for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-            elPair = _ref[_j];
-            _results1.push($(elPair[0]).replaceWith($(elPair[1])));
+        results.push((function() {
+          var k, len1, ref, results1;
+          ref = _.zip(this.$el.find(selector), newTemplate.find(selector));
+          results1 = [];
+          for (k = 0, len1 = ref.length; k < len1; k++) {
+            elPair = ref[k];
+            results1.push($(elPair[0]).replaceWith($(elPair[1])));
           }
-          return _results1;
+          return results1;
         }).call(this));
       }
-      return _results;
+      return results;
     };
 
     View.prototype.getTemplateResult = function() {
@@ -179,16 +179,16 @@
     View.prototype.onInsert = _.noop;
 
     View.prototype.listenToShortcuts = function(recurse) {
-      var func, shortcut, shortcuts, view, viewID, _ref, _ref1, _results;
+      var func, ref, ref1, results, shortcut, shortcuts, view, viewID;
       shortcuts = this.superMerge('shortcuts');
       if (this.scope) {
         this.stopListeningToShortcuts();
       } else {
         this.scope = _.uniqueId('view-scope-');
       }
-      _ref = this.shortcuts;
-      for (shortcut in _ref) {
-        func = _ref[shortcut];
+      ref = this.shortcuts;
+      for (shortcut in ref) {
+        func = ref[shortcut];
         if (!_.isFunction(func)) {
           func = this[func];
         }
@@ -198,27 +198,27 @@
         key(shortcut, this.scope, _.bind(func, this));
       }
       if (recurse) {
-        _ref1 = this.subviews;
-        _results = [];
-        for (viewID in _ref1) {
-          view = _ref1[viewID];
-          _results.push(view.listenToShortcuts(true));
+        ref1 = this.subviews;
+        results = [];
+        for (viewID in ref1) {
+          view = ref1[viewID];
+          results.push(view.listenToShortcuts(true));
         }
-        return _results;
+        return results;
       }
     };
 
     View.prototype.stopListeningToShortcuts = function(recurse) {
-      var view, viewID, _ref, _results;
+      var ref, results, view, viewID;
       key.deleteScope(this.scope);
       if (recurse) {
-        _ref = this.subviews;
-        _results = [];
-        for (viewID in _ref) {
-          view = _ref[viewID];
-          _results.push(view.stopListeningToShortcuts(true));
+        ref = this.subviews;
+        results = [];
+        for (viewID in ref) {
+          view = ref[viewID];
+          results.push(view.stopListeningToShortcuts(true));
         }
-        return _results;
+        return results;
       }
     };
 
@@ -279,20 +279,20 @@
     };
 
     View.getQueryParam = function(param) {
-      var pair, pairs, query, _i, _len;
+      var j, len, pair, pairs, query;
       query = this.getQueryString();
       pairs = (function() {
-        var _i, _len, _ref, _results;
-        _ref = query.split('&');
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          pair = _ref[_i];
-          _results.push(pair.split('='));
+        var j, len, ref, results;
+        ref = query.split('&');
+        results = [];
+        for (j = 0, len = ref.length; j < len; j++) {
+          pair = ref[j];
+          results.push(pair.split('='));
         }
-        return _results;
+        return results;
       })();
-      for (_i = 0, _len = pairs.length; _i < _len; _i++) {
-        pair = pairs[_i];
+      for (j = 0, len = pairs.length; j < len; j++) {
+        pair = pairs[j];
         if (pair[0] === param) {
           return decodeURIComponent(pair[1].replace(/\+/g, '%20'));
         }
@@ -304,12 +304,12 @@
     };
 
     View.prototype.destroy = function() {
-      var key, value, view, _i, _len, _ref;
+      var j, key, len, ref, value, view;
       this.remove();
       this.stopListeningToShortcuts();
-      _ref = _.values(this.subviews);
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        view = _ref[_i];
+      ref = _.values(this.subviews);
+      for (j = 0, len = ref.length; j < len; j++) {
+        view = ref[j];
         view.destroy();
       }
       for (key in this) {
@@ -331,18 +331,18 @@
 }).call(this);
 ;(function() {
   var Application,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty,
+    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  Application = (function(_super) {
-    __extends(Application, _super);
+  Application = (function(superClass) {
+    extend(Application, superClass);
 
     Application.extend = Backbone.Model.extend;
 
     function Application() {
-      this.preventBackspace = __bind(this.preventBackspace, this);
+      this.preventBackspace = bind(this.preventBackspace, this);
       this.watchForErrors();
       _.mixin(s.exports());
       $(document).bind('keydown', this.preventBackspace);
@@ -376,23 +376,23 @@
     Application.ctrlDefaultPrevented = [219, 221, 80, 83];
 
     Application.prototype.preventBackspace = function(event) {
-      var _ref;
+      var ref;
       if (event.keyCode === 8 && !this.elementAcceptsKeystrokes(event.srcElement || event.target)) {
         return event.preventDefault();
-      } else if ((key.ctrl || key.command) && !key.alt && (_ref = event.keyCode, __indexOf.call(Application.ctrlDefaultPrevented, _ref) >= 0)) {
+      } else if ((key.ctrl || key.command) && !key.alt && (ref = event.keyCode, indexOf.call(Application.ctrlDefaultPrevented, ref) >= 0)) {
         return event.preventDefault();
       }
     };
 
     Application.prototype.elementAcceptsKeystrokes = function(el) {
-      var tag, textInputTypes, type, _ref, _ref1;
+      var ref, ref1, tag, textInputTypes, type;
       if (el == null) {
         el = document.activeElement;
       }
       tag = el.tagName.toLowerCase();
-      type = (_ref = el.type) != null ? _ref.toLowerCase() : void 0;
+      type = (ref = el.type) != null ? ref.toLowerCase() : void 0;
       textInputTypes = ['text', 'password', 'file', 'number', 'search', 'url', 'tel', 'email', 'date', 'month', 'week', 'time', 'datetimelocal'];
-      return (tag === 'textarea' || (tag === 'input' && __indexOf.call(textInputTypes, type) >= 0) || ((_ref1 = el.contentEditable) === '' || _ref1 === 'true')) && !(el.readOnly || el.disabled);
+      return (tag === 'textarea' || (tag === 'input' && indexOf.call(textInputTypes, type) >= 0) || ((ref1 = el.contentEditable) === '' || ref1 === 'true')) && !(el.readOnly || el.disabled);
     };
 
     Application.prototype.handleNormalUrls = function() {
@@ -420,11 +420,11 @@
 }).call(this);
 ;(function() {
   var Collection,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
-  Collection = (function(_super) {
-    __extends(Collection, _super);
+  Collection = (function(superClass) {
+    extend(Collection, superClass);
 
     Collection.prototype.dataState = 'standby';
 
@@ -456,11 +456,11 @@
 }).call(this);
 ;(function() {
   var ModalView,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
-  ModalView = (function(_super) {
-    __extends(ModalView, _super);
+  ModalView = (function(superClass) {
+    extend(ModalView, superClass);
 
     function ModalView() {
       return ModalView.__super__.constructor.apply(this, arguments);
@@ -502,9 +502,9 @@
     };
 
     ModalView.prototype.show = function(fast) {
-      var _ref;
-      if ((_ref = ModalView.visibleModal) != null) {
-        _ref.hide(true);
+      var ref;
+      if ((ref = ModalView.visibleModal) != null) {
+        ref.hide(true);
       }
       this.render();
       if (fast) {
@@ -538,22 +538,23 @@
 }).call(this);
 ;(function() {
   var Model,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
-  Model = (function(_super) {
-    __extends(Model, _super);
+  Model = (function(superClass) {
+    extend(Model, superClass);
+
+    function Model(attributes, options) {
+      Model.__super__.constructor.call(this, attributes, options);
+      this.on('add', this.onAdded, this);
+      this.on('invalid', this.onInvalid, this);
+    }
 
     Model.prototype.dataState = 'standby';
 
     Model.prototype.created = function() {
       return new Date(parseInt(this.id.substring(0, 8), 16) * 1000);
     };
-
-    function Model(attributes, options) {
-      Model.__super__.constructor.call(this, attributes, options);
-      this.on('add', this.onAdded, this);
-    }
 
     Model.prototype.onAdded = function() {
       return this.dataState = 'standby';
@@ -570,69 +571,21 @@
     };
 
     Model.prototype.onInvalid = function() {
-      var error, _i, _len, _ref, _results;
+      var error, i, len, ref, results;
       console.debug("Validation failed for " + (this.constructor.className || this) + ": '" + (this.get('name') || this) + "'.");
-      _ref = this.validationError;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        error = _ref[_i];
-        _results.push(console.debug("\t", error.dataPath, ':', error.message));
+      ref = this.validationError;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        error = ref[i];
+        results.push(console.debug("\t", error.dataPath, ':', error.message));
       }
-      return _results;
-    };
-
-    Model.prototype.get = function(attr) {
-      var parts, subKey, value, _i, _len;
-      if (_(attr).contains('.')) {
-        parts = attr.split('.');
-        value = this.attributes;
-        for (_i = 0, _len = parts.length; _i < _len; _i++) {
-          subKey = parts[_i];
-          if (_.isArray(value)) {
-            subKey = parseInt(subKey);
-          }
-          value = value != null ? value[subKey] : void 0;
-        }
-        return value;
-      } else {
-        return Backbone.Model.prototype.get.apply(this, [attr]);
-      }
+      return results;
     };
 
     Model.prototype.set = function(attributes, options) {
-      var a, clone, key, parent, parts, slim, subKey, value, _i, _len;
       if ((this.dataState !== 'standby') && !(options.xhr || options.headers)) {
         throw new Error('Cannot set while fetching or saving.');
       }
-      if (_.isString(attributes)) {
-        a = {};
-        a[attributes] = options;
-        attributes = a;
-        options = {};
-      }
-      for (key in attributes) {
-        if (!_(key).contains('.')) {
-          continue;
-        }
-        parts = key.split('.');
-        slim = _.pick(this.attributes, parts[0]);
-        clone = _.merge({}, slim);
-        value = clone;
-        for (_i = 0, _len = parts.length; _i < _len; _i++) {
-          subKey = parts[_i];
-          parent = value;
-          if (_.isArray(value)) {
-            subKey = parseInt(subKey);
-          }
-          value = value != null ? value[subKey] : void 0;
-        }
-        if (parent) {
-          parent[subKey] = attributes[key];
-          this.set(clone);
-        }
-        delete attributes[key];
-      }
-      Backbone.Model.prototype.set.apply(this, [attributes, options]);
       return Model.__super__.set.call(this, attributes, options);
     };
 
@@ -673,11 +626,11 @@
 }).call(this);
 ;(function() {
   var RootView,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
-  RootView = (function(_super) {
-    __extends(RootView, _super);
+  RootView = (function(superClass) {
+    extend(RootView, superClass);
 
     function RootView() {
       return RootView.__super__.constructor.apply(this, arguments);
@@ -705,11 +658,11 @@
 }).call(this);
 ;(function() {
   var Router,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
-  Router = (function(_super) {
-    __extends(Router, _super);
+  Router = (function(superClass) {
+    extend(Router, superClass);
 
     function Router() {
       return Router.__super__.constructor.apply(this, arguments);
@@ -726,8 +679,8 @@
     };
 
     Router.prototype.routeDirectly = function(path, args) {
-      var ViewClass, error, leavingMessage, view, _ref;
-      if ((_ref = this.currentView) != null ? _ref.reloadOnClose : void 0) {
+      var ViewClass, error, error1, leavingMessage, ref, view;
+      if ((ref = this.currentView) != null ? ref.reloadOnClose : void 0) {
         return document.location.reload();
       }
       leavingMessage = _.result(this.currentView, 'onLeaveMessage');
@@ -741,8 +694,8 @@
       path = "views/" + path;
       try {
         ViewClass = require(path);
-      } catch (_error) {
-        error = _error;
+      } catch (error1) {
+        error = error1;
         if (error.toString().search('Cannot find module "' + path + '" from') === -1) {
           throw error;
         }
@@ -766,8 +719,8 @@
     };
 
     Router.prototype.closeCurrentView = function() {
-      var _ref;
-      return (_ref = this.currentView) != null ? _ref.destroy() : void 0;
+      var ref;
+      return (ref = this.currentView) != null ? ref.destroy() : void 0;
     };
 
     Router.prototype.setupOnLeaveSite = function() {
@@ -792,14 +745,14 @@
 }).call(this);
 ;(function() {
   FrimFram.onNetworkError = function() {
-    var alert, jqxhr, r, s, _ref;
+    var alert, jqxhr, r, ref, s;
     jqxhr = _.find(arguments, function(arg) {
       return (arg.promise != null) && (arg.getResponseHeader != null);
     });
     r = jqxhr != null ? jqxhr.responseJSON : void 0;
     if ((jqxhr != null ? jqxhr.status : void 0) === 0) {
       s = 'Network failure';
-    } else if (((_ref = arguments[2]) != null ? _ref.textStatus : void 0) === 'parsererror') {
+    } else if (((ref = arguments[2]) != null ? ref.textStatus : void 0) === 'parsererror') {
       s = 'Backbone parser error';
     } else {
       s = (r != null ? r.message : void 0) || (r != null ? r.error : void 0) || 'Unknown error';
@@ -828,7 +781,7 @@
   FrimFram.storage = {
     prefix: '-storage-',
     load: function(key) {
-      var SyntaxError, s, value;
+      var SyntaxError, error, s, value;
       s = localStorage.getItem(this.prefix + key);
       if (!s) {
         return null;
@@ -836,8 +789,8 @@
       try {
         value = JSON.parse(s);
         return value;
-      } catch (_error) {
-        SyntaxError = _error;
+      } catch (error) {
+        SyntaxError = error;
         console.warn('error loading from storage', key);
         return null;
       }
@@ -849,16 +802,16 @@
       return localStorage.removeItem(this.prefix + key);
     },
     clear: function() {
-      var key, _results;
-      _results = [];
+      var key, results;
+      results = [];
       for (key in localStorage) {
         if (key.indexOf(this.prefix) === 0) {
-          _results.push(localStorage.removeItem(key));
+          results.push(localStorage.removeItem(key));
         } else {
-          _results.push(void 0);
+          results.push(void 0);
         }
       }
-      return _results;
+      return results;
     }
   };
 

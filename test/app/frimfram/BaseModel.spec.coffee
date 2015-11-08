@@ -11,6 +11,8 @@ tv4.addSchema({
 })
 
 class BlandModel extends FrimFram.Model
+  relations:
+    'nested': FrimFram.Model
   idAttribute: '_id'
   initialize: _.noop
   @className: 'Bland'
@@ -37,9 +39,9 @@ describe 'Model', ->
   describe '.get(attribute)', ->
     it 'can accept nested properties', ->
       m = new BlandModel({prop: 1, nested: {a: 1, b: 2}})
-      expect(m.get('nested.a')).toBe(1)
-      expect(m.get('nested.b')).toBe(2)
-      expect(m.get('nested.3')).toBeUndefined()
+      expect(m.get('nested').get('a')).toBe(1)
+      expect(m.get('nested').get('b')).toBe(2)
+      expect(m.get('nested').get('3')).toBeUndefined()
 
   describe '.set(attributes, options)', ->
     it 'throws an error when you try to set properties while saving', ->
@@ -58,12 +60,12 @@ describe 'Model', ->
 
     it 'can accept nested properties', ->
       m = new BlandModel({prop: 1, nested: {a: 1, b: 2}})
-      m.set('nested.a', 'one')
-      expect(m.get('nested').a).toBe('one')
-      m.set({'nested.b': 'two'})
-      expect(m.get('nested').b).toBe('two')
-      m.set('whatev.a', 'somethin')
-      expect(JSON.stringify(m.attributes)).toBe(JSON.stringify({"prop":1,"nested":{"a":"one","b":"two"}}))
+      m.set('nested', {a: 'one'})
+      expect(m.get('nested').get('a')).toBe('one')
+      m.set({nested: {b: 'two'}})
+      expect(m.get('nested').get('b')).toBe('two')
+      m.set('whatev', {a: 'somethin'})
+      expect(JSON.stringify(m.attributes)).toBe('{"prop":1,"nested":{"a":"one","b":"two"},"whatev":{"a":"somethin"}}')
 
   describe 'save(attributes, options)', ->
     it 'does not save if the data is invalid based on the schema', ->

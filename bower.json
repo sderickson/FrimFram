@@ -25,12 +25,13 @@
     "README.md"
   ],
   "dependencies": {
+    "backbone": "1.*",
+    "bootstrap": "3.*",
     "jquery": "2.*",
     "lodash": "~3.9.3",
-    "backbone": "1.*",
     "moment": "2.*",
+    "tv4": "1.*",
     "underscore.string": "3.*",
-    "bootstrap": "3.*",
-    "tv4": "1.*"
+    "backbone-nested-models": "https://github.com/blittle/backbone-nested-models"
   }
 }
