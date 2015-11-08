@@ -1,5 +1,4 @@
 Router = require 'Router'
-rootSchema = require 'schemas/root.schema'
 
 Application = FrimFram.Application.extend({
   router: new Router()
@@ -11,7 +10,13 @@ Application = FrimFram.Application.extend({
   #- Install the one root schema, all schemas can be referenced from it
 
   installSchema: ->
-    tv4.addSchema rootSchema
+    @ajv = new ajv()
+    modules = window.require.list()
+    for module in modules.slice(_.sortedIndex(modules, 'schemas/'))
+      if not _.startsWith(module, 'schemas/')
+        break
+      console.log 'add module', module.slice(8)
+      @ajv.addSchema(require(module), module.slice(8))
 })
 
 module.exports = Application

@@ -1,4 +1,4 @@
-tv4.addSchema({
+app.ajv.addSchema({
   id: 'http://my.site/schemas#bland'
   type: 'object'
   additionalProperties: false

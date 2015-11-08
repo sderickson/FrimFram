@@ -11,5 +11,3 @@ module.exports.setup = ->
   #- global libraries
   GLOBAL._ = require 'lodash'
   GLOBAL._.string = require 'underscore.string'
-  GLOBAL.tv4 = require 'tv4' # required for TreemaUtils to work
-  GLOBAL.tv4.addSchema rootRequire 'app/schemas/root.schema'

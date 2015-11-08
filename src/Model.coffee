@@ -13,7 +13,7 @@ class Model extends Backbone.Model
 
   schema: ->
     s = @constructor.schema
-    if _.isString s then tv4.getSchema(s) else s
+    if _.isString s then app.ajv.getSchema(s)?.schema else s
 
   onInvalid: ->
     console.debug "Validation failed for #{@constructor.className or @}: '#{@get('name') or @}'."
@@ -27,8 +27,8 @@ class Model extends Backbone.Model
     return super(attributes, options)
 
   getValidationErrors: ->
-    errors = tv4?.validateMultiple(@attributes, @constructor.schema or {}).errors
-    return errors if errors?.length
+    valid = app.ajv.validate(@constructor.schema or {}, @attributes)
+    return app.ajv.errors if not valid
 
   validate: -> @getValidationErrors()
 

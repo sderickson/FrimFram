@@ -30,7 +30,6 @@
     "jquery": "2.*",
     "lodash": "~3.9.3",
     "moment": "2.*",
-    "tv4": "1.*",
     "underscore.string": "3.*"
   }
 }

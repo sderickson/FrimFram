@@ -561,10 +561,10 @@
     };
 
     Model.prototype.schema = function() {
-      var s;
+      var ref, s;
       s = this.constructor.schema;
       if (_.isString(s)) {
-        return tv4.getSchema(s);
+        return (ref = app.ajv.getSchema(s)) != null ? ref.schema : void 0;
       } else {
         return s;
       }
@@ -590,10 +590,10 @@
     };
 
     Model.prototype.getValidationErrors = function() {
-      var errors;
-      errors = typeof tv4 !== "undefined" && tv4 !== null ? tv4.validateMultiple(this.attributes, this.constructor.schema || {}).errors : void 0;
-      if (errors != null ? errors.length : void 0) {
-        return errors;
+      var valid;
+      valid = app.ajv.validate(this.constructor.schema || {}, this.attributes);
+      if (!valid) {
+        return app.ajv.errors;
       }
     };
 
