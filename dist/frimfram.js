@@ -337,7 +337,6 @@
       this.preventBackspace = bind(this.preventBackspace, this);
       this.watchForErrors();
       $(document).bind('keydown', this.preventBackspace);
-      this.handleNormalUrls();
       this.initialize.apply(this, arguments);
     }
 
@@ -384,22 +383,6 @@
       type = (ref = el.type) != null ? ref.toLowerCase() : void 0;
       textInputTypes = ['text', 'password', 'file', 'number', 'search', 'url', 'tel', 'email', 'date', 'month', 'week', 'time', 'datetimelocal'];
       return (tag === 'textarea' || (tag === 'input' && indexOf.call(textInputTypes, type) >= 0) || ((ref1 = el.contentEditable) === '' || ref1 === 'true')) && !(el.readOnly || el.disabled);
-    };
-
-    Application.prototype.handleNormalUrls = function() {
-      return $(document).on('click', "a[href^='/']", function(event) {
-        var href, passThrough, url;
-        href = $(event.currentTarget).attr('href');
-        passThrough = href.indexOf('sign_out') >= 0;
-        if (!passThrough && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
-          event.preventDefault();
-          url = href.replace(/^\//, '').replace('\#\!\/', '');
-          app.router.navigate(url, {
-            trigger: true
-          });
-          return false;
-        }
-      });
     };
 
     return Application;

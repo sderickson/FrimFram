@@ -6,7 +6,6 @@ class Application extends FrimFram.BaseClass
   constructor: ->
     @watchForErrors()
     $(document).bind 'keydown', @preventBackspace
-    @handleNormalUrls()
     @initialize(arguments...)
 
   initialize: _.noop
@@ -45,19 +44,6 @@ class Application extends FrimFram.BaseClass
     # not radio, checkbox, range, or color
     return (tag is 'textarea' or (tag is 'input' and type in textInputTypes) or el.contentEditable in ['', 'true']) and not (el.readOnly or el.disabled)
 
-
-  #- Single-page web app URLs w/out hashbang
-
-  handleNormalUrls: ->
-    # http://artsy.github.com/blog/2012/06/25/replacing-hashbang-routes-with-pushstate/
-    $(document).on 'click', "a[href^='/']", (event) ->
-      href = $(event.currentTarget).attr('href')
-      passThrough = href.indexOf('sign_out') >= 0
-      if !passThrough && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey
-        event.preventDefault()
-        url = href.replace(/^\//,'').replace('\#\!\/','')
-        app.router.navigate url, { trigger: true }
-        return false
 
 
 FrimFram.Application = Application
