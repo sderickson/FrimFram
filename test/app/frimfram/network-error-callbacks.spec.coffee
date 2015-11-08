@@ -1,11 +1,8 @@
-describe 'FrimFram.onAjaxError()', ->
-
-
-describe 'FrimFram.onModelError()', ->
+describe 'FrimFram.onNetworkError()', ->
   it 'shows an error alert when set as the "error" callback for Backbone Models and Collections', ->
     Model = FrimFram.Model.extend({ urlRoot: 'http://someplace.com/api/doodad' })
     model = new Model()
-    model.fetch({ error: FrimFram.onModelError })
+    model.fetch({ error: FrimFram.onNetworkError })
     request = jasmine.Ajax.requests.mostRecent()
     request.respondWith({
       status: 404

@@ -21,9 +21,6 @@ FrimFram.onNetworkError = ->
   alert.addClass('in')
   alert.alert()
 
-# deprecated, just use onNetworkError everywhere
-FrimFram.onAjaxError = FrimFram.onNetworkError
-FrimFram.onModelError = FrimFram.onNetworkError
 
 FrimFram.runtimeErrorTemplate = _.template("""
   <div class="runtime-error-alert alert alert-danger fade">

@@ -745,10 +745,6 @@
     return alert.alert();
   };
 
-  FrimFram.onAjaxError = FrimFram.onNetworkError;
-
-  FrimFram.onModelError = FrimFram.onNetworkError;
-
   FrimFram.runtimeErrorTemplate = _.template("<div class=\"runtime-error-alert alert alert-danger fade\">\n  <button class=\"close\" type=\"button\" data-dismiss=\"alert\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n  <span><%= errorMessage %></span>\n</div>");
 
 }).call(this);
