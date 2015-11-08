@@ -1,20 +1,19 @@
 class Application extends FrimFram.BaseClass
   @extend: Backbone.Model.extend
 
-  #- Initialization
-
-  constructor: ->
-    @watchForErrors()
-    $(document).bind 'keydown', @preventBackspace
+  constructor: (options) ->
+    options = _.defaults {}, options, {
+      watchForErrors: true
+      preventBackspace: true
+    }
+    @watchForErrors() if options.watchForErrors
+    $(document).bind('keydown', @preventBackspace) if options.preventBackspace
     @initialize(arguments...)
 
   initialize: _.noop
 
   start: ->
     Backbone.history.start({ pushState: true })
-
-
-  #- Error reporting
 
   watchForErrors: ->
     window.addEventListener "error", (e) ->
@@ -23,9 +22,6 @@ class Application extends FrimFram.BaseClass
       $('body').append(alert)
       alert.addClass('in')
       alert.alert()
-
-
-  #- Backspace navigation stopping
 
   preventBackspace: (event) ->
     if event.keyCode is 8 and not @elementAcceptsKeystrokes(event.srcElement or event.target)
@@ -39,7 +35,6 @@ class Application extends FrimFram.BaseClass
     textInputTypes = ['text', 'password', 'file', 'number', 'search', 'url', 'tel', 'email', 'date', 'month', 'week', 'time', 'datetimelocal']
     # not radio, checkbox, range, or color
     return (tag is 'textarea' or (tag is 'input' and type in textInputTypes) or el.contentEditable in ['', 'true']) and not (el.readOnly or el.disabled)
-
 
 
 FrimFram.Application = Application

@@ -332,9 +332,17 @@
 
     Application.extend = Backbone.Model.extend;
 
-    function Application() {
-      this.watchForErrors();
-      $(document).bind('keydown', this.preventBackspace);
+    function Application(options) {
+      options = _.defaults({}, options, {
+        watchForErrors: true,
+        preventBackspace: true
+      });
+      if (options.watchForErrors) {
+        this.watchForErrors();
+      }
+      if (options.preventBackspace) {
+        $(document).bind('keydown', this.preventBackspace);
+      }
       this.initialize.apply(this, arguments);
     }
 
