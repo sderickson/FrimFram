@@ -4,7 +4,7 @@
     "dist/frimfram.js",
     "dist/frimfram.css"
   ],
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A framework shell.",
   "license": "MIT",
   "private": false,
