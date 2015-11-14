@@ -1,0 +1,11 @@
+{
+  "verbose": "true",
+  "ignore": [],
+  "events": {
+  },
+  "watch": [
+    "app/schemas",
+    "./server"
+  ],
+  "ext":"js coffee"
+}

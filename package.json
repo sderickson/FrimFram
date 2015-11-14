@@ -10,6 +10,7 @@
   "scripts": {
     "brunch": "brunch",
     "mongod": "mongod --dbpath=mongo",
+    "nodemon": "nodemon",
     "start": "node ./index.js",
     "test": "./node_modules/.bin/karma start"
   },
