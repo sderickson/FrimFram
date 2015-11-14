@@ -73,7 +73,7 @@ describe 'View', ->
       expect(view.$el.find('#foo').text()).toBe('2')
       expect(view.$el.find('#bar').text()).toBe('1')
 
-    it 'handles selectors with multiple target', ->
+    it 'handles selectors with multiple targets', ->
       View = FrimFram.View.extend({
         template: (c) -> "<div class='foo'>#{c.foo}</div><div class='foo'>#{c.bar}</div>"
         getContext: -> @initContext(['foo', 'bar'])
@@ -111,6 +111,10 @@ describe 'View', ->
       someLib = {}
       FrimFram.View.extendGlobalContext({'someLib':someLib})
       expect(view.initContext().someLib).toBe(someLib)
+
+    it 'includes the property "view", which is the View itself', ->
+      view = new FrimFram.View()
+      expect(view.initContext().view).toBe(view)
 
 
   describe '.getContext()', ->

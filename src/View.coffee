@@ -36,7 +36,7 @@ class View extends Backbone.View
     if _.isString(@template) then @template else @template(@getContext())
 
   initContext: (pickPredicate) ->
-    context = {}
+    context = { view: @ }
     context.pathname = document.location.pathname  # ex. '/play/level'
     context = _.defaults context, View.globalContext
     context = _.extend context, _.pick(@, pickPredicate, @) if pickPredicate

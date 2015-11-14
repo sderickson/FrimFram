@@ -5,13 +5,13 @@ window.FrimFram = {
     options ?= {}
     originalOptions = _.clone(options)
     options.success = (model) ->
-      model.dataState = 'standby'
+      model.state = 'standby'
       originalOptions.success?(arguments...)
     options.error = (model) ->
-      model.dataState = 'standby'
+      model.state = 'standby'
       originalOptions.error?(arguments...)
     options.complete = (model) ->
-      model.dataState = 'standby'
+      model.state = 'standby'
       originalOptions.complete?(arguments...)
     return options
 }

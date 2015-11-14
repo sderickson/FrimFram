@@ -7,11 +7,11 @@ class Router extends Backbone.Router
     window.location.reload(true)
 
   routeDirectly: (path, args) ->
-    return document.location.reload() if @currentView?.reloadOnClose
-    leavingMessage = _.result(@currentView, 'onLeaveMessage')
+    return document.location.reload() if @view?.reloadOnClose
+    leavingMessage = _.result(@view, 'onLeaveMessage')
     if leavingMessage
       if not confirm(leavingMessage)
-        return @navigate(this.currentPath, {replace: true})
+        return @navigate(this.path, {replace: true})
 
     path = "views/#{path}"
 
@@ -31,15 +31,15 @@ class Router extends Backbone.Router
     @closeCurrentView()
     view.render()
     $('body').empty().append(view.el)
-    @currentView = view
-    @currentPath = document.location.pathname + document.location.search
+    @view = view
+    @path = document.location.pathname + document.location.search
     view.onInsert()
 
-  closeCurrentView: -> @currentView?.destroy()
+  closeCurrentView: -> @view?.destroy()
 
   setupOnLeaveSite: ->
     window.addEventListener "beforeunload", (e) =>
-      leavingMessage = _.result(@currentView, 'onLeaveMessage')
+      leavingMessage = _.result(@view, 'onLeaveMessage')
       if leavingMessage
         e.returnValue = leavingMessage
         return leavingMessage
