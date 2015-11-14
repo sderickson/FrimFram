@@ -57,23 +57,12 @@ module.exports.start = (readyCallback) ->
   app.use(authentication.initialize())
   app.use(authentication.session())
 
-
   #- setup routes
   routes(app)
 
-
   #- Serve index.html
-  try
-    mainHTML = fs.readFileSync(path.join(__dirname, '../public', 'index.html'), 'utf8')
-  catch e
-    winston.error "Error modifying index.html: #{e}"
-
   app.all '*', (req, res) ->
-    # insert the user object directly into the html so the application can have it immediately. Sanitize </script>
-#      data = mainHTML.replace('"userObjectTag"', JSON.stringify(UserHandler.formatEntity(req, req.user)).replace(/\//g, '\\/'))
-    res.header 'Cache-Control', 'no-cache, no-store, must-revalidate'
-    res.header 'Pragma', 'no-cache'
-    res.header 'Expires', 0
+    mainHTML = fs.readFileSync(path.join(__dirname, '../public', 'index.html'), 'utf8')
     res.status(200).send(mainHTML)
 
   @server = http.createServer(app).listen app.get('port'), ->
