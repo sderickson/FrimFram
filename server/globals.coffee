@@ -10,4 +10,3 @@ module.exports.setup = ->
   
   #- global libraries
   GLOBAL._ = require 'lodash'
-  GLOBAL._.string = require 'underscore.string'

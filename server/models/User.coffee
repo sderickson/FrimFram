@@ -11,7 +11,7 @@ UserSchema.pre 'save', (next) ->
     @set('emailLower', email.toLowerCase())
 
   if name = @get('name')
-    @set('slug', _.string.slugify(name))
+    @set('slug', _.kebabCase(name))
   
   if pwd = @get('password')
     @set('passwordHash', User.hashPassword(pwd))

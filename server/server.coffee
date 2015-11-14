@@ -4,7 +4,6 @@ winston = require 'winston'
 morgan = require 'morgan'
 cookieParser = require 'cookie-parser'
 bodyParser = require 'body-parser'
-multer = require 'multer'
 
 mongoose = require 'mongoose'
 Grid = require 'gridfs-stream'
@@ -52,7 +51,6 @@ module.exports.start = (readyCallback) ->
   app.use(cookieParser(config.cookie_secret))
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
-  app.use(multer())
 
   #- passport middlware
   authentication = require('passport')
